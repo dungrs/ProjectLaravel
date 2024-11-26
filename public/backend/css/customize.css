@@ -1,0 +1,663 @@
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+input::placeholder {
+    font-size: 13px;
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+h5 {
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+table .image {
+    height: 50px;
+    display: block;
+}
+
+.img-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+table strong {
+    min-width: 90px;
+    display: inline-block;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    vertical-align: middle;
+}
+
+.uk-flex-space-between {
+    -ms-flex-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+
+.uk-flex-middle {
+    -ms-flex-align: center;
+    -webkit-align-items:center;
+    align-items: center;
+}
+
+.uk-flex {
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+}
+
+.filter-wrapper {
+    margin-bottom: 20px;
+}
+
+.filter-wrapper .perpage {
+    display: inline-block;
+}
+
+.btn {
+    margin-bottom: 0 !important;
+    font-size: 13px;
+    border-radius: 0px;
+    height: 35px;
+}
+
+.filter-wrapper .form-control {
+    height: 35px;
+    max-width: 200px;
+}
+
+.mr10 {
+    margin-right: 10px;
+}
+
+.ml10 {
+    margin-left: 10px;
+}
+
+.mb15 {
+    margin-bottom: 15px;
+}
+
+.mb30 {
+    margin-bottom: 30px;
+}
+
+.mr5 {
+    margin-right: 5px;
+}
+
+.box .ibox {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panel-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.panel-description {
+    font-size: 15px;
+}
+
+.select2-container .select2-selection--single {
+    height: 35px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    line-height: 31px !important;
+}
+
+.form-control {
+    height: 31px;
+}
+
+.active-bg {
+    background-color: #ffc !important;
+}
+
+#checkAll,
+.checkBoxItem {
+    width: 15px;
+    height: 15px;
+}
+
+.switchery-small {
+    border-radius: 20px !important;
+    height: 20px !important;
+    width: 33px !important;
+}
+
+.switchery-small>small {
+    height: 20px !important;
+    width: 20px !important;
+}
+
+.select2-container--default {
+    margin-right: 10px !important;
+}
+
+.meta-title {
+    font-size: 20px;
+    color: #1a0dab;
+}
+
+.canonical {
+    color: green;
+    margin-bottom: 8px;
+}
+
+.meta-description {
+    font-size: 14px;
+}
+
+.seo-wrapper textarea {
+    height: 200px !important;
+}
+
+.notice {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.image-target {
+    cursor: pointer;
+}
+
+.input-wrapper input:focus {
+    border-color: #e5e6e7 !important;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper .baseUrl {
+    position: absolute;
+    height: 31px;
+    line-height: 31px;
+    display: block;
+    padding: 0 10px;
+    top: 0;
+    background: linear-gradient(to bottom, #fff, #f9fafb);
+    border: 1px solid #e5e6e7 !important;
+    border-right: 0     ;
+    left: 0;
+}
+
+input[name=canonical] {
+    color: navy;
+    font-weight: 600;
+}
+
+.clearfix:before {
+    content: '';
+    display: table-cell;
+}
+
+.clearfix:before {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+#sortable {
+    list-style: none;
+    padding-left: 0px;
+}
+
+.sortui .ui-state-default {
+    width: calc(20% - 2px);
+    float: left;
+    margin:0 0 10px 0;
+    margin-bottom: 20px;
+    cursor: move;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+    padding-right: 10px;
+}
+
+.sortui .ui-state-default .thumb {
+    border: 1px solid #ddd;
+    /* height: 150px; */
+    background-color: #fafbfc;
+}
+
+.img-scaledown {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.img-scaledown img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+}
+
+.click-to-upload {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #b8b2b2;
+}
+
+#sortable .thumb {
+    position: relative;
+}
+
+#sortable .delete-image {
+    position: absolute;
+    background-color: linear-gradient(to bottom, #fff, #f9fafb);
+    color: red;
+    right: 10px;
+    top: 10px;
+    border: 0;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    transition: 0.3s ease-in-out;
+}
+
+#sortable .delete-image:hover {
+    background-color: red;
+    color: #fff;
+}
+
+.hidden {
+    display: none;
+}
+
+.image-post {
+    width: 75px !important;
+    height: 45px !important;
+}
+
+.img-cover {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.maintitle,
+a {
+    color: #2962ff;
+}
+
+.maintitle {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.catalogue {
+    font-size: 12px;
+}
+
+.catlogue span {
+    font-weight: 600;
+}
+
+.catalogue a {
+    color: #333;
+    margin-right: 5px;
+}
+
+.language-item {
+    height: 60px !important;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.language-item.active {
+    background-color: #1ab394;    
+}
+
+.language-flag {
+    width: 50px;
+    height: 16px !important;
+    display: inline-block !important;
+}
+
+.ibox-title h5{
+    float: none;
+}
+
+.variant-box .description {
+    font-size: 10px;
+}
+
+.variant-checkbox input {
+    margin-top: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.variant-checkbox label {
+    margin-bottom: 0;
+    margin-left: 15px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.variant-container {
+    margin-top: 30px;
+}
+
+.attribute-title {
+    font-size: 12px;
+    color: #1791f2;
+}
+
+.variant-body {
+    margin-top: 10px;
+}
+
+.variant-body button,
+.fake-variant {
+    height: 42px;
+    border-radius: 5px;
+}
+
+.niceSelect {
+    width: 100% !important;
+}
+
+.add-variant {
+    height: 42px;
+    color: #1791f2;
+    border: 1px dashed #1791f2;
+    background-color: #fafafa;
+    text-align: center;
+    transition: all 0.3s ease;
+    padding: 0 40px;
+    border-radius: 5px;
+}
+
+.add-variant:hover {
+    background-color: #efefef;
+}
+
+.select2-container--default .select2-selection--multiple {
+    height: 40px !important;
+}
+
+.variantTable thead {
+    background-color: #333;
+    color: #fff;
+}
+
+.variantTable tbody td,
+.variantTable thead td {
+    text-align: right;
+}
+
+.variantTable thead td:first-child {
+    text-align: left;
+    cursor: pointer;
+}
+
+.variantTable .variant-row .image {
+    width: 30px;
+    height: 30px;
+}
+
+.updateVariant {
+    box-shadow: none !important;
+    background: #eaeaea;
+}
+
+.updateVariant label {
+    font-weight: bold;
+    color: #1a0dab;
+}
+
+.click-to-upload-variant {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #b8b2b2;
+}
+
+#sortableVariant {
+    list-style: none;
+    padding-left: 0px;
+}
+
+#sortableVariant .thumb {
+    position: relative;
+}
+
+#sortableVariant .delete-image {
+    position: absolute;
+    background-color: linear-gradient(to bottom, #fff, #f9fafb);
+    color: red;
+    right: 10px;
+    top: 10px;
+    border: 0;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    transition: 0.3s ease-in-out;
+}
+
+#sortableVariant .delete-image:hover {
+    background-color: red;
+    color: #fff;
+}
+
+#sortableVariant .delete-image:hover {
+    background-color: red;
+    color: #fff;
+}
+
+.system-link {
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+}
+
+.system-textarea {
+    height: 170px !important;
+}
+
+.system-flag {
+    width: 35px !important;
+    height: 35px !important;
+    margin-right: 10px;
+}
+
+.menuContainer .select-2-container {
+    width: 100% !important;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+#accordion .panel-title {
+    font-size: 13px;
+    margin: 0 !important;
+}
+
+#accordion .panel-title a{
+    display: block;
+}
+
+#accordion {
+    margin-bottom: 0px !important;
+}
+
+.error {
+    font-style: italic;
+    color: red;
+    margin-top: 5px;
+}
+
+.m0 {
+    margin: 0px !important;
+}
+
+.m-item label {
+    margin-bottom: 0 !important;
+    margin-left: 5px;
+    font-weight: normal;
+    color: blue;
+}
+
+.m-item {
+    margin-block: 10px !important;
+}
+
+.create-children-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 9999;
+}
+
+.menu-name {
+    min-width: 90px !important;
+}
+
+.menu-translate-item .form-row:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+.setting-item {
+    margin-bottom: 15px;
+}
+
+.setting-item .setting-text {
+    min-width: 100px;
+}
+
+.setting-item .setting-value {
+    position: relative;
+    align-items: center;
+    width: 100%;
+}
+
+.setting-item .setting-value .form-control {
+    padding-right: 30px; /* Tăng khoảng cách để tránh đè lên 'px' */
+    flex-grow: 1; /* Để input có thể chiếm phần lớn diện tích */
+}
+
+.setting-item .setting-value .px {
+    position: absolute;
+    right: 10px; /* Điều chỉnh khoảng cách với cạnh phải */
+    top: 50%; /* Căn giữa theo chiều dọc */
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: #1a0dab;
+}
+
+.setting-item .setting-value input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.setting-item .setting-value input[type="radio"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.setting-item .setting-value label {
+    font-weight: normal;
+    margin-bottom: 0px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.nav-setting-item {
+    margin-bottom: 10px;
+}
+
+.ibox .ibox-title h5 {
+    margin-bottom: 0;
+}
+
+.ibox-title {
+    padding: 7px;
+}
+
+.custom-row{ 
+    padding-right: 0px !important;
+}
+
+.overlay input[type="checkbox"] {
+    margin: 0;
+}
+
+.form-row .overlay label {
+    font-weight: normal;
+    margin: 0 10px 0 0;
+}
+
+.form-row .overlay input[type=checkbox] {
+    width: 16px;
+    height: 16px;
+}
+
+.form-row-url {
+    padding-right: 170px;
+    position: relative;
+    margin-top: 15px;
+}
+
+.form-row .overlay {
+    position: absolute;
+    top: 7px;
+    right: 0px;
+}
+
+.slide-image {
+    height: 200px;
+    position: relative;
+}
+
+.slide-neo-tab {
+    padding-right: 0px !important;
+}
+
+.addSlide {
+    border: 1px solid #ccc;
+}
+
+.addSlide:hover {
+    background: #eaeaea;
+}
+
+.deleteSlide {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
