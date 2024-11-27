@@ -42,8 +42,7 @@ class SlideService extends BaseService implements SlideServiceInterface
         try {
             // Lấy tất cả dữ liệu từ request
             $payload = $request->only('_token', 'name', 'keyword', 'setting', 'short_code');
-            $payload['setting'] = $this->formatJson($request, 'setting');
-            $payload['item'] = json_encode($this->handleSlideItem($request, $languageId));
+            $payload['item'] = $this->handleSlideItem($request, $languageId);
             $this->slideRepository->create($payload);
 
             DB::commit(); // Nếu không có lỗi, commit giao dịch
@@ -57,11 +56,11 @@ class SlideService extends BaseService implements SlideServiceInterface
     }
 
     private function handleSlideItem($request, $languageId) {
-        $temp = [];
         $slide = $request->input('slide');
         foreach ($slide['image'] as $key => $val) {
             $temp[$languageId][] = [
-                'name' => $val,
+                'image' => $val,
+                'name' => $slide['name'][$key],
                 'description' => $slide['description'][$key],
                 'canonical' => $slide['canonical'][$key],
                 'alt' => $slide['alt'][$key],
@@ -72,17 +71,27 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $temp;
     }
 
-    public function convertSlideArray(array $slide = [], $languageId) : array {
-        dd($slide);
-        return [];
+    public function convertSlideArray(array $slide = []) : array {
+        $temp = [];
+        $feilds = ["image", "name", "description", "canonical", "alt", "window"];
+        foreach ($slide as $key => $val) {
+            foreach ($feilds as $feild) {
+                $temp[$feild][] = $val[$feild];
+            }
+        }
+        return $temp;
     }
 
-    public function update($id, $request) {
+    public function update($id, $request, $languageId) {
         DB::beginTransaction(); // Bắt đầu một giao dịch
     
         try {
             // Lấy tất cả dữ liệu từ request
-            $payload = $request->except('_token', 'send'); 
+            $slide = $this->slideRepository->findById($id);
+            $slideItem = $slide->item;
+            unset($slideItem[$languageId]);
+            $payload = $request->only('_token', 'name', 'keyword', 'setting', 'short_code');
+            $payload['item'] = $this->handleSlideItem($request, $languageId) + $slideItem;
             $slide = $this->slideRepository->update($id, $payload);
 
             DB::commit(); // Nếu không có lỗi, commit giao dịch

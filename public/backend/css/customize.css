@@ -661,3 +661,7 @@ a {
     right: 10px;
     top: 10px;
 }
+
+.slide-label {
+    font-weight: 500;
+}

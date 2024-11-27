@@ -60,9 +60,7 @@
                                 <span class="setting-text">Mũi tên</span>
                                 <div class="setting-value">
                                     <input type="checkbox" name="setting[arrow]" value="accept" 
-                                        @if (!old() || old('setting.arrow', $slide->setting['arrow'] ?? null) == 'accept')
-                                            checked="checked"
-                                        @endif
+                                    @checked(old('setting.arrow', $slide->setting['arrow'] ?? null) == 'accept')
                                     >
                                 </div>
                             </div>
@@ -102,9 +100,7 @@
                     <span class="setting-text">Tự động chạy</span>
                     <div class="setting-value">
                         <input type="checkbox" name="setting[autoplay]" value="accept"
-                            @if (!old() || old('setting.autoplay', $slide->setting['autoplay'] ?? null) == 'accept')
-                                checked="checked"
-                            @endif
+                            @checked(old('setting.autoplay', $slide->setting['autoplay'] ?? null) == 'accept')
                         >
                     </div>
                 </div>
@@ -113,10 +109,10 @@
                 <div class="uk-flex uk-flex-middle">
                     <span class="setting-text">Dừng khi <br/> di chuột</span>
                     <div class="setting-value">
-                        <input type="checkbox" name="setting[pauseHover]" 
-                        @if (!old() || old('setting.pauseHover', $slide->setting['pauseHover'] ?? null) == 'accept')
-                            checked="checked"
-                        @endif value="">
+                        <input type="checkbox" 
+                        name="setting[pauseHover]" 
+                        value="accept" 
+                        @checked(old('setting.pauseHover', $slide->setting['pauseHover'] ?? null) == 'accept')>
                     </div>
                 </div>
             </div>

@@ -62,7 +62,7 @@
                                 <div class="tab-content">
                                     <div id="${tab_1}" class="tab-pane active">
                                         <div class="panel-body">
-                                            <div class="label-text mb10">Mô tả</div>
+                                            <label class="slide-label label-text mb10">Mô tả</label>
                                             <div class="form-row">
                                                 <textarea name="slide[description][]" class="form-control"></textarea>
                                             </div>
@@ -81,13 +81,13 @@
                                         <div class="panel-body">
                                             <div>
                                                 <div class="form-row form-row-url slide-neo-tab" style="margin-top: 0 !important">
-                                                    <div class="label-text mb10">Tiêu đề ảnh</div>
+                                                    <label class="slide-label label-text mb10">Tiêu đề ảnh</label>
                                                     <input type="text" name="slide[name][]" class="form-control" placeholder="Tiêu đề ảnh">
                                                 </div>
                                             </div>
                                             <div style="margin-top: 10px">
                                                 <div class="form-row form-row-url slide-neo-tab">
-                                                    <div class="label-text">Mô tả ảnh</div>
+                                                    <label class="slide-label label-text">Mô tả ảnh</label>
                                                     <input type="text" name="slide[alt][]" class="form-control" placeholder="Mô tả ảnh">
                                                 </div>
                                             </div>

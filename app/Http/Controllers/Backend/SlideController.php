@@ -83,17 +83,17 @@ class SlideController extends Controller
         $config['seo'] = __('messages.slide');
         $config['method'] = 'edit';
         $slide = $this->slideRepository->findById($id);
-        $slideItem = $this->slideService->convertSlideArray($slide->item, $this->language);
-        dd($slide->item);
+        $slideItem = $this->slideService->convertSlideArray($slide->item[$this->language]);
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
             'slide',
+            'slideItem'
         ));
     }
 
-    public function update($id, Request $request) {
-        if ($this->slideService->update($id, $request)) {
+    public function update($id, UpdateSlideRequest $request) {
+        if ($this->slideService->update($id, $request, $this->language)) {
             return redirect() -> route('slide.index') -> with('success', 'Cập nhật bản ghi thành công');
         } else {
             return redirect() -> route('slide.index') -> with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');

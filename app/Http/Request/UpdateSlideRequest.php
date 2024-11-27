@@ -26,7 +26,7 @@ class UpdateSlideRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'keyword' => 'required|unique:slides',
+            'keyword' => 'required|unique:slides,keyword,'.$this->id.'|max:250',
             'slide.image' => 'required'
         ];
     }
@@ -36,7 +36,8 @@ class UpdateSlideRequest extends FormRequest
         return [
             'name.required' => 'Bạn chưa nhập tên của Slide',
             'keyword.required' => 'Bạn chưa nhập từ khóa Slide',
-            'slide.image.required' => 'Bạn chưa chọn hình ảnh nào cho Slide'
+            'slide.image.required' => 'Bạn chưa chọn hình ảnh nào cho Slide',
+            'keyword.unique' => "Keyword đã tồn tại. Hãy chọn keyword khác",
         ];
     }
 }
