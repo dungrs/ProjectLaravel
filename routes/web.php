@@ -22,6 +22,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\MenuController;
 // @@useController@@
 
@@ -140,6 +141,16 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::post('{id}/update', [PermissionController::class, 'update']) -> name('permission.update') -> where(['id' => '[0-9]+']);
         Route::get('{id}/delete', [PermissionController::class, 'delete']) -> name('permission.delete') -> where(['id' => '[0-9]+']);
         Route::delete('{id}/destroy', [PermissionController::class, 'destroy']) -> name('permission.destroy') -> where(['id' => '[0-9]+']);
+    });
+
+    Route::prefix('widget') -> group(function() {
+        Route::get('/index', [WidgetController::class, 'index']) -> name('widget.index');
+        Route::get('/create', [WidgetController::class, 'create']) -> name('widget.create');
+        Route::post('/store', [WidgetController::class, 'store']) -> name('widget.store');
+        Route::get('{id}/edit', [WidgetController::class, 'edit']) -> name('widget.edit') -> where(['id' => '[0-9]+']);
+        Route::post('{id}/update', [WidgetController::class, 'update']) -> name('widget.update') -> where(['id' => '[0-9]+']);
+        Route::get('{id}/delete', [WidgetController::class, 'delete']) -> name('widget.delete') -> where(['id' => '[0-9]+']);
+        Route::delete('{id}/destroy', [WidgetController::class, 'destroy']) -> name('widget.destroy') -> where(['id' => '[0-9]+']);
     });
 
     Route::prefix('product/catalogue') -> group(function() {

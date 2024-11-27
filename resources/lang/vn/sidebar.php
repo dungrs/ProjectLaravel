@@ -2,7 +2,7 @@
     return [
         'module' => [
             [
-                'title' => 'Ql Sản Phẩm',
+                'title' => 'QL Sản Phẩm',
                 'icon' => 'fa fa-cube',
                 'name' => ['product', 'attribute'],
                 'subModule' => [
@@ -25,7 +25,7 @@
                 ]
             ],
             [
-                'title' => 'Ql Bài Viết',
+                'title' => 'QL Bài Viết',
                 'icon' => 'fa fa-file',
                 'name' => ['post'],
                 'subModule' => [
@@ -96,6 +96,10 @@
                     [
                         'title' => 'Cấu hình hệ thống',
                         'route' => 'system.index'
+                    ],
+                    [
+                        'title' => 'Quản lý Widget',
+                        'route' => 'widget.index'
                     ],
                 ]
             ]

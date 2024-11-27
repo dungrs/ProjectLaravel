@@ -3,20 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 use App\Traits\QueryScopes;
+use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Widget extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable, QueryScopes, SoftDeletes;
+    use HasFactory, Notifiable, QueryScopes, SoftDeletes;
+
+    protected $table = 'widgets';
 
     protected $fillable = [
-        
+       
     ];
-
-    protected $table = 'widegt';
-
 }

@@ -1,12 +1,10 @@
 <div class="ibox">
     <div class="ibox-title">
-        <div class="uk-flex uk-flex-middle uk-flex-space-between">
-            <h5>Album Ảnh</h5>
-            <div class="upload-album">
-                <a href="" class="upload-picture">
-                    Chọn Hình
-                </a>
-            </div>
+        <h5>Album Ảnh</h5>
+        <div class="upload-album">
+            <a href="" class="upload-picture">
+                Chọn Hình
+            </a>
         </div>
     </div>
     <div class="ibox-content">

@@ -150,6 +150,15 @@
                 'title' => 'Cài đặt thông tin hệ thống'
             ],
         ],
+        'widget' => [
+            'index' => [
+                'title' => 'Quản lý Widget',
+                'table' => 'Danh sách Widget'
+            ],
+            'create' => [
+                'title' => 'Thêm mới Widget',
+            ],
+        ],
         'menu' => [
             'index' => [
                 'title' => 'Quản lý Menu',
