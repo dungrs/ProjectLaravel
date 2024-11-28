@@ -34,19 +34,10 @@
 
                         <div class="search-model-box">
                             <i class="fa fa-search icon-widget-search"></i>
-                            <input type="text" class="form-control search-model">
+                            <input name="keyword" type="text" class="form-control search-model">
 
                             <div class="ajax-search-result">
-                                @for ($i = 0; $i < 10; $i++)
-                                    <button class="ajax-search-item">
-                                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                            <span>HÌNH THỨC THANH TOÁN KHI DẶT HÀNG ONLINE</span>
-                                            <div class="auto-icon">
-                                                <img class="check-icon-widget icon-widget" src="{{ asset('backend/img/check.png') }}" alt="">
-                                            </div>
-                                        </div>
-                                    </button>
-                                @endfor
+                               
                             </div>
                         </div>
 
@@ -79,3 +70,7 @@
         </div>
     </div>
 </form>
+
+<script>
+    const checkIconPath = "{{ asset('backend/img/check.png') }}";
+</script>

@@ -121,6 +121,43 @@ class DashBoardController extends Controller
         ];
     }
 
+    public function findModelObject(Request $request) {
+        $get = $request->input();
+        $repository = $this->loadClassInterface($get['model']);
+
+        $model = Str::snake($get['model']);
+        $keyword = addslashes($get['keyword']);
+
+        $column = (strpos($model, '_catalogue') === false) ? $this->paginateSelect($model) : $this->paginateCatalogueSelect($model);
+        $join = [
+            "{$model}_language as tb2" => ["tb2.{$model}_id", "{$model}s.id"]
+        ];
+ 
+        $object = $repository->findByCondition(
+            [
+                ['tb2.name', 'LIKE', '%' . $keyword . '%'],
+                ['tb2.language_id', '=', $this->language]
+            ],
+            true,
+            $join,
+            ["{$model}s.id" => 'ASC'],
+            $column,
+        );
+        
+        return response() -> json($object);
+    }
+
+    private function loadClassInterface(string $model = '', $interface = 'Repository') {
+        $serviceInterfaceNamespace = '\App\Repositories\\' . ucfirst($model) . $interface;
+        if (!class_exists($serviceInterfaceNamespace)) {
+            return response()->json(['error' => 'Repository not found.'], 404);
+        }
+        
+        $serviceInterface = app($serviceInterfaceNamespace);
+
+        return $serviceInterface;
+    }
+
     private function paginateSelect(string $model) {
         return [
             "{$model}s.id", 
