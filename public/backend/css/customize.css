@@ -766,3 +766,8 @@ a {
 .ajax-search-result button:hover {
     background-color: #eff8fd;
 }
+
+.no-widget-result {
+    padding: 10px 15px;
+    margin: 0px !important;
+}

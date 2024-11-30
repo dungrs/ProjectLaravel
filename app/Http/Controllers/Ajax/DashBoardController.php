@@ -166,7 +166,8 @@ class DashBoardController extends Controller
             "{$model}s.order", 
             "tb2.language_id", 
             "tb2.name", 
-            "tb2.canonical"
+            "tb2.canonical",
+            "{$model}s.image"
         ];
     }
 
@@ -178,7 +179,8 @@ class DashBoardController extends Controller
             "{$model}s.level", 
             "{$model}s.order", 
             "tb2.name", 
-            "tb2.canonical"
+            "tb2.canonical",
+            "{$model}s.image"
         ];
     }
 

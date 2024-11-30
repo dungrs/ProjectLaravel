@@ -42,21 +42,7 @@
                         </div>
 
                         <div class="search-model-result">
-                            @for ($i = 0; $i < 10; $i++)
-                                <div class="search-result-item">
-                                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                        <div class="uk-flex uk-flex-middle">
-                                            <span class="image img-cover">
-                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrfCs7RwnUpivnANUJaLoN6Q-wBvkOkHwmlg&s" alt="">
-                                            </span>
-                                            <span class="name">HÌNH THỨC THANH TOÁN KHI DẶT HÀNG ONLINE</span>
-                                        </div>
-                                        <div class="deleted">
-                                            <img class="deleted-icon-widget icon-widget" src="{{ asset('backend/img/close.png') }}" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                            @endfor
+                                
                         </div>
 
                     </div>
@@ -73,4 +59,5 @@
 
 <script>
     const checkIconPath = "{{ asset('backend/img/check.png') }}";
+    const deleteIconPath = "{{ asset('backend/img/close.png') }}"
 </script>
