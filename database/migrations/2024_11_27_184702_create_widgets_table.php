@@ -21,8 +21,9 @@ return new class extends Migration
             $table->longText('album');
             $table->longText('model_id');
             $table->string('model');
-            $table->string('short_code');
+            $table->string('short_code')->unique();
             $table->string('deleted_at')->nullable();
+            $table->tinyInteger('publish')->default(1);
             $table->timestamps();
         });
     }

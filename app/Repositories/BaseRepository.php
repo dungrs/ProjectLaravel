@@ -112,24 +112,29 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function findByCondition($condition, $flag = false, array $joins = [], array $orderBy = [], array $select = ['*']) {
         $query = $this->model->newQuery();
-
+    
         $query->select($select);
+        
         if (!empty($joins)) {
             foreach ($joins as $table => $on) {
                 $query->join($table, $on[0], '=', $on[1]);
             }
         }
-        
-        foreach($condition as $key => $val) {
-            $query->where($val[0], $val[1], $val[2]);
+    
+        foreach ($condition as $val) {
+            if ($val[1] == 'IN') { // Kiểm tra nếu toán tử là IN
+                $query->whereIn($val[0], $val[2]); // $val[0] là trường, $val[2] là mảng
+            } else {
+                $query->where($val[0], $val[1], $val[2]); // Thực hiện where bình thường
+            }
         }
-
+    
         if (!empty($orderBy)) {
             foreach ($orderBy as $column => $direction) {
                 $query->orderBy($column, $direction);
             }
         }
-        
+    
         return ($flag == false) ? $query->first() : $query->get();
     }
 

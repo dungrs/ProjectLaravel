@@ -83,7 +83,7 @@
             [
                 'title' => 'Cấu hình chung',
                 'icon' => 'fa fa-file',
-                'name' => ['language', 'generate', 'system'],
+                'name' => ['language', 'generate', 'system', 'widget'],
                 'subModule' => [
                     [
                         'title' => 'QL Ngôn Ngữ',

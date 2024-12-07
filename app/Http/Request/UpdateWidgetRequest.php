@@ -25,14 +25,19 @@ class UpdateWidgetRequest extends FormRequest
     public function rules()
     {
         return [
-            
+            'name' => 'required',
+            'keyword' => 'required|unique:widgets,keyword,' . $this->id . '|max:250',
+            'short_code' => 'required|unique:widgets,short_code,' . $this->id . '|max:250',
         ];
     }
 
     public function messages()
     {
         return [
-            
+            'name.required' => "Bạn chưa nhập tên của Widget",
+            'keyword.required' => "Bạn chưa nhập từ khóa của Widget",
+            'keyword.unique' => "Từ khóa đã tổn tại, hãy chọn từ khóa khác",
+            'short_code.unique' => "Shortcode đã tổn tại, hãy chọn tên shortcode khác",
         ];
     }
 }

@@ -147,8 +147,8 @@ class DashBoardController extends Controller
         return response() -> json($object);
     }
 
-    private function loadClassInterface(string $model = '', $interface = 'Repository') {
-        $serviceInterfaceNamespace = '\App\Repositories\\' . ucfirst($model) . $interface;
+    private function loadClassInterface(string $model = '', string $folder = 'Repositories',  $interface = 'Repository') {
+        $serviceInterfaceNamespace = '\App\\' . $folder . '\\' . ucfirst($model) . $interface;
         if (!class_exists($serviceInterfaceNamespace)) {
             return response()->json(['error' => 'Repository not found.'], 404);
         }

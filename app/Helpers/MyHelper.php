@@ -157,3 +157,17 @@ if (!function_exists('buildMenu')) {
     }
 }
 
+if (!function_exists('convertArray')) {
+    function convertArray(array $feilds = [], $data) : array {
+        $temp = [];
+        foreach ($data as $key => $val) {
+            foreach ($feilds as $feild) {
+                $temp[$feild][] = $val[$feild];
+            }
+        }
+        return $temp;
+    }
+}
+
+
+

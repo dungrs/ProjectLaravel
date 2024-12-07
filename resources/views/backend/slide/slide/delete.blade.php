@@ -8,7 +8,7 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>Bạn đang muốn Slide có tên là: {{ $slide->naem }}</p>
+                        <p>Bạn đang muốn Slide có tên là: {{ $slide->name }}</p>
                         <p>Lưu ý: Không thể khôi phục thành viên sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức năng này</p>
                     </div>
                 </div>

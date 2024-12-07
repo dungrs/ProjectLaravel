@@ -11,10 +11,23 @@ use Illuminate\Database\Eloquent\Model;
 class Widget extends Model
 {
     use HasFactory, Notifiable, QueryScopes, SoftDeletes;
+    
+    protected $fillable = [
+        'name',
+        'keyword',
+        'description',
+        'album',
+        'model_id',
+        'model',
+        'short_code',
+        'publish',
+    ];
 
     protected $table = 'widgets';
 
-    protected $fillable = [
-       
+    protected $casts = [
+        'model_id' => 'json',
+        'album' => 'json',
+        'description' => 'json',
     ];
 }

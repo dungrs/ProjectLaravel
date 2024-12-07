@@ -221,7 +221,6 @@ class MenuController extends Controller
         $config = $this->config();
         $config['seo'] = __("messages.menu");
         $config['method'] = 'translate';
-
         $template = 'backend.menu.menu.translate';
 
         $menus = $this->menuCatalogueRepository->findById($id);

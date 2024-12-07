@@ -158,6 +158,9 @@
             'create' => [
                 'title' => 'Thêm mới Widget',
             ],
+            'delete' => [
+                'title' => 'Xóa Widget'
+            ],
         ],
         'menu' => [
             'index' => [

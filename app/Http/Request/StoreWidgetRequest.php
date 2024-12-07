@@ -25,14 +25,19 @@ class StoreWidgetRequest extends FormRequest
     public function rules()
     {
         return [
-            
+            'name' => 'required',
+            'keyword' => "required|unique:widgets",
+            'short_code' => "required|unique:widgets",
         ];
     }
 
     public function messages()
     {
         return [
-            
+            'name.required' => "Bạn chưa nhập tên của Widget",
+            'keyword.required' => "Bạn chưa nhập từ khóa của Widget",
+            'keyword.unique' => "Từ khóa đã tổn tại, hãy chọn từ khóa khác",
+            'short_code.unique' => "Shortcode đã tổn tại, hãy chọn tên shortcode khác",
         ];
     }
 }

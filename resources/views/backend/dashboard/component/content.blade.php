@@ -15,7 +15,7 @@
         <div class="form-row">
             <label for="" class="control-label text-left"> {{ __('messages.description') }}
             </label>
-            <textarea type="text" name="description" value="{{ old('description', ($model->description ?? '')) }}" class="form-control ck-editor" placeholder="" autocomplete="off" id="description" data-height="150" {{ (isset($disabled)) ? 'disabled' : '' }}>{{ old('meta_description', ($model->meta_description ?? '')) }}
+            <textarea type="text" name="description" value="{{ old('description', ($model->description ?? '')) }}" class="form-control ck-editor" placeholder="" autocomplete="off" id="description" data-height="150" {{ (isset($disabled)) ? 'disabled' : '' }}>{{ old('description', ($model->description ?? '')) }}
             </textarea>
         </div>
     </div>

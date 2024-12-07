@@ -11,14 +11,27 @@ use App\Repositories\WidgetRepository;
 use App\Http\Request\StoreWidgetRequest;
 use App\Http\Request\UpdateWidgetRequest;
 
+use App\Models\Language;
+
 class WidgetController extends Controller
 {   
     protected $widgetService;
     protected $widgetRepository;
+    protected $language;
     
     public function __construct(WidgetService $widgetService, WidgetRepository $widgetRepository) {
         $this->widgetService = $widgetService;
         $this->widgetRepository = $widgetRepository;
+
+        $this->middleware(function($request, $next) {
+            // Lấy ra ngôn ngữ hiện tại     
+            $locale = app()->getLocale();
+            $language = Language::where('canonical', $locale)->first();
+            $this->language = $language->id;
+            // Sau khi xử lý xong nó sẽ truyền $request tới cấc middlewere khác để xử lý nốt phần còn lại
+            // Rồi mới đến phần Controller
+            return $next($request);
+        });
     }
 
     public function index(Request $request) {
@@ -57,7 +70,7 @@ class WidgetController extends Controller
     }
 
     public function store(StoreWidgetRequest $request) {
-        if ($this->widgetService->create($request)) {
+        if ($this->widgetService->create($request, $this->language)) {
             return redirect() -> route('widget.index') -> with('success', 'Thêm mới bản ghi thành công');
         } else {
             return redirect() -> route('widget.index') -> with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -65,21 +78,27 @@ class WidgetController extends Controller
     }
 
     public function edit($id) {
-        $this->authorize('modules', 'widget.update');
+        // $this->authorize('modules', 'widget.update');
         $config = $this->config();
         $template = 'backend.widget.widget.store';
         $config['seo'] = __('messages.widget');
         $config['method'] = 'edit';
         $widget = $this->widgetRepository->findById($id);
+        $widget->description = $widget->description[$this->language]; // Lấy dữ liệu dạng json
+        $widgetItem = $this->widgetService->getWidgetItem($widget->model, $widget->model_id, $this->language);
+        $album_json = json_encode($widget->album);
+        $album = json_decode($album_json);
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
             'widget',
+            'album',
+            'widgetItem'
         ));
     }
 
     public function update($id, UpdateWidgetRequest $request) {
-        if ($this->widgetService->update($id, $request)) {
+        if ($this->widgetService->update($id, $request, $this->language)) {
             return redirect() -> route('widget.index') -> with('success', 'Cập nhật bản ghi thành công');
         } else {
             return redirect() -> route('widget.index') -> with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
@@ -87,7 +106,7 @@ class WidgetController extends Controller
     }
 
     public function delete($id) {
-        $this->authorize('modules', 'widget.destroy');
+        // $this->authorize('modules', 'widget.destroy');
         $widget = $this->widgetRepository->findById($id);
         $config['seo'] = __('messages.widget');
         $template = 'backend.widget.widget.delete';

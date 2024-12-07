@@ -122,6 +122,12 @@
                             <img src="${(data.image) ? data.image : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrfCs7RwnUpivnANUJaLoN6Q-wBvkOkHwmlg&s'}" alt="">
                         </span>
                         <span class="name">${data.name}</span>
+                        <div class="hidden">
+                            <input type="text" name="modelItem[id][]" value="${data.id}">
+                            <input type="text" name="modelItem[name][]" value="${data.name}">
+                            <input type="text" name="modelItem[image][]" value="${data.image}">
+                            <input type="text" name="modelItem[canonical][]" value="${data.canonical}">
+                        </div>
                     </div>
                     <div class="deleted">
                         <img class="deleted-icon-widget icon-widget" src="${deleteIconPath}" alt="">
