@@ -24,7 +24,22 @@
                     <td>
                         {{ $widget -> keyword }}
                     </td>
-                    @include('backend.dashboard.component.languageTd', ['model' => $widget, 'modeling' => 'Widget'])
+                        @foreach ($languages as $language)
+                            @if ($language->canonical === session('app_locale'))
+                                @continue
+                            @endif
+
+                            @php
+                                $translated = isset($widget->description[$language->id]) ? 1 : 0 
+                            @endphp
+
+                            <td class="text-center">
+                                <a 
+                                    href="{{ route('widget.translate', ['languageId' => $language->id, 'id' => $widget->id]) }}"
+                                    class="{{ $translated == 1 ? 'text-danger' : '' }}"
+                                >{{ $translated == 1 ? 'Đã dịch' : 'Chưa dịch' }}</a>
+                            </td>
+                        @endforeach
                     <td class="text-center">
                         <input value="{{ $widget->publish }}" {{ ($widget->publish == 2) ? 'checked' : '' }} type="checkbox" class="js-switch status js-switch-{{ $widget->id }}" data-field="publish" data-model="{{ $config['model'] }}" data-model-id="{{ $widget->id }}">
                     </td>

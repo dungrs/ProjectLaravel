@@ -151,6 +151,8 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::post('{id}/update', [WidgetController::class, 'update']) -> name('widget.update') -> where(['id' => '[0-9]+']);
         Route::get('{id}/delete', [WidgetController::class, 'delete']) -> name('widget.delete') -> where(['id' => '[0-9]+']);
         Route::delete('{id}/destroy', [WidgetController::class, 'destroy']) -> name('widget.destroy') -> where(['id' => '[0-9]+']);
+        Route::get('{languageId}/{id}/translate', [WidgetController::class, 'translate']) -> name('widget.translate') -> where(['languageId' => '[0-9]+', 'id' => '[0-9]+']);
+        Route::post('saveTranslate', [WidgetController::class, 'saveTranslate']) -> name('widget.saveTranslate');
     });
 
     Route::prefix('product/catalogue') -> group(function() {

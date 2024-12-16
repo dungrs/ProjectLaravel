@@ -161,6 +161,9 @@
             'delete' => [
                 'title' => 'Xóa Widget'
             ],
+            'translate' => [
+                'title' => 'Tạo Bản Dịch {language} Cho'
+            ],
         ],
         'menu' => [
             'index' => [

@@ -98,6 +98,28 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         }
     }
 
+    public function saveTranslate($request) {
+        DB::beginTransaction(); // Bắt đầu một giao dịch
+    
+        try {
+            $temp = [];
+            $translateId = $request->input('translateId');
+            $widgetId = $request->input('widgetId');
+            $widget = $this->widgetRepository->findById($widgetId);
+            $temp = $widget->description;
+            $temp[$translateId] = $request->input('translate_description');
+            $payload['description'] = $temp;
+            $this->widgetRepository->update($widget->id, $payload);
+            DB::commit(); // Nếu không có lỗi, commit giao dịch
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
+            echo $e->getMessage();
+            die();
+        }
+    }
+
     public function getWidgetItem(string $model = '', array $model_id = [], int $language = 1) {
         $modelName = $model;
         $model = Str::snake($model); // Kết quả: 'post_catalogue'
@@ -132,13 +154,15 @@ class WidgetService extends BaseService implements WidgetServiceInterface
     
         return $widgetItem;
     }
+
     private function paginateSelect() {
         return [
             'id',
             'name',
             'keyword',
             'model',
-            'publish'
+            'publish',
+            'description'
         ];
     }
 }
