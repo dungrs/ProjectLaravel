@@ -165,6 +165,21 @@
                 'title' => 'Tạo Bản Dịch {language} Cho'
             ],
         ],
+        'promotion' => [
+            'index' => [
+                'title' => 'Quản lý khuyến mại',
+                'table' => 'Danh sách khuyến mại'
+            ],
+            'create' => [
+                'title' => 'Thêm mới khuyến mại',
+            ],
+            'delete' => [
+                'title' => 'Xóa khuyến mại'
+            ],
+            'translate' => [
+                'title' => 'Tạo Bản Dịch {language} Cho'
+            ],
+        ],
         'menu' => [
             'index' => [
                 'title' => 'Quản lý Menu',

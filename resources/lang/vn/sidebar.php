@@ -25,6 +25,21 @@
                 ]
             ],
             [
+                'title' => 'QL Marketing',
+                'icon' => 'fa fa-money',
+                'name' => ['promotion'],
+                'subModule' => [
+                    [
+                        'title' => 'QL Khuyến Mại',
+                        'route' => 'promotion.index'
+                    ],
+                    // [
+                    //     'title' => 'QL Mã Giảm Giá',
+                    //     'route' => 'coupon.index'
+                    // ]
+                ]
+            ],
+            [
                 'title' => 'QL Bài Viết',
                 'icon' => 'fa fa-file',
                 'name' => ['post'],
@@ -75,7 +90,7 @@
                 'name' => ['menu'],
                 'subModule' => [
                     [
-                        'title' => 'Cài đặt Menu',
+                        'title' => 'Cài Đặt Menu',
                         'route' => 'menu.index'
                     ],
                 ]

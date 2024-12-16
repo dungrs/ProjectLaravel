@@ -121,15 +121,16 @@ table strong {
 }
 
 .select2-container .select2-selection--single {
-    height: 35px !important;
+    height: 40px !important;
 }
 
 .select2-container .select2-selection--single .select2-selection__rendered {
-    line-height: 31px !important;
+    line-height: 34px !important;
 }
 
 .form-control {
-    height: 31px;
+    height: 40px;
+    border-radius: 5px;
 }
 
 .active-bg {
@@ -770,4 +771,50 @@ a {
 .no-widget-result {
     padding: 10px 15px;
     margin: 0px !important;
+}
+
+.form-date input {
+    padding-left: 15px;
+}
+
+.form-date {
+    position: relative;
+}
+
+.form-date span {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.form-date span > * {
+    color: #333;
+}
+
+.fix-label {
+    font-weight: normal;
+    margin: 0;
+    cursor: pointer;
+}
+
+input[type=checkbox], input[type=radio] {
+    margin: 0px !important;
+}
+
+.ml5 {
+    margin-left: 5px;
+}
+
+.promotion-wrapper input[type="checkbox"],
+.promotion-wrapper input[type="radio"] {
+    width: 17px;
+    height: 17px;
+}
+
+.promotion-wrapper .select2-container--default {
+    width: 100% !important;
+}
+
+div.fix-label { 
+    margin-bottom: 5px;
 }

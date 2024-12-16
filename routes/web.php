@@ -24,6 +24,8 @@ use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
 use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\MenuController;
+use App\Http\Controllers\Backend\PromotionController;
+
 // @@useController@@
 
 /*
@@ -153,6 +155,16 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::delete('{id}/destroy', [WidgetController::class, 'destroy']) -> name('widget.destroy') -> where(['id' => '[0-9]+']);
         Route::get('{languageId}/{id}/translate', [WidgetController::class, 'translate']) -> name('widget.translate') -> where(['languageId' => '[0-9]+', 'id' => '[0-9]+']);
         Route::post('saveTranslate', [WidgetController::class, 'saveTranslate']) -> name('widget.saveTranslate');
+    });
+
+    Route::prefix('promotion') -> group(function() {
+        Route::get('/index', [PromotionController::class, 'index']) -> name('promotion.index');
+        Route::get('/create', [PromotionController::class, 'create']) -> name('promotion.create');
+        Route::post('/store', [PromotionController::class, 'store']) -> name('promotion.store');
+        Route::get('{id}/edit', [PromotionController::class, 'edit']) -> name('promotion.edit') -> where(['id' => '[0-9]+']);
+        Route::post('{id}/update', [PromotionController::class, 'update']) -> name('promotion.update') -> where(['id' => '[0-9]+']);
+        Route::get('{id}/delete', [PromotionController::class, 'delete']) -> name('promotion.delete') -> where(['id' => '[0-9]+']);
+        Route::delete('{id}/destroy', [PromotionController::class, 'destroy']) -> name('promotion.destroy') -> where(['id' => '[0-9]+']);
     });
 
     Route::prefix('product/catalogue') -> group(function() {

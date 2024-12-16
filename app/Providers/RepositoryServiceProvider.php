@@ -35,6 +35,7 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\MenuServiceInterface' => 'App\Repositories\MenuSeviceSystem',
         'App\Repositories\Interfaces\MenuCatalogueServiceInterface' => 'App\Repositories\MenuCatalogueSeviceSystem',
         'App\Repositories\Interfaces\SlideServiceInterface' => 'App\Repositories\SlideSeviceSystem',
+        'App\Repositories\Interfaces\PromotionServiceInterface' => 'App\Repositories\PromotionSeviceSystem',
     ];
 
     public function register()
