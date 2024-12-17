@@ -843,3 +843,26 @@ div.fix-label {
 .wrapper-condition-item .conditionLabel {
     color: blue;
 }
+
+.discountType .select2-container {
+    width: 60px !important;
+    margin-left: 10px;
+}
+
+.delete,
+.delete-some-item {
+    cursor: pointer;
+}
+
+.btn-custom {
+    border-radius: 5px;
+}
+
+tr.error-range {
+    background-color: #ffcccc !important; /* Màu nền đỏ nhạt */
+    transition: background-color 0.3s !important;
+}
+
+tr.error-range input {
+    border-color: #ff0000 !important; /* Viền đỏ cho input */
+}

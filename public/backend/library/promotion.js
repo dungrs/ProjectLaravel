@@ -188,7 +188,131 @@
             </div>
         `;
     };
+
+    var ranges = [];
+
+    // Hàm kiểm tra xung đột phạm vi
+    HT.checkbtnJs100ConflickRange = (newFrom, newTo) => {
+        for (let i = 0; i < ranges.length; i++) {
+            let existRange = ranges[i];
     
+            if (
+                (newFrom >= existRange.from && newFrom <= existRange.to) || // newFrom nằm trong phạm vi existRange
+                (newTo >= existRange.from && newTo <= existRange.to) ||     // newTo nằm trong phạm vi existRange
+                (newFrom <= existRange.from && newTo >= existRange.to)      // Phạm vi mới bao trùm existRange
+            ) {
+                return true; // Có xung đột
+            }
+        }
+        return false; // Không có xung đột
+    };
+    
+    // Hàm kiểm tra điều kiện và xử lý input
+    HT.checkBtnJs100Condition = () => {
+        let $lastRow = $('.order_amount_range').find('tbody tr:last-child');
+        let inputFrom = $lastRow.find('.order_amount_range_from input').val();
+        let inputTo = $lastRow.find('.order_amount_range_to input').val();
+    
+        // Loại bỏ dấu phẩy nếu có
+        let cleanInputFrom = inputFrom.replace(/,/g, '');
+        let cleanInputTo = inputTo.replace(/,/g, '');
+    
+        // Xóa class lỗi trước khi kiểm tra
+        $lastRow.removeClass('error-range');
+    
+        if (cleanInputTo == 0 || cleanInputTo === '') {
+            alert('Giá trị đến không hợp lệ!');
+            $lastRow.addClass('error-range'); // Thêm class lỗi
+            $lastRow.find('.order_amount_range_to input').val('');
+            return false; // Dừng lại nếu giá trị không hợp lệ
+        }
+    
+        if (parseInt(cleanInputTo) < parseInt(cleanInputFrom)) {
+            alert('Giá trị "đến" phải lớn hơn hoặc bằng "từ"!');
+            $lastRow.addClass('error-range'); // Thêm class lỗi
+            $lastRow.find('.order_amount_range_to input').val('');
+            return false; // Dừng lại nếu giá trị không hợp lệ
+        }
+    
+        // Kiểm tra xung đột phạm vi
+        if (HT.checkbtnJs100ConflickRange(parseInt(cleanInputFrom), parseInt(cleanInputTo))) {
+            alert('Phạm vi này đã tồn tại hoặc bị chồng lấn!');
+            $lastRow.addClass('error-range'); // Thêm class lỗi
+            return false; // Dừng lại nếu có xung đột
+        }
+    
+        // Trả về giá trị "to" đã được định dạng
+        return HT.formatNumberWithCommas(cleanInputTo);
+    };
+    
+    // Hàm định dạng số với dấu phẩy
+    HT.formatNumberWithCommas = (number) => {
+        return number.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    };
+    
+    // Hàm xử lý thêm dòng mới
+    HT.btnJs100 = () => {
+        $(document).on('click', '.btn-js-100', function () {
+            let inputToFormatted = HT.checkBtnJs100Condition();
+    
+            // Nếu giá trị không hợp lệ thì không thêm item
+            if (!inputToFormatted) {
+                return; // Dừng lại nếu có lỗi
+            }
+    
+            // Lấy giá trị "từ" của dòng mới
+            let lastInputFrom = $('.order_amount_range')
+                .find('tbody tr:last-child')
+                .find('.order_amount_range_from input')
+                .val()
+                .replace(/,/g, '');
+            let newFrom = parseInt(lastInputFrom) + 1;
+            let newTo = parseInt(inputToFormatted.replace(/,/g, ''));
+    
+            // Thêm phạm vi vào mảng ranges
+            ranges.push({ from: newFrom, to: newTo });
+    
+            let tdList = [
+                { class: 'order_amount_range_from', name: 'field1', value: HT.formatNumberWithCommas(newTo.toString()), attribute: { readonly: false } },
+                { class: 'order_amount_range_to', name: 'field2', value: 0, attribute: { readonly: false } }
+            ];
+    
+            let inputFields = tdList.map(item => {
+                let readonlyAttr = item.attribute.readonly ? 'readonly' : '';
+                return ` 
+                    <td class="${item.class}">
+                        <input type="text" name="${item.name}" class="form-control int" placeholder="0" value="${item.value}" ${readonlyAttr}>
+                    </td>
+                `;
+            }).join('');
+    
+            let html = `
+                <tr>
+                    ${inputFields}
+                    <td class="discountType">
+                        <div class="uk-flex uk-flex-middle">
+                            <input type="text" name="" class="form-control int" placeholder="0" value="0">
+                            <select name="" class="setupSelect2">
+                                <option value="cash">đ</option>
+                                <option value="percent">%</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="delete-some-item delete-order-amount-range-condition">
+                            <i class="fa fa-trash"></i>
+                        </div>
+                    </td>
+                </tr>
+            `;
+    
+            // Thêm dòng mới vào bảng
+            $('.order_amount_range table tbody').append(html);
+    
+            // Kích hoạt Select2 cho các select mới
+            $('.setupSelect2').select2();
+        });
+    };
     
     HT.promotionMultipleSelect2 = () => {
         $('.multipleSelect2').each(function () {
@@ -238,6 +362,7 @@
         HT.promotionMultipleSelect2();
         HT.chooseCustomerCondition();
         HT.chooseApplyItem();
+        HT.btnJs100();
     });
 
 })(jQuery);

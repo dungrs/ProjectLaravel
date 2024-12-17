@@ -46,7 +46,47 @@
                             <div class="fix-label font-bold">Chọn hình thức khuyến mãi</div>
                             <select name="" class="setupSelect2" id="">
                                 <option value="">Chọn hình thức</option>
+                                @foreach (__('module.promotion') as $key => $val)
+                                    <option value="{{ $key }}">{{ $val }}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="promotion-container">
+                            <div class="order_amount_range">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-right">Giá trị từ</th>
+                                            <th class="text-right">Giá trị đến</th>
+                                            <th class="text-right">Chiết khấu(%)</th>
+                                            <th class="text-right"></th>
+                                        </th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="order_amount_range_from">
+                                                <input type="text" name="" class="form-control int" placeholder="0" value="0">
+                                            </td>
+                                            <td class="order_amount_range_to">
+                                                <input type="text" name="" class="form-control int" placeholder="0" value="0">
+                                            </td>
+                                            <td class="discountType">
+                                                <div class="uk-flex uk-flex-middle">
+                                                    <input type="text" name="" class="form-control int" placeholder="0" value="0">
+                                                    <select name="" id="" class="setupSelect2">
+                                                        <option value="cash">đ</option>
+                                                        <option value="percent">%</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+                            </div>
                         </div>
                     </div>
                 </div>
