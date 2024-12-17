@@ -122,8 +122,3 @@
         </div>
     </div>
 </form>
-
-<script>
-    const checkIconPath = "{{ asset('backend/img/check.png') }}";
-    const deleteIconPath = "{{ asset('backend/img/close.png') }}"
-</script>

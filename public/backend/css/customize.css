@@ -17,6 +17,18 @@ input::placeholder {
     margin-top: 20px;
 }
 
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.mb5 {
+    margin-bottom: 5px;
+}
+
 h5 {
     text-transform: uppercase;
     font-weight: normal;
@@ -821,4 +833,13 @@ div.fix-label {
 
 .select2-container .select2-selection--multiple {
     height: 100% !important;
+}
+
+.wrapper-condition-item {
+    padding-top: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.wrapper-condition-item .conditionLabel {
+    color: blue;
 }
