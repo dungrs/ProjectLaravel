@@ -129,13 +129,15 @@ class PromotionController extends Controller
     public function config() {
         return [
             'css' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+                'backend/plugin/datetimepicker-master/build/jquery.datetimepicker.min.css',
             ],
             'js' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
                 'backend/plugin/ckfinder/ckfinder.js',
                 'backend/library/finder.js',
                 'backend/library/promotion.js',
+                'backend/plugin/datetimepicker-master/build/jquery.datetimepicker.full.js',
                 'backend/plugin/ckfinder/ckfinder.js',
                 'backend/plugin/ckeditor/ckeditor.js',
             ]

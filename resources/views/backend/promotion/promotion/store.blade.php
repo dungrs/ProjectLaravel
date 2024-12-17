@@ -60,14 +60,14 @@
                         <div class="form-row mb15">
                             <label for="" class="control-label text-left">Ngày bắt đầu <span class="text-danger">(*)</span></label>
                             <div class="form-date">
-                                <input type="text" class="form-control" name="start_date" value="{{ old('start_date', $promotion->start_date ?? '') }}" placeholder="" autocomplete="off">
+                                <input type="text" class="form-control datepicker" name="start_date" value="{{ old('start_date', $promotion->start_date ?? '') }}" placeholder="" autocomplete="off">
                                 <span><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
                         <div class="form-row mb15">
                             <label for="" class="control-label text-left">Ngày kết thúc <span class="text-danger">(*)</span></label>
                             <div class="form-date">
-                                <input type="text" class="form-control" name="end_date" value="{{ old('end_date', $promotion->end_date ?? '') }}" placeholder="" autocomplete="off">
+                                <input type="text" class="form-control datepicker" name="end_date" value="{{ old('end_date', $promotion->end_date ?? '') }}" placeholder="" autocomplete="off">
                                 <span><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
@@ -84,18 +84,17 @@
                         <h5>Nguồn khách áp dụng</h5>
                     </div>
                     <div class="ibox-content">
-                        <div class="uk-flex uk-flex-middle">
-                            <div class="setting-value">
-                                <div class="nav-setting-item uk-flex uk-flex-middle">
-                                    <input id="navigate_hide" type="radio" value="hide" name="source">
-                                    <label class="fix-label ml5" for="navigate_hide">Áp dụng cho toàn bộ nguồn khách</label>
-                                </div>
-                                <div class="nav-setting-item uk-flex uk-flex-middle">
-                                    <input id="navigate_dots" type="radio" value="dots" name="source" checked="">
-                                    <label class="fix-label ml5" for="navigate_dots">Chọn nguồn khách áp dụng</label>
-                                </div>
+                        <div class="setting-value">
+                            <div class="nav-setting-item uk-flex uk-flex-middle">
+                                <input id="allSource" type="radio" value="all" name="source" class="chooseSource" checked>
+                                <label class="fix-label ml5" for="allSource">Áp dụng cho toàn bộ nguồn khách</label>
+                            </div>
+                            <div class="nav-setting-item uk-flex uk-flex-middle">
+                                <input id="chooseSource" type="radio" value="choose" name="source" class="chooseSource">
+                                <label class="fix-label ml5" for="chooseSource">Chọn nguồn khách áp dụng</label>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
                 <div class="ibox">
@@ -103,16 +102,14 @@
                         <h5>Đối tượng áp dụng</h5>
                     </div>
                     <div class="ibox-content">
-                        <div class="uk-flex uk-flex-middle">
-                            <div class="setting-value">
-                                <div class="nav-setting-item uk-flex uk-flex-middle">
-                                    <input id="navigate_hide" type="radio" value="hide" name="source">
-                                    <label class="fix-label ml5" for="navigate_hide">Áp dụng cho toàn bộ khách hàng</label>
-                                </div>
-                                <div class="nav-setting-item uk-flex uk-flex-middle">
-                                    <input id="navigate_dots" type="radio" value="dots" name="source" checked="">
-                                    <label class="fix-label ml5" for="navigate_dots">Chọn khách hàng áp dụng</label>
-                                </div>
+                        <div class="setting-value">
+                            <div class="nav-setting-item uk-flex uk-flex-middle">
+                                <input class="chooseApply" id="allApply" type="radio" value="all" name="apply" checked>
+                                <label class="fix-label ml5" for="allApply">Áp dụng cho toàn bộ khách hàng</label>
+                            </div>
+                            <div class="nav-setting-item uk-flex uk-flex-middle">
+                                <input class="chooseApply" id="chooseApply" type="radio" value="choose" name="apply">
+                                <label class="fix-label ml5" for="chooseApply">Chọn khách hàng áp dụng</label>
                             </div>
                         </div>
                     </div>

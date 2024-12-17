@@ -818,3 +818,7 @@ input[type=checkbox], input[type=radio] {
 div.fix-label { 
     margin-bottom: 5px;
 }
+
+.select2-container .select2-selection--multiple {
+    height: 100% !important;
+}
