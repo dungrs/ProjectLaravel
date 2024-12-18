@@ -273,8 +273,8 @@
             ranges.push({ from: newFrom, to: newTo });
     
             let tdList = [
-                { class: 'order_amount_range_from', name: 'field1', value: HT.formatNumberWithCommas(newTo.toString()), attribute: { readonly: false } },
-                { class: 'order_amount_range_to', name: 'field2', value: 0, attribute: { readonly: false } }
+                { class: 'order_amount_range_from', name: 'amountFrom[]', value: HT.formatNumberWithCommas(newTo.toString()), attribute: { readonly: false } },
+                { class: 'order_amount_range_to', name: 'amountTo[]', value: 0, attribute: { readonly: false } }
             ];
     
             let inputFields = tdList.map(item => {
@@ -291,8 +291,8 @@
                     ${inputFields}
                     <td class="discountType">
                         <div class="uk-flex uk-flex-middle">
-                            <input type="text" name="" class="form-control int" placeholder="0" value="0">
-                            <select name="" class="setupSelect2">
+                            <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
+                            <select name="amountType[]" class="setupSelect2">
                                 <option value="cash">đ</option>
                                 <option value="percent">%</option>
                             </select>
@@ -312,6 +312,144 @@
             // Kích hoạt Select2 cho các select mới
             $('.setupSelect2').select2();
         });
+    };
+
+    HT.deleteAmountRangeCondition = () => {
+        $(document).on('click', '.delete-order-amount-range-condition', function() {
+            $(this).closest('tr').remove()
+        })
+    }
+
+    HT.renderOrderRangeConditionContainer = () => {
+        $(document).on('change', '.promotionMethod', function () {
+            let _this = $(this);
+            let option = _this.val();
+    
+            const actions = {
+                order_amount_range: HT.renderOrderAmountRange,
+                product_and_quantity: HT.renderProductAndQuantity,
+                // product_quantity_range: () => console.log('product_quantity_range'),
+                // goods_discount_by_quantity: () => console.log('goods_discount_by_quantity'),
+            };
+    
+            (actions[option] || HT.removePromotionContainer)();
+        });
+    };
+    
+    HT.renderOrderAmountRange = () => {
+        let html = `
+            <div class="order_amount_range">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-right">Giá trị từ</th>
+                            <th class="text-right">Giá trị đến</th>
+                            <th class="text-right">Chiết khấu(%)</th>
+                            <th class="text-right"></th>
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="order_amount_range_from">
+                                <input type="text" name="amountFrom[]" class="form-control int" placeholder="0" value="0">
+                            </td>
+                            <td class="order_amount_range_to">
+                                <input type="text" name="amountTo[]" class="form-control int" placeholder="0" value="0">
+                            </td>
+                            <td class="discountType">
+                                <div class="uk-flex uk-flex-middle">
+                                    <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
+                                    <select name="amountType[]" id="" class="setupSelect2">
+                                        <option value="cash">đ</option>
+                                        <option value="percent">%</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+            </div>
+        `
+
+        HT.renderPromotionContainer(html)
+    };
+
+    HT.renderProductAndQuantity = () => {
+        // Lấy dữ liệu từ thẻ HTML
+        const productData = JSON.parse(document.getElementById('productData').dataset.products);
+
+        // Tạo các option từ productData
+        const options = Object.entries(productData).map(([key, val]) => {
+            return `<option value="${key}">${val}</option>`;
+        }).join('');
+
+        let html = `
+            <div class="product-and-quantity">
+                <div class="choose-module mt20">
+                    <div class="fix-label" style="color: blue;">Sản phẩm áp dụng</div>
+                    <select name="" id="" class="setupSelect2 select-product-and-quantity">
+                        ${options}
+                    </select>
+                </div>
+                <div class="product-and-quantity">
+                    <table class="table table-striped mt20">
+                        <thead>
+                            <tr>
+                                <th class="text-right" style="width: 400px;">Sản phẩm mua</th>
+                                <th class="text-right" style="width: 80px;">SL tối thiểu</th>
+                                <th class="text-right">Giới hạn KM</th>
+                                <th class="text-right">Chiết khấu</th>
+                                <th></th>
+                            </th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="order_amount_range_from">
+                                    <select name="" data-model="Product" class="form-control int ajaxSearch" value="" multiple>
+                                        
+                                    </select>
+                                </td>
+                                <td class="order_amount_range_to">
+                                    <input type="text" name="" class="form-control int" placeholder="1" value="0">
+                                </td>
+                                <td>
+                                    <input type="text" name="" class="form-control int" placeholder="0" value="0">
+                                </td>
+                                <td class="discountType">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
+                                        <select name="amountType[]" id="" class="setupSelect2">
+                                            <option value="cash">đ</option>
+                                            <option value="percent">%</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+                </div>
+            </div>
+        `
+
+        HT.renderPromotionContainer(html)
+        HT.searchAjax();
+    }
+
+    HT.renderPromotionContainer = (html) => {
+        $('.promotion-container').html(html)
+        $('.setupSelect2').select2();
+    }
+    
+    HT.removePromotionContainer = () => {
+        $('.promotion-container').empty();
     };
     
     HT.promotionMultipleSelect2 = () => {
@@ -354,6 +492,45 @@
     //     });
     }
     
+    HT.searchAjax = () => {
+        $('.ajaxSearch').each(function () {
+            let _this = $(this);
+    
+            // Lấy model mặc định từ thuộc tính data-model
+            let defaultModel = _this.data('model');
+    
+            _this.select2({
+                minimumInputLength: 2,
+                placeholder: 'Nhập vào 2 ký tự để tìm kiếm',
+                closeOnSelect: false, // Cho phép chọn nhiều nếu cần
+                ajax: {
+                    url: 'ajax/dashboard/findModelObject',
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250, // Giảm tải server bằng cách delay trước khi gửi request
+                    data: function (params) {
+                        // Lấy giá trị model từ .select-product-and-quantity nếu có
+                        let modelFromSelect = $('.select-product-and-quantity').val();
+                        let model = modelFromSelect ? modelFromSelect : defaultModel;
+    
+                        return {
+                            keyword: params.term, // Từ khóa tìm kiếm
+                            model: model,        // Model từ giá trị hoặc mặc định
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(obj => ({
+                                id: obj.id, // Trả về id
+                                text: obj.name || obj.text || 'Không có tên', // Trả về name/text hoặc giá trị mặc định
+                            })),
+                        };
+                    },
+                    cache: true,
+                },
+            });
+        });
+    };
 
     // Gọi HT.seoPreview khi tài liệu đã sẵn sàng
     $(document).ready(function() {
@@ -363,6 +540,9 @@
         HT.chooseCustomerCondition();
         HT.chooseApplyItem();
         HT.btnJs100();
+        HT.deleteAmountRangeCondition();
+        HT.renderOrderRangeConditionContainer();
+        HT.searchAjax();
     });
 
 })(jQuery);
