@@ -408,12 +408,12 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="order_amount_range_from">
+                                <td class="">
                                     <select name="" data-model="Product" class="form-control int ajaxSearch" value="" multiple>
                                         
                                     </select>
                                 </td>
-                                <td class="order_amount_range_to">
+                                <td class="">
                                     <input type="text" name="" class="form-control int" placeholder="1" value="0">
                                 </td>
                                 <td>

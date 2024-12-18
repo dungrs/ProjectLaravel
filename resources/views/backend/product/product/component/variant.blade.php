@@ -1,6 +1,6 @@
 <div class="ibox variant-box">
-    <div class="ibox-title">
-        <h5 style="">Sản phẩm có nhiều phiên bản</h5>
+    <div class="ibox-title" style="display: block">
+        <h5 style="padding-top: 10px;">Sản phẩm có nhiều phiên bản</h5>
         <div class="description">
             <p>Cho phéo bạn bán các phiên bản khác nhau của sản phẩm, ví dụ: quần,áo có các <strong class="text-danger">màu sắc </strong> và <strong class="text-danger">size</strong> số khác nhau. Mỗi phiên bản sẽ là 1 là dòng trong danh sách phiên bản phía dưới</p>
         </div>

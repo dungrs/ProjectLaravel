@@ -207,8 +207,8 @@ table strong {
 
 .input-wrapper .baseUrl {
     position: absolute;
-    height: 31px;
-    line-height: 31px;
+    height: 40px;
+    line-height: 40px;
     display: block;
     padding: 0 10px;
     top: 0;
@@ -865,4 +865,168 @@ tr.error-range {
 
 tr.error-range input {
     border-color: #ff0000 !important; /* Viền đỏ cho input */
+}
+
+.product-quantity {
+    border: 1px solid #c4cdd5;
+    background: #fff;
+    padding: 7px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    min-height: 40px;
+}
+
+.product-quantity p {
+    margin: 0px !important;
+}
+
+.product-quantity .boxSearchIcon .fa {
+    width: 24px;
+    height: 24px;
+    text-align: center; 
+    line-height: 24px;
+}
+
+.img-good-close {
+    width: 10px;
+    height: 10px;
+}
+
+.goods-item {
+    background-color: rgb(217, 237, 255);
+    border: 1px solid transparent;
+    margin-bottom: 8px;
+    text-align: center;
+    position: relative;
+    border-radius: 100px;
+    padding: 5px 10px;
+}
+
+.goods-item span {
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    width: 90%;
+}
+
+.goods-item button {
+    background: transparent;
+    position: absolute;
+    right: 0;
+    top: 2px;
+    border: 0;
+}
+
+.goods-item button i {
+    font-size: 10px;
+}
+
+.boxWrapper p {
+    font-size: 13px;
+    line-height: 25px;
+}
+
+.fix-grid-6 {
+    max-width: 50%;
+    flex-grow: 0;
+    flex-basis: 50%;
+    padding: 0 5px;
+}
+
+.boxWrapper {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.goods-padding {
+    padding: 0 5px;
+}
+
+.modal-title {
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.modal-body .search-model-box {
+    margin-top: 0px !important;
+}
+
+.search-object-item {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e3e9ed;
+}
+
+.search-object-item .img {
+    width: 55px !important;
+    height: 55px !important;
+    margin-inline: 10px;
+}
+
+.object-name .name {
+    margin-bottom: 4px;
+}
+
+.object-name .jscode {
+    color: blue;
+    font-size: 12px;
+}
+
+.object-extra-info {
+    text-align: right;
+}
+
+.object-extra-info .price {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.object-extra-info .price {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.object-extra-info .slash {
+    margin: 0 5px;
+}
+
+.object-extra-info .text-value {
+    color: blue;
+}
+
+.object-extra-info .text-1 {
+    color: #888;
+}
+
+.search-list {
+    overflow: auto;
+    height: auto;
+    max-height: calc(100vh - 300px);
+    padding-right: 20px;
+}
+
+/* width */
+.search-list::-webkit-scrollbar {
+    width: 7px;
+    border-radius: 10px;
+}
+  
+/* Track */
+.search-list::-webkit-scrollbar-track {
+background: #f1f1f1;
+}
+
+/* Handle */
+.search-list::-webkit-scrollbar-thumb {
+background: #888;
+}
+
+/* Handle on hover */
+.search-list::-webkit-scrollbar-thumb:hover {
+background: #555;
 }
