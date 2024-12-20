@@ -6,6 +6,7 @@ use App\Http\Controllers\Ajax\DashBoardController as AjaxDashboardController;
 use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
+use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -230,6 +231,7 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
     Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute']) -> name('ajax.attribute.loadAttribute');
     Route::post('ajax/menu/createCatalogue', [AjaxMenuController::class, 'createCatalogue']) -> name('ajax.menu.createCatalogue');
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag']) -> name('ajax.menu.drag');
+    Route::get('ajax/product/loadProductAnimation', [AjaxProductController::class, 'loadProductAnimation']) -> name('ajax.product.loadProductAnimation');
 });
 
 

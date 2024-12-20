@@ -128,7 +128,6 @@
                 }
     
                 // Thêm các liên kết phân trang
-                console.log(res.data.links);
                 html += HT.menuLinks(res.data.links);
     
                 // Xóa loading và thay thế nội dung menu-list

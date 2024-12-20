@@ -12,7 +12,6 @@ use App\Services\MenuCatalogueService;
 use App\Repositories\MenuRepository;
 use App\Repositories\LanguageRepository;
 
-use App\Http\Request\UpdateMenuRequest;
 use App\Http\Request\StoreMenuRequest;
 
 use App\Models\Language;
@@ -108,9 +107,16 @@ class MenuController extends Controller
             ],
             true,
             [
-                'menu_language' => ['menu_language.menu_id', 'menus.id'],
-                'menu_catalogues' => ['menu_catalogues.id', 'menus.menu_catalogue_id']
+                [
+                    'table' => 'menu_language', // Bảng liên kết
+                    'on' => ['menu_language.menu_id', 'menus.id'] // Điều kiện join
+                ],
+                [
+                    'table' => 'menu_catalogues', // Bảng liên kết
+                    'on' => ['menu_catalogues.id', 'menus.menu_catalogue_id'] // Điều kiện join
+                ]
             ],
+            
             ['menus.order' => 'ASC'],
             ['menus.*', 'menu_language.*', 'menu_catalogues.name as menu_catalogue_name']
         );
@@ -163,7 +169,10 @@ class MenuController extends Controller
             ],
             false,
             [
-                'menu_language' => ['menu_language.menu_id', 'menus.id']
+                [
+                    'table' => 'menu_language', // Bảng liên kết
+                    'on' => ['menu_language.menu_id', 'menus.id'] // Điều kiện join
+                ],
             ]
         );
 
@@ -199,7 +208,10 @@ class MenuController extends Controller
             ],
             false,
             [
-                'menu_language' => ['menu_language.menu_id', 'menus.id'],
+                [
+                    'table' => 'menu_language', // Bảng liên kết
+                    'on' => ['menu_language.menu_id', 'menus.id'] // Điều kiện join
+                ],
             ],
         );
         $menuList = $this->menuService->getAndConvertMenu(0, $this->language);
@@ -232,7 +244,10 @@ class MenuController extends Controller
             ],
             true,
             [
-                'menu_language' => ['menu_language.menu_id', 'menus.id'],
+                [
+                    'table' => 'menu_language', // Bảng liên kết
+                    'on' => ['menu_language.menu_id', 'menus.id'] // Điều kiện join
+                ],
             ],
             ['lft' => 'ASC'],
         );

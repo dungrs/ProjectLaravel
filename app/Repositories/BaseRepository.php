@@ -110,29 +110,54 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->select($column)->with($relation)->findOrFail($modelId);
     }
 
-    public function findByCondition($condition, $flag = false, array $joins = [], array $orderBy = [], array $select = ['*']) {
+    public function findByCondition(
+        $condition, 
+        $flag = false, 
+        array $joins = [], 
+        array $orderBy = [], 
+        array $select = ['*'],
+        $paginate = null // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang
+    ) {
         $query = $this->model->newQuery();
     
         $query->select($select);
-        
+    
+        // Thực hiện join nếu có
         if (!empty($joins)) {
-            foreach ($joins as $table => $on) {
-                $query->join($table, $on[0], '=', $on[1]);
+            foreach ($joins as $join) {
+                $type = isset($join['type']) ? strtolower($join['type']) : 'inner';
+                switch ($type) {
+                    case 'left':
+                        $query->leftJoin($join['table'], $join['on'][0], '=', $join['on'][1]);
+                        break;
+                    case 'right':
+                        $query->rightJoin($join['table'], $join['on'][0], '=', $join['on'][1]);
+                        break;
+                    default:
+                        $query->join($join['table'], $join['on'][0], '=', $join['on'][1]);
+                }
             }
         }
     
+        // Áp dụng các điều kiện where
         foreach ($condition as $val) {
-            if ($val[1] == 'IN') { // Kiểm tra nếu toán tử là IN
-                $query->whereIn($val[0], $val[2]); // $val[0] là trường, $val[2] là mảng
+            if ($val[1] == 'IN') {
+                $query->whereIn($val[0], $val[2]);
             } else {
-                $query->where($val[0], $val[1], $val[2]); // Thực hiện where bình thường
+                $query->where($val[0], $val[1], $val[2]);
             }
         }
     
+        // Áp dụng sắp xếp nếu có
         if (!empty($orderBy)) {
             foreach ($orderBy as $column => $direction) {
                 $query->orderBy($column, $direction);
             }
+        }
+    
+        // Nếu có yêu cầu phân trang, sử dụng paginate, nếu không sẽ trả về kết quả theo flag
+        if ($paginate) {
+            return $query->paginate($paginate); // Trả về kết quả phân trang với số lượng mỗi trang là tham số paginate
         }
     
         return ($flag == false) ? $query->first() : $query->get();

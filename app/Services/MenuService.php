@@ -141,9 +141,12 @@ class MenuService extends BaseService implements MenuServiceInterface
                 ['parent_id', '=', $id],
                 ['language_id', '=', $languageId]
             ],
-            true,
+            true, // Lấy nhiều kết quả
             [
-                'menu_language' => ['menu_language.menu_id', 'menus.id']
+                [
+                    'table' => 'menu_language', // Bảng liên kết
+                    'on' => ['menu_language.menu_id', 'menus.id'] // Điều kiện join
+                ]
             ]
         );
 

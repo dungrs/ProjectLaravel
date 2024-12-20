@@ -1,6 +1,8 @@
 (function($) {
     "use strict"
     var HT = {};
+    let typingTimer;
+    const doneTypingInterval = 1000; // Thời gian chờ để nhận diện đã dừng gõ (ms)
 
     HT.promotionNeverEnd = () => {
         $(document).on('click', '#neverEnd', function() {
@@ -491,6 +493,181 @@
     // //         }
     //     });
     }
+
+    HT.searchProducts = () => {
+        $(document).on('keyup', '.search-model', function(e) {
+            let _this = $(this);
+            // Sử dụng hàm trim() để loại bỏ khoảng trắng ở đâu và cuối
+            let keyword = _this.val().trim();
+            let model = $('.select-product-and-quantity').val();
+
+            clearTimeout(typingTimer); // Hủy bỏ timer trước đó nếu có
+            typingTimer = setTimeout(function() {
+            let option = {
+                keyword : keyword, // Tạo dữ liệu gửi đi nếu cần
+                model : 'Product',
+            };
+
+            HT.loadProduct(option);
+            }, doneTypingInterval);
+        });
+    };
+
+    HT.productQuanityListProduct = () => {
+        $(document).on('click', '.product-quantity', function(e) {
+            e.preventDefault();
+            let option = {
+                keyword : $('.search-model').val(),
+                model : "Product"
+            }
+            HT.loadProduct(option);
+        })
+    }
+
+    HT.fillToObjectList = (data) => {
+        const mapping = {
+            "Product": HT.fillProductToList,
+            "ProductCatalogue": HT.fillProductCatalogueToList
+        };
+    
+        if (mapping[data.model]) {
+            mapping[data.model](data.objects); // Chuyển sang data.data thay vì data.objects
+        }
+    };
+    
+    HT.fillProductToList = (objects) => {
+        const products = objects.data;
+        const container = $('.search-list');  // Lưu trữ phần tử container để tránh gọi DOM nhiều lần
+        container.html('');
+        // Kiểm tra nếu có sản phẩm
+        if (products.length) {
+            let htmlContent = '';  // Khởi tạo một biến để lưu nội dung HTML
+    
+            // Tạo HTML cho từng sản phẩm
+            products.forEach(product => {
+                const formattedPrice = HT.formatPrice(product.price);  // Định dạng giá
+                let inventory = (typeof product.inventory != 'undefined') ? inventory : 0
+                let couldSell = (typeof product.couldSell != 'undefined') ? couldSell : 0
+    
+                htmlContent += `
+                    <div class="search-object-item" data-product_id=${product.id} data-variant_id=${(product.product_variant_id) ?? ''} data-name="${product.name}">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="object-info">
+                                <div class="uk-flex uk-flex-middle">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <input type="checkbox" name="product-${product.id}" value="${product.id + '_' + (product.product_variant_id) ?? ''}" class="input-checkbox">
+                                    </div>
+                                    <span class="img img-scaledown">
+                                        <img src="${product.image}" alt="${product.name}">
+                                    </span>
+                                    <div class="object-name">
+                                        <div class="name">${product.variant_name}</div>
+                                        <div class="jscode">Mã SP: ${product.sku}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="object-extra-info">
+                                <div class="price">${formattedPrice}</div>  <!-- Hiển thị giá đã định dạng -->
+                                <div class="object-inventory">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <span class="text-1">Tồn kho: </span>
+                                        <span class="text-value ml5"> ${inventory}</span>
+                                        <span class="text-1 slash">|</span>
+                                        <span class="text-value">Có thể bán: ${couldSell}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            htmlContent += HT.paginationLinks(objects.links)
+            container.append(htmlContent);
+        }
+    };
+
+    HT.paginationLinks = (links) => {
+        if (links.length == 3) {
+            return '';
+        }
+
+        let html = `
+            <nav>
+                <ul class="pagination">
+        `;
+    
+        links.forEach(link => {
+            if (!link.url) {
+                html += `
+                    <li class="page-item disabled" aria-disabled="true">
+                        <span class="page-link" aria-hidden="true">${link.label === 'pagination.previous' ? '‹' : '›'}</span>
+                    </li>
+                `;
+            } else {
+                if (link.active) {
+                    html += `
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">${link.label}</span>
+                        </li>
+                    `;
+                } else {
+                    html += `
+                        <li class="page-item">
+                            <a class="page-link" href="${link.url}" aria-label="${link.label}">
+                                ${link.label === 'pagination.previous' ? '‹' : link.label === 'pagination.next' ? '›' : link.label}
+                            </a>
+                        </li>
+                    `;
+                }
+            }
+        });
+    
+        html += `
+                </ul>
+            </nav>
+        `;
+    
+        return html;
+    };
+
+    HT.getPaginationLinks = () => {
+        $(document).on('click', '.page-link', function(e) {
+            e.preventDefault();
+            let _this = $(this);
+            
+            let url = _this.attr('href');
+            let urlParams = new URLSearchParams(url.split('?')[1]);
+            
+            // $('.select-product-and-quantity').val()
+            let model = 'Product';
+            let page = urlParams.get('page');
+    
+            let option = {
+                "page": page,
+                "model": model,
+                "keyword": $('.search-model').val(),
+            };
+            HT.loadProduct(option)
+        });
+    }
+
+    HT.formatPrice = (price) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+    HT.loadProduct = (option) => {
+        $.ajax({
+            url: 'ajax/product/loadProductAnimation',
+            type: 'GET',
+            dataType: 'json',
+            data: option,
+            delay: 250, // Giảm tải server bằng cách delay trước khi gửi request
+            success : function(res){
+                HT.fillToObjectList(res);
+            }
+        })
+    };
     
     HT.searchAjax = () => {
         $('.ajaxSearch').each(function () {
@@ -543,6 +720,9 @@
         HT.deleteAmountRangeCondition();
         HT.renderOrderRangeConditionContainer();
         HT.searchAjax();
+        HT.productQuanityListProduct();
+        HT.getPaginationLinks();
+        HT.searchProducts();
     });
 
 })(jQuery);
