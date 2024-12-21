@@ -52,73 +52,7 @@
                             </select>
                         </div>
                         <div class="promotion-container">
-                            <div class="product-and-quantity">
-                                <div class="product-and-quantity">
-                                    <table class="table table-striped mt20">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-right" style="width: 400px;">Sản phẩm mua</th>
-                                                <th class="text-right" style="width: 80px;">SL tối thiểu</th>
-                                                <th class="text-right">Giới hạn KM</th>
-                                                <th class="text-right">Chiết khấu</th>
-                                                <th></th>
-                                            </th>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="">
-                                                    <div 
-                                                    class="product-quantity" 
-                                                    data-toggle="modal" 
-                                                    data-target="#findProduct" 
-                                                    type="button" 
-                                                    name="">
-                                                        <div class="uk-flex uk-flex-middle">
-                                                            <div class="boxWrapper">
-                                                                <div class="boxSearchIcon">
-                                                                    <i class="fa fa-search"></i>
-                                                                </div>
-                                                                @for ($i = 0; $i <= 10; $i++)
-                                                                    <div class="fix-grid-6 hidden">
-                                                                        <div class="goods-item">
-                                                                            <span class="goods-item-name">Macbook thế hệ mới ra mắt năm 2023</span>
-                                                                            <button class="delete-goods-item">
-                                                                                <i class="fa fa-close"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                @endfor
-                                                                <div class="boxSearchInput fix-grid-6">
-                                                                    <p>Tìm theo tên, mã sản phẩm..</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="">
-                                                    <input type="text" name="" class="form-control int" placeholder="1" value="0">
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="" class="form-control int" placeholder="0" value="0">
-                                                </td>
-                                                <td class="discountType">
-                                                    <div class="uk-flex uk-flex-middle">
-                                                        <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
-                                                        <select name="amountType[]" id="" class="setupSelect2">
-                                                            <option value="cash">đ</option>
-                                                            <option value="percent">%</option>
-                                                        </select>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

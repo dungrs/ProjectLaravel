@@ -394,6 +394,7 @@
                 <div class="choose-module mt20">
                     <div class="fix-label" style="color: blue;">Sản phẩm áp dụng</div>
                     <select name="" id="" class="setupSelect2 select-product-and-quantity">
+                        <option value="">Chọn hình thức</option>
                         ${options}
                     </select>
                 </div>
@@ -401,7 +402,7 @@
                     <table class="table table-striped mt20">
                         <thead>
                             <tr>
-                                <th class="text-right" style="width: 400px;">Sản phẩm mua</th>
+                                <th class="text-right" style="width: 550px;">Sản phẩm mua</th>
                                 <th class="text-right" style="width: 80px;">SL tối thiểu</th>
                                 <th class="text-right">Giới hạn KM</th>
                                 <th class="text-right">Chiết khấu</th>
@@ -411,9 +412,23 @@
                         <tbody>
                             <tr>
                                 <td class="">
-                                    <select name="" data-model="Product" class="form-control int ajaxSearch" value="" multiple>
-                                        
-                                    </select>
+                                    <div 
+                                    class="product-quantity" 
+                                    data-toggle="modal" 
+                                    data-target="#findProduct" 
+                                    type="button" 
+                                    name="">
+                                        <div class="uk-flex uk-flex-middle">
+                                            <div class="boxWrapper choose-product-list">
+                                                <div class="boxSearchIcon">
+                                                    <i class="fa fa-search"></i>
+                                                </div>
+                                                <div class="boxSearchInput fix-grid-6">
+                                                    <p>Tìm theo tên, mã sản phẩm..</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="">
                                     <input type="text" name="" class="form-control int" placeholder="1" value="0">
@@ -436,7 +451,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+                    
                 </div>
             </div>
         `
@@ -499,13 +514,14 @@
             let _this = $(this);
             // Sử dụng hàm trim() để loại bỏ khoảng trắng ở đâu và cuối
             let keyword = _this.val().trim();
-            let model = $('.select-product-and-quantity').val();
+            let modelFromSelect = $('.select-product-and-quantity').val();
+            let model = modelFromSelect ? modelFromSelect : 'Product';
 
             clearTimeout(typingTimer); // Hủy bỏ timer trước đó nếu có
             typingTimer = setTimeout(function() {
             let option = {
                 keyword : keyword, // Tạo dữ liệu gửi đi nếu cần
-                model : 'Product',
+                model : model,
             };
 
             HT.loadProduct(option);
@@ -516,9 +532,12 @@
     HT.productQuanityListProduct = () => {
         $(document).on('click', '.product-quantity', function(e) {
             e.preventDefault();
+            let modelFromSelect = $('.select-product-and-quantity').val();
+            let model = modelFromSelect ? modelFromSelect : 'Product';
+            
             let option = {
                 keyword : $('.search-model').val(),
-                model : "Product"
+                model : model
             }
             HT.loadProduct(option);
         })
@@ -529,33 +548,77 @@
             "Product": HT.fillProductToList,
             "ProductCatalogue": HT.fillProductCatalogueToList
         };
-    
+        console.log(data);
         if (mapping[data.model]) {
             mapping[data.model](data.objects); // Chuyển sang data.data thay vì data.objects
+        }
+    };
+
+    HT.fillProductCatalogueToList = (objects) => {
+        const product_catalogues = objects.data;
+        const container = $('.search-list'); // Lưu trữ phần tử container để tránh gọi DOM nhiều lần
+        container.html('');
+    
+        // Kiểm tra nếu có sản phẩm
+        if (product_catalogues.length) {
+            let htmlContent = ''; // Khởi tạo một biến để lưu nội dung HTML
+    
+            // Tạo HTML cho từng sản phẩm
+            product_catalogues.forEach(product_catalogue => {
+                // Kiểm tra nếu sản phẩm đã được chọn trong objectChooses
+                const isChecked = objectChooses.some(obj => obj.product_catalogue_id === product_catalogue.id);
+    
+                htmlContent += `
+                    <div class="search-object-item" data-product_catalogue_id="${product_catalogue.id}" data-name="${product_catalogue.name}">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="object-info">
+                                <div class="uk-flex uk-flex-middle">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <input type="checkbox" name="product_catalogue-${product_catalogue.id}" value="${product_catalogue.id}" class="input-checkbox" ${isChecked ? 'checked' : ''}>
+                                    </div>
+                                    <div class="object-name">
+                                        <div class="name ml5" style="margin-bottom: 0px !important;">${product_catalogue.name}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+    
+            // Thêm phân trang
+            htmlContent += HT.paginationLinks(objects.links);
+            container.append(htmlContent);
         }
     };
     
     HT.fillProductToList = (objects) => {
         const products = objects.data;
-        const container = $('.search-list');  // Lưu trữ phần tử container để tránh gọi DOM nhiều lần
+        const container = $('.search-list'); // Lưu trữ phần tử container để tránh gọi DOM nhiều lần
         container.html('');
+        
         // Kiểm tra nếu có sản phẩm
         if (products.length) {
-            let htmlContent = '';  // Khởi tạo một biến để lưu nội dung HTML
+            let htmlContent = ''; // Khởi tạo một biến để lưu nội dung HTML
     
             // Tạo HTML cho từng sản phẩm
             products.forEach(product => {
-                const formattedPrice = HT.formatPrice(product.price);  // Định dạng giá
-                let inventory = (typeof product.inventory != 'undefined') ? inventory : 0
-                let couldSell = (typeof product.couldSell != 'undefined') ? couldSell : 0
+                const formattedPrice = HT.formatPrice(product.price); // Định dạng giá
+                let inventory = (typeof product.inventory != 'undefined') ? product.inventory : 0;
+                let couldSell = (typeof product.couldSell != 'undefined') ? product.couldSell : 0;
+    
+                // Kiểm tra nếu sản phẩm đã tồn tại trong objectChooses
+                const isChecked = objectChooses.some(obj => 
+                    obj.product_id == product.id && obj.product_variant_id == product.product_variant_id
+                );
     
                 htmlContent += `
-                    <div class="search-object-item" data-product_id=${product.id} data-variant_id=${(product.product_variant_id) ?? ''} data-name="${product.name}">
+                    <div class="search-object-item" data-product_id="${product.id}" data-product_variant_id="${(product.product_variant_id) ?? ''}" data-name="${product.variant_name}">
                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                             <div class="object-info">
                                 <div class="uk-flex uk-flex-middle">
                                     <div class="uk-flex uk-flex-middle">
-                                        <input type="checkbox" name="product-${product.id}" value="${product.id + '_' + (product.product_variant_id) ?? ''}" class="input-checkbox">
+                                        <input type="checkbox" name="product-${product.id}" value="${product.id + '_' + (product.product_variant_id ?? '')}" class="input-checkbox" ${isChecked ? 'checked' : ''}>
                                     </div>
                                     <span class="img img-scaledown">
                                         <img src="${product.image}" alt="${product.name}">
@@ -567,7 +630,7 @@
                                 </div>
                             </div>
                             <div class="object-extra-info">
-                                <div class="price">${formattedPrice}</div>  <!-- Hiển thị giá đã định dạng -->
+                                <div class="price">${formattedPrice}</div> <!-- Hiển thị giá đã định dạng -->
                                 <div class="object-inventory">
                                     <div class="uk-flex uk-flex-middle">
                                         <span class="text-1">Tồn kho: </span>
@@ -581,10 +644,221 @@
                     </div>
                 `;
             });
-
-            htmlContent += HT.paginationLinks(objects.links)
+    
+            // Thêm phân trang
+            htmlContent += HT.paginationLinks(objects.links);
             container.append(htmlContent);
         }
+    };
+    
+    var objectChooses = [];
+
+    // Sự kiện chọn sản phẩm và số lượng
+    HT.selectProductAndQuality = () => {
+        $(document).on('change', '.select-product-and-quantity', function() {
+            let _this = $(this);
+            let modal = _this.val();
+            objectChooses = []; // Khởi tạo lại mảng khi thay đổi modal
+
+            // Xóa sự kiện trước khi gán mới
+            $(document).off('click', '.search-object-item');
+            $(document).off('click', '.confirm-product-promotion');
+
+            if (modal === 'Product') {
+                HT.chooseProductPromotion();
+                HT.confirmProductPromotion();
+            } else if (modal === 'ProductCatalogue') {
+                HT.chooseProductCataloguePromotion();
+                HT.confirmProductCataloguePromotion();
+            }
+        });
+    };
+
+    // Chọn sản phẩm khuyến mãi
+    HT.chooseProductPromotion = () => {
+        $(document).on('click', '.search-object-item', function(e) {
+            e.preventDefault();
+            const _this = $(this);
+            const checkbox = _this.find('input[type=checkbox]');
+            const isChecked = checkbox.prop('checked');
+
+            const objectItem = {
+                product_id: _this.data('product_id'),
+                product_variant_id: _this.data('product_variant_id') || null,
+                name: _this.data('name')
+            };
+
+            if (isChecked) {
+                // Bỏ chọn và xóa phần tử khỏi mảng
+                checkbox.prop('checked', false);
+                objectChooses = objectChooses.filter(
+                    obj => obj.product_id !== objectItem.product_id || obj.product_variant_id !== objectItem.product_variant_id
+                );
+            } else {
+                // Chọn và thêm phần tử vào mảng
+                objectChooses.push(objectItem);
+                checkbox.prop('checked', true);
+            }
+
+            console.log('Danh sách objectChooses:', objectChooses); // Debug
+        });
+    };
+
+    HT.confirmProductPromotion = () => {
+        $(document).on('click', '.confirm-product-promotion', function (e) {
+            e.preventDefault();
+    
+            if (objectChooses.length === 0) {
+                alert('Vui lòng chọn ít nhất một sản phẩm!');
+                return;
+            }
+    
+            // Tạo HTML danh sách sản phẩm đã chọn
+            const html = objectChooses.map(product => `
+                <div class="fix-grid-6">
+                    <div class="goods-item">
+                        <span class="goods-item-name">${product.name}</span>
+                        <button type="button" class="delete-goods-item product-item">
+                            <i class="fa fa-close"></i>
+                        </button>
+                        <div class="hidden">
+                            <input type="hidden" name="object[product_id][]" value="${product.product_id}">
+                            <input type="hidden" name="object[product_variant_id][]" value="${product.product_variant_id || ''}">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    
+            // Thêm nội dung vào danh sách và hiển thị
+            const additionalHtml = `
+                <div class="boxSearchInput fix-grid-6">
+                    <p>Tìm theo tên, mã sản phẩm...</p>
+                </div>
+            `;
+    
+            $('.choose-product-list').html(html + additionalHtml).removeClass('hidden');
+            $('#findProduct').modal('hide');
+    
+            HT.deleteProductsItem();
+        });
+    };
+    
+    HT.chooseProductCataloguePromotion = () => {
+        $(document).on('click', '.search-object-item', function (e) {
+            e.preventDefault();
+            let _this = $(this);
+            let checkbox = _this.find('input[type=checkbox]');
+            let isChecked = checkbox.prop('checked');
+            let objectItem = {
+                product_catalogue_id: _this.data('product_catalogue_id'),
+                name: _this.data('name')
+            };
+
+            if (isChecked) {
+                // Nếu đã được chọn, bỏ chọn và xóa phần tử khỏi mảng
+                checkbox.prop('checked', false);
+                objectChooses = objectChooses.filter(obj => obj.product_catalogue_id !== objectItem.product_catalogue_id);
+            } else {
+                // Nếu chưa được chọn, thêm phần tử vào mảng
+                objectChooses.push(objectItem);
+                checkbox.prop('checked', true);
+            }
+        });
+    };
+    
+    HT.confirmProductCataloguePromotion = () => {
+        $(document).on('click', '.confirm-product-promotion', function (e) {
+            e.preventDefault();
+    
+            if (objectChooses.length === 0) {
+                return;
+            }
+    
+            let html = objectChooses.map(product => `
+                <div class="fix-grid-6">
+                    <div class="goods-item">
+                        <span class="goods-item-name">${product.name}</span>
+                        <button type="button" class="delete-goods-item catalogue-item">
+                            <i class="fa fa-close"></i>
+                        </button>
+                        <div class="hidden">
+                            <input type="hidden" name="object[product_catalogue_id][]" value="${product.product_catalogue_id}">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+    
+            html += `
+                <div class="boxSearchInput fix-grid-6">
+                    <p>Tìm theo tên, mã sản phẩm..</p>
+                </div>
+            `;
+    
+            $('.choose-product-list').html(html).removeClass('hidden');
+            $('#findProduct').modal('hide');
+    
+            HT.deleteProductCataloguesItem();
+        });
+    };
+    
+    HT.checkEmptyGoodList = () => {
+        if (objectChooses.length === 0) {
+            let boxSearchHtml = `
+                <div class="boxSearchIcon">
+                    <i class="fa fa-search"></i>
+                </div>
+                <div class="boxSearchInput fix-grid-6">
+                    <p>Tìm theo tên, mã sản phẩm..</p>
+                </div>
+            `;
+            $('.choose-product-list').html(boxSearchHtml);
+        }
+    };
+    
+    
+    HT.deleteProductsItem = () => {
+        // Gắn sự kiện xóa sản phẩm
+        $(document).off('click', '.delete-goods-item.product-item').on('click', '.delete-goods-item.product-item', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            let _this = $(this);
+            let productId = _this.closest('.goods-item').find('input[name="object[product_id][]"]').val();
+            let productVariantId = _this.closest('.goods-item').find('input[name="object[product_variant_id][]"]').val();
+    
+            // Lọc và giữ lại các phần tử không trùng với sản phẩm bị xóa
+            objectChooses = objectChooses.filter(obj => 
+                obj.product_id != productId || obj.product_variant_id != productVariantId
+            );
+    
+            // Xóa phần tử khỏi giao diện
+            _this.closest('.fix-grid-6').remove();
+    
+            // Kiểm tra danh sách sau khi xóa
+            HT.checkEmptyGoodList();
+        });
+    };
+    
+    HT.deleteProductCataloguesItem = () => {
+        // Gắn sự kiện xóa danh mục sản phẩm
+        $(document).off('click', '.delete-goods-item.catalogue-item').on('click', '.delete-goods-item.catalogue-item', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+    
+            let _this = $(this);
+            let productCatalogueId = _this.closest('.goods-item').find('input[name="object[product_catalogue_id][]"]').val();
+    
+            // Lọc và giữ lại các phần tử không trùng với danh mục bị xóa
+            objectChooses = objectChooses.filter(obj => 
+                obj.product_catalogue_id != productCatalogueId
+            );
+    
+            // Xóa phần tử khỏi giao diện
+            _this.closest('.fix-grid-6').remove();
+    
+            // Kiểm tra danh sách sau khi xóa
+            HT.checkEmptyGoodList();
+        });
     };
 
     HT.paginationLinks = (links) => {
@@ -639,8 +913,8 @@
             let url = _this.attr('href');
             let urlParams = new URLSearchParams(url.split('?')[1]);
             
-            // $('.select-product-and-quantity').val()
-            let model = 'Product';
+            let modelFromSelect = $('.select-product-and-quantity').val();
+            let model = modelFromSelect ? modelFromSelect : 'Product';
             let page = urlParams.get('page');
     
             let option = {
@@ -723,6 +997,7 @@
         HT.productQuanityListProduct();
         HT.getPaginationLinks();
         HT.searchProducts();
+        HT.selectProductAndQuality();
     });
 
 })(jQuery);

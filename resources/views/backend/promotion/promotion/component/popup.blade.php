@@ -19,7 +19,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                    <button type="submit" name="create" value="create" class="btn btn-success">Xác nhận</button>
+                    <button type="submit" name="create" value="create" class="btn btn-success confirm-product-promotion">Xác nhận</button>
                 </div>
             </div>
         </div>

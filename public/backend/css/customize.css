@@ -909,6 +909,7 @@ tr.error-range input {
     overflow: hidden;
     display: block;
     width: 90%;
+    color: #000;
 }
 
 .goods-item button {
