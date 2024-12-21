@@ -10,6 +10,8 @@ class AppServiceProvider extends ServiceProvider
     public $serviceBindings = [
         'App\Services\Interfaces\UserServiceInterface' => 'App\Services\UserService',
         'App\Services\Interfaces\UserCatalogueServiceInterface' => 'App\Services\UserCatalogueService',
+        'App\Services\Interfaces\CustomerServiceInterface' => 'App\Services\CustomerService',
+        'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
         'App\Services\Interfaces\LanguageServiceInterface' => 'App\Services\LanguageService',
         'App\Services\Interfaces\PostCatlogueServiceInterface' => 'App\Services\PostCatalogueService',
         'App\Services\Interfaces\PostServiceInterface' => 'App\Services\PostService',
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\SlideServiceInterface' => 'App\Services\SlideService',
         'App\Services\Interfaces\WidgetServiceInterface' => 'App\Services\WidgetService',
         'App\Services\Interfaces\PromotionServiceInterface' => 'App\Services\PromotionService',
+        'App\Services\Interfaces\SourceServiceInterface' => 'App\Services\SourceService',
     ];  
 
     /**

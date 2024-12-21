@@ -25,18 +25,33 @@
                 ]
             ],
             [
+                'title' => 'QL Nhóm Khách Hàng',
+                'icon' => 'fa fa-user',
+                'name' => ['customer'],
+                'subModule' => [
+                    [
+                        'title' => "QL Nhóm Khách Hàng",
+                        'route' => "customer.catalogue.index"
+                    ],
+                    [
+                        'title' => 'QL Khách Hàng',
+                        'route' => "customer.index"
+                    ],
+                ]
+            ],
+            [
                 'title' => 'QL Marketing',
                 'icon' => 'fa fa-money',
-                'name' => ['promotion'],
+                'name' => ['promotion', 'source'],
                 'subModule' => [
                     [
                         'title' => 'QL Khuyến Mại',
                         'route' => 'promotion.index'
                     ],
-                    // [
-                    //     'title' => 'QL Mã Giảm Giá',
-                    //     'route' => 'coupon.index'
-                    // ]
+                    [
+                        'title' => 'QL Nguồn Khách',
+                        'route' => 'source.index'
+                    ]
                 ]
             ],
             [

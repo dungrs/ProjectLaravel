@@ -431,7 +431,7 @@
                                     </div>
                                 </td>
                                 <td class="">
-                                    <input type="text" name="" class="form-control int" placeholder="1" value="0">
+                                    <input type="text" name="" class="form-control int" placeholder="1" value="1">
                                 </td>
                                 <td>
                                     <input type="text" name="" class="form-control int" placeholder="0" value="0">
@@ -653,7 +653,6 @@
     
     var objectChooses = [];
 
-    // Sự kiện chọn sản phẩm và số lượng
     HT.selectProductAndQuality = () => {
         $(document).on('change', '.select-product-and-quantity', function() {
             let _this = $(this);
@@ -674,7 +673,6 @@
         });
     };
 
-    // Chọn sản phẩm khuyến mãi
     HT.chooseProductPromotion = () => {
         $(document).on('click', '.search-object-item', function(e) {
             e.preventDefault();
@@ -814,7 +812,6 @@
             $('.choose-product-list').html(boxSearchHtml);
         }
     };
-    
     
     HT.deleteProductsItem = () => {
         // Gắn sự kiện xóa sản phẩm

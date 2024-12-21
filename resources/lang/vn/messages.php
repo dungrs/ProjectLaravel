@@ -112,6 +112,36 @@
                 'title' => 'Cập nhật quyền'
             ],
         ],
+        'customer' => [
+            'index' => [
+                'title' => 'Quản lý khách hàng',
+                'table' => 'Danh sách khách hàng'
+            ],
+            'create' => [
+                'title' => 'Thêm mới khách hàng'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật khách hàng'
+            ],
+            'delete' => [
+                'title' => 'Xóa khách hàng'
+            ],
+        ],
+        'customerCatalogue' => [
+            'index' => [
+                'title' => 'Quản lý nhóm khách hàng',
+                'table' => 'Danh sách nhóm khách hàng'
+            ],
+            'create' => [
+                'title' => 'Thêm mới nhóm khách hàng'
+            ],
+            'edit' => [
+                'title' => 'Cập nhật nhóm khách hàng'
+            ],
+            'delete' => [
+                'title' => 'Xóa nhóm khách hàng'
+            ],
+        ],
         'permission' => [
             'index' => [
                 'title' => 'Quản lý quyền',
@@ -163,6 +193,18 @@
             ],
             'translate' => [
                 'title' => 'Tạo Bản Dịch {language} Cho'
+            ],
+        ],
+        'source' => [
+            'index' => [
+                'title' => 'Quản lý Nguồn Khách',
+                'table' => 'Danh sách Nguồn Khách'
+            ],
+            'create' => [
+                'title' => 'Thêm mới Nguồn Khách',
+            ],
+            'delete' => [
+                'title' => 'Xóa Nguồn Khách'
             ],
         ],
         'promotion' => [

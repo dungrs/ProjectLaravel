@@ -15,6 +15,8 @@ class RepositoryServiceProvider extends ServiceProvider
     public $binding = [
         'App\Repositories\Interfaces\UserRepositoryInterface' => 'App\Repositories\UserRepository',
         'App\Repositories\Interfaces\UserCatalogueRepositoryInterface' => 'App\Repositories\UserCatalogueRepository',
+        'App\Repositories\Interfaces\CustomerRepositoryInterface' => 'App\Repositories\CustomerRepository',
+        'App\Repositories\Interfaces\CustomerCatalogueRepositoryInterface' => 'App\Repositories\CustomerCatalogueRepository',
         'App\Repositories\Interfaces\LanguageRepositoryInterface' => 'App\Repositories\LanguageRepository',
         'App\Repositories\Interfaces\PostCatlogueRepositoryInterface' => 'App\Repositories\PostCatalogueRepository',
         'App\Repositories\Interfaces\PostRepositoryInterface' => 'App\Repositories\PostRepository',
@@ -36,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         'App\Repositories\Interfaces\MenuCatalogueServiceInterface' => 'App\Repositories\MenuCatalogueSeviceSystem',
         'App\Repositories\Interfaces\SlideServiceInterface' => 'App\Repositories\SlideSeviceSystem',
         'App\Repositories\Interfaces\PromotionServiceInterface' => 'App\Repositories\PromotionSeviceSystem',
+        'App\Repositories\Interfaces\SourceServiceInterface' => 'App\Repositories\SourceSeviceSystem',
     ];
 
     public function register()

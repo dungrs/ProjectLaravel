@@ -12,6 +12,8 @@ use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\UserCatalogueController;
+use App\Http\Controllers\Backend\CustomerController;
+use App\Http\Controllers\Backend\CustomerCatalogueController;
 use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\PostCatalogueController;
 use App\Http\Controllers\Backend\PostController;
@@ -23,6 +25,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\AttributeCatalogueController;
 use App\Http\Controllers\Backend\AttributeController;
+use App\Http\Controllers\Backend\SourceController;
 use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\PromotionController;
@@ -69,6 +72,26 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::delete('{id}/destroy', [UserCatalogueController::class, 'destroy']) -> name('user.catalogue.destroy') -> where(['id' => '[0-9]+']);
         Route::get('permission', [UserCatalogueController::class, 'permission']) -> name('user.catalogue.permission');
         Route::get('updatePermission', [UserCatalogueController::class, 'updatePermission']) -> name('user.catalogue.updatePermission');
+    });
+
+    Route::prefix('customer') -> group(function() {
+        Route::get('/index', [CustomerController::class, 'index']) -> name('customer.index');
+        Route::get('/create', [CustomerController::class, 'create']) -> name('customer.create');
+        Route::post('/store', [CustomerController::class, 'store']) -> name('customer.store');
+        Route::get('{id}/edit', [CustomerController::class, 'edit']) -> name('customer.edit') -> where(['id' => '[0-9]+']);
+        Route::post('{id}/update', [CustomerController::class, 'update']) -> name('customer.update') -> where(['id' => '[0-9]+']);
+        Route::get('{id}/delete', [CustomerController::class, 'delete']) -> name('customer.delete') -> where(['id' => '[0-9]+']);
+        Route::delete('{id}/destroy', [CustomerController::class, 'destroy']) -> name('customer.destroy') -> where(['id' => '[0-9]+']);
+    });
+
+    Route::prefix('customer/catalogue') -> group(function() {
+        Route::get('/index', [CustomerCatalogueController::class, 'index']) -> name('customer.catalogue.index');
+        Route::get('/create', [CustomerCatalogueController::class, 'create']) -> name('customer.catalogue.create');
+        Route::post('/store', [CustomerCatalogueController::class, 'store']) -> name('customer.catalogue.store');
+        Route::get('{id}/edit', [CustomerCatalogueController::class, 'edit']) -> name('customer.catalogue.edit') -> where(['id' => '[0-9]+']);
+        Route::post('{id}/update', [CustomerCatalogueController::class, 'update']) -> name('customer.catalogue.update') -> where(['id' => '[0-9]+']);
+        Route::get('{id}/delete', [CustomerCatalogueController::class, 'delete']) -> name('customer.catalogue.delete') -> where(['id' => '[0-9]+']);
+        Route::delete('{id}/destroy', [CustomerCatalogueController::class, 'destroy']) -> name('customer.catalogue.destroy') -> where(['id' => '[0-9]+']);
     });
 
     Route::prefix('language') -> group(function() {
@@ -196,6 +219,16 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::post('{id}/update', [SlideController::class, 'update']) -> name('slide.update') -> where(['id' => '[0-9]+']);
         Route::get('{id}/delete', [SlideController::class, 'delete']) -> name('slide.delete') -> where(['id' => '[0-9]+']);
         Route::delete('{id}/destroy', [SlideController::class, 'destroy']) -> name('slide.destroy') -> where(['id' => '[0-9]+']);
+    });
+
+    Route::prefix('source') -> group(function() {
+        Route::get('/index', [SourceController::class, 'index']) -> name('source.index');
+        Route::get('/create', [SourceController::class, 'create']) -> name('source.create');
+        Route::post('/store', [SourceController::class, 'store']) -> name('source.store');
+        Route::get('{id}/edit', [SourceController::class, 'edit']) -> name('source.edit') -> where(['id' => '[0-9]+']);
+        Route::post('{id}/update', [SourceController::class, 'update']) -> name('source.update') -> where(['id' => '[0-9]+']);
+        Route::get('{id}/delete', [SourceController::class, 'delete']) -> name('source.delete') -> where(['id' => '[0-9]+']);
+        Route::delete('{id}/destroy', [SourceController::class, 'destroy']) -> name('source.destroy') -> where(['id' => '[0-9]+']);
     });
 
     Route::prefix('attribute/catalogue') -> group(function() {
