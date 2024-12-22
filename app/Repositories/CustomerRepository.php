@@ -42,9 +42,16 @@ class CustomerRepository extends BaseRepository implements CustomerRepositoryInt
             if (isset($condition['publish']) && !empty($condition['publish']) && $condition['publish'] != 0) {
                 $query->where('customers.publish', '=', $condition['publish']);
             }
+
+            if (isset($condition['customer_catalogue_id']) && !empty($condition['customer_catalogue_id']) && $condition['customer_catalogue_id'] != 0) {
+                $query->where('customers.customer_catalogue_id', '=', $condition['customer_catalogue_id']);
+            }
+
+            if (isset($condition['source_id']) && !empty($condition['source_id']) && $condition['source_id'] != 0) {
+                $query->where('customers.source_id', '=', $condition['source_id']);
+            }
         
-        // Nạp từ bảng customer_catalogues
-        })->with('customer_catalogues');
+        });
 
         if (!empty($join)) {
             $query->join(...$join);

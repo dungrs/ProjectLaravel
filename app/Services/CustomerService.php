@@ -24,6 +24,8 @@ class CustomerService extends BaseService implements CustomerServiceInterface
     public function paginate($request) {
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish');
+        $condition['customer_catalogue_id'] = $request->integer('customer_catalogue_id');
+        $condition['source_id'] = $request->integer('source_id');
         $perpage = $request->integer('perpage');
         
         $join = [
@@ -52,8 +54,7 @@ class CustomerService extends BaseService implements CustomerServiceInterface
             $payload = $request->except('_token', 'send', 're_password'); 
             $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);  
             $payload['password'] = Hash::make($payload['password']);
-
-            $customer = $this->customerRepository->create($payload);
+            $this->customerRepository->create($payload);
 
             DB::commit(); // Nếu không có lỗi, commit giao dịch
             return true;
@@ -72,8 +73,7 @@ class CustomerService extends BaseService implements CustomerServiceInterface
             // Lấy tất cả dữ liệu từ request
             $payload = $request->except('_token', 'send'); 
             $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
-            $customer = $this->customerRepository->update($id, $payload);
-
+            $this->customerRepository->update($id, $payload);
             DB::commit(); // Nếu không có lỗi, commit giao dịch
             return true;
         } catch (Exception $e) {
@@ -162,6 +162,7 @@ class CustomerService extends BaseService implements CustomerServiceInterface
             'customers.address', 
             'customers.publish', 
             'customers.customer_catalogue_id', 
+            'customers.source_id',
             'uc.publish as catalogue_publish'
         ];
     }

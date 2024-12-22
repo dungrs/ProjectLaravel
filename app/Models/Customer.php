@@ -35,6 +35,7 @@ class Customer extends Authenticatable
         'customer_agent',
         'ip',
         'customer_catalogue_id',
+        'source_id',
         'publish'
     ];
 
@@ -59,5 +60,9 @@ class Customer extends Authenticatable
 
     public function customer_catalogues() {
         return $this->belongsTo(CustomerCatalogue::class, 'customer_catalogue_id', 'id');
+    }
+
+    public function sources() {
+        return $this->belongsTo(Source::class, 'source_id', 'id');
     }
 }

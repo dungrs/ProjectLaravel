@@ -9,6 +9,7 @@ use App\Services\CustomerService as CustomerService;
 use App\Repositories\ProvinceRepository as ProvinceRepository;
 use App\Repositories\CustomerCatalogueRepository as CustomerCatalogueRepository;
 use App\Repositories\CustomerRepository as CustomerRepository;
+use App\Repositories\SourceRepository as SourceRepository;
 
 use App\Http\Request\CustomerGroup\StoreCustomerRequest;
 use App\Http\Request\CustomerGroup\UpdateCustomerRequest;
@@ -19,17 +20,27 @@ class CustomerController extends Controller
     protected $provinceRepository;
     protected $customerRepository;
     protected $customerCatalogueRepository;
+    protected $sourceRepository;
     
-    public function __construct(CustomerService $customerService, ProvinceRepository $provinceRepository, CustomerRepository $customerRepository, CustomerCatalogueRepository $customerCatalogueRepository) {
+    public function __construct(
+        CustomerService $customerService, 
+        ProvinceRepository $provinceRepository, 
+        CustomerRepository $customerRepository, 
+        CustomerCatalogueRepository $customerCatalogueRepository,
+        SourceRepository $sourceRepository
+        ) {
         $this->customerService = $customerService;
         $this->provinceRepository = $provinceRepository;
         $this->customerRepository = $customerRepository;
         $this->customerCatalogueRepository = $customerCatalogueRepository;
+        $this->sourceRepository = $sourceRepository;
     }
 
     public function index(Request $request) {
         $this->authorize('modules', 'customer.index');
         $customers = $this ->customerService->paginate($request);
+        $sources = $this->sourceRepository->all();
+        $customerCatalogues = $this->customerCatalogueRepository->all();
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -46,7 +57,9 @@ class CustomerController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'customers'
+            'customers',
+            'customerCatalogues',
+            'sources'
         ));
     }
 
@@ -57,12 +70,14 @@ class CustomerController extends Controller
         $config['method'] = 'create';
         $provinces = $this->provinceRepository->all();
         $customerCatalogues = $this->customerCatalogueRepository->all();
+        $sources = $this->sourceRepository->all();
         $template = 'backend.customer.customer.store';
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
             'provinces',
-            'customerCatalogues'
+            'customerCatalogues',
+            'sources'
         ));
     }
 
@@ -82,13 +97,15 @@ class CustomerController extends Controller
         $config['method'] = 'edit';
         $provinces = $this->provinceRepository->all();
         $customerCatalogues = $this->customerCatalogueRepository->all();
+        $sources = $this->sourceRepository->all();
         $customer = $this->customerRepository->findById($id);
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
             'provinces',
             'customer',
-            'customerCatalogues'
+            'customerCatalogues',
+            'sources'
         ));
     }
 

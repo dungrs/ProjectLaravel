@@ -7,6 +7,7 @@ use App\Http\Controllers\Ajax\LocationController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
+use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -260,11 +261,13 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
     Route::post('ajax/dashboard/changeStatusAll', [AjaxDashboardController::class, 'changeStatusAll']) -> name('dashboard.changeStatusAll');
     Route::get('ajax/dashboard/getMenu', [AjaxDashboardController::class, 'getMenu']) -> name('dashboard.getMenu');
     Route::get('ajax/dashboard/findModelObject', [AjaxDashboardController::class, 'findModelObject']) -> name('dashboard.findModelObject');
+    Route::get('ajax/dashboard/getPromotionConditionValue', [AjaxDashboardController::class, 'getPromotionConditionValue']) -> name('dashboard.getPromotionConditionValue');
     Route::get('ajax/attribute/getAttribute', [AjaxAttributeController::class, 'getAttribute']) -> name('ajax.attribute.getAttribute');
     Route::get('ajax/attribute/loadAttribute', [AjaxAttributeController::class, 'loadAttribute']) -> name('ajax.attribute.loadAttribute');
     Route::post('ajax/menu/createCatalogue', [AjaxMenuController::class, 'createCatalogue']) -> name('ajax.menu.createCatalogue');
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag']) -> name('ajax.menu.drag');
     Route::get('ajax/product/loadProductAnimation', [AjaxProductController::class, 'loadProductAnimation']) -> name('ajax.product.loadProductAnimation');
+    Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource']) -> name('ajax.source.getAllSource');
 });
 
 

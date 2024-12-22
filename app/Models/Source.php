@@ -21,4 +21,9 @@ class Source extends Model
     ];
 
     protected $table = 'sources';
+
+    // Note
+    public function customers() {
+        return $this->hasMany(Customer::class, 'source_id', 'id');
+    }
 }

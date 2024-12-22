@@ -62,9 +62,19 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="birthday" class="control-label text-left">Ngày sinh</label>
-                                    <input type="date" name="birthday" id="birthday" value="{{ old('birthday' ,isset($customer->birthday) ? date('Y-m-d', strtotime($customer->birthday)) : '') }}" 
-                                    class="form-control" placeholder="" autocomplete="off">
+                                    <label for="customer_catalogue_id" class="control-label text-left">Nguồn Khách
+                                        <span class="text-danger">(*)</span>
+                                    </label>
+                                    <select name="source_id" class="form-control setupSelect2" id="source_id">
+                                        @foreach ($sources as $source)
+                                            <option value="{{ $source -> id }}" 
+                                                @if (old('source_id', $customer->source_id ?? '') == $source->id)
+                                                    selected 
+                                                @endif>
+                                                {{ $source -> name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +101,14 @@
                         @endif
 
                         <div class="row mb15">
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="birthday" class="control-label text-left">Ngày sinh</label>
+                                    <input type="date" name="birthday" id="birthday" value="{{ old('birthday' ,isset($customer->birthday) ? date('Y-m-d', strtotime($customer->birthday)) : '') }}" 
+                                    class="form-control" placeholder="" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Ảnh đại diện
                                     </label>

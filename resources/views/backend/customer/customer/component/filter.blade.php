@@ -23,11 +23,24 @@
                             <option {{ ($publish == $key) ? 'selected' : '' }} value="{{ $key }}" > {{ $val }} </option>
                         @endforeach
                     </select>
-                    {{-- Để sau --}}
-                    {{-- <select name="customer_catalogue_id" class="form-control mr10 setupSelect2" id="">
-                        <option value="0" selected="selected">Chọn nhóm thành viên</option>
-                        <option value="1">Quản trị viên</option>
-                    </select> --}}
+                    @php
+                        $customer_catalogue_id = request('customer_catalogue_id') ?: old('customer_catalogue_id');
+                    @endphp
+                    <select name="customer_catalogue_id" class="form-control mr10 setupSelect2" id="">
+                        <option value="0" selected="selected">Chọn nhóm khách hàng</option>
+                        @foreach ($customerCatalogues as $customerCatalogue)
+                            <option {{ ($customer_catalogue_id == $customerCatalogue->id) ? 'selected' : '' }} value="{{ $customerCatalogue->id }}">{{ $customerCatalogue->name }}</option>
+                        @endforeach
+                    </select>
+                    @php
+                        $source_id = request('source_id') ?: old('source_id');
+                    @endphp
+                    <select name="source_id" class="form-control mr10 setupSelect2" id="">
+                        <option value="0" selected="selected">Chọn nguồn khách hàng</option>
+                        @foreach ($sources as $source)
+                            <option {{ ($source_id == $source->id) ? 'selected' : '' }} value="{{ $source->id }}">{{ $source->name }}</option>
+                        @endforeach
+                    </select>
                     <div class="uk-search uk-flex uk-flex-middle mr10">
                         <div class="input-group">
                             <input 

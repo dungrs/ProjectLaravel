@@ -147,6 +147,48 @@ class DashBoardController extends Controller
         return response() -> json($object);
     }
 
+    public function getPromotionConditionValue(Request $request) {
+        try {
+            $get = $request->input();
+            switch ($get['value']) {
+                case 'staff_take_care_customer':
+                    $class = $this->loadClassInterface('User');
+                    $objects = $class->all()->toArray();
+                    break;
+                case 'customer_group':
+                    $class = $this->loadClassInterface('Customer');
+                    $objects = $class->all()->toArray();
+                    break;
+                case 'customer_gender':
+                    $objects = __('module.gender');
+                    break;
+                case 'customer_birthday':
+                    $objects = __('module.day');
+                    break;
+            }
+
+            $temp = [];
+            if (!is_null($objects) && count($objects) > 0) {
+                foreach ($objects as $key => $val) {
+                    $temp[] = [
+                        'id' => $val['id'],
+                        'name' => $val['name']
+                    ];
+                }
+            }
+            return response()->json([
+                'data' => $temp,
+                'error' => false,
+                'selectValue' => $get['value']
+            ]);
+        } catch(\Exception $e) {
+            return response()->json([
+                'messages' => $e->getMessage(),
+                'error' => true,
+            ]);
+        }   
+    }
+
     private function loadClassInterface(string $model = '', string $folder = 'Repositories',  $interface = 'Repository') {
         $serviceInterfaceNamespace = '\App\\' . $folder . '\\' . ucfirst($model) . $interface;
         if (!class_exists($serviceInterfaceNamespace)) {

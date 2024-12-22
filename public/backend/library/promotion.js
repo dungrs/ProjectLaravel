@@ -11,8 +11,7 @@
             if (isChecked) {
                 $('input[name=end_date]').val('').attr('disabled', true);
             } else {
-                let endDate = ('input[name=start_date]').val()
-                $('input[name=end_date]').val(endDate).attr('disabled', false);
+                $('input[name=end_date]').val('').attr('disabled', false);
             }
         })
     }
@@ -25,19 +24,38 @@
             if (_this.attr('id') === 'allSource') {
                 parentContent.find('.source-wrapper').remove();
             } else if (parentContent.find('.source-wrapper').length === 0) {
-                let sourceData = {
-                    0: { id: 1, name: "Tiktok" },
-                    1: { id: 2, name: "Facebook" },
-                };
-                parentContent.append(HT.renderSourcePromotion(sourceData));
-                HT.promotionMultipleSelect2();
+                let sourceData = {};
+                $.ajax({
+                    url: 'ajax/source/getAllSource',
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250, // Giảm tải server bằng cách delay trước khi gửi request
+                    success: function (res) {
+                        if (res.sources && Array.isArray(res.sources)) {
+                            res.sources.forEach(source => {
+                                sourceData[source.id] = {
+                                    id: source.id,
+                                    name: source.name
+                                };
+                            });
+    
+                            parentContent.append(HT.renderSourcePromotion(sourceData));
+                            HT.promotionMultipleSelect2(); // Khởi tạo lại Select2
+                        } else {
+                            console.error("Dữ liệu trả về không hợp lệ.");
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Lỗi khi gọi AJAX:', err);
+                    }
+                });
             }
         });
     };
     
     HT.renderSourcePromotion = (sourceData) => {
         let dataHtml = Object.values(sourceData)
-            .map(value => `<option value="${value.id}">${value.name}</option>`)
+            .map(data => `<option value="${data.id}">${data.name}</option>`)
             .join('');
     
         return `
@@ -110,12 +128,38 @@
                     value: value,
                     label: _this.find(`option[value="${value}"]`).text() // Lấy label từ option
                 };
-                let html = HT.renderConditionHTML(condition);
-                $('.wrapper-condition').append(html); // Thêm vào DOM
+                let optionData = {};
+    
+                // Gọi AJAX để lấy dữ liệu
+                $.ajax({
+                    url: 'ajax/dashboard/getPromotionConditionValue',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { value },
+                    delay: 250, // Giảm tải server bằng cách delay trước khi gửi request
+                    success: function (res) {
+                        if (res.data && Array.isArray(res.data)) {
+                            optionData[res.selectValue] = res.data.map(item => ({
+                                id: item.id,
+                                name: item.name
+                            }));
+    
+                            // Tạo HTML sau khi có dữ liệu từ AJAX
+                            let html = HT.renderConditionHTML(condition, optionData);
+                            $('.wrapper-condition').append(html); // Thêm vào DOM
+    
+                            // Khởi tạo lại multipleSelect2 sau khi thêm mới
+                            HT.promotionMultipleSelect2();
+                        } else {
+                            console.error("Dữ liệu trả về không hợp lệ.");
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Lỗi khi gọi AJAX:', err);
+                    }
+                });
             }
         });
-    
-        HT.promotionMultipleSelect2();
     };
     
     // Xử lý khi xóa item trong select2
@@ -148,31 +192,13 @@
     };
     
     // Tạo HTML điều kiện
-    HT.renderConditionHTML = (condition) => {
-        const optionData = {
-            'staff_take_care_customer': [
-                { id: 1, name: 'Khách Vip' },
-                { id: 2, name: 'Khách Buôn Bán' }
-            ],
-            'customer_group': [
-                { id: 3, name: 'Nhóm A' },
-                { id: 4, name: 'Nhóm B' }
-            ],
-            'customer_gender': [
-                { id: 'male', name: 'Nam' },
-                { id: 'female', name: 'Nữ' }
-            ],
-            'customer_birthday': [
-                { id: 'today', name: 'Hôm nay' },
-                { id: 'tomorrow', name: 'Ngày mai' }
-            ]
-        };
-    
-        let content = optionData[condition.value]
-            ? optionData[condition.value]
-                  .map(option => `<option value="${option.id}">${option.name}</option>`)
-                  .join('')
-            : '';
+    HT.renderConditionHTML = (condition, optionData) => {
+        let content = '';
+        if (optionData[condition.value]) {
+            content = optionData[condition.value]
+                .map(item => `<option value="${item.id}">${item.name}</option>`)
+                .join('\n');
+        }
     
         return `
             <div class="${condition.value} wrapper-condition-item mt10">
@@ -190,6 +216,7 @@
             </div>
         `;
     };
+    
 
     var ranges = [];
 
