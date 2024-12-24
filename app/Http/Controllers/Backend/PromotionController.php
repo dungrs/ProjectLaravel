@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 
 use App\Services\PromotionService;
 use App\Repositories\PromotionRepository;
+use App\Repositories\SourceRepository;
 use App\Repositories\LanguageRepository;
 
-use App\Http\Request\StorePromotionRequest;
-use App\Http\Request\UpdatePromotionRequest;
+use App\Http\Request\Promotion\StorePromotionRequest;
+use App\Http\Request\Promotion\UpdatePromotionRequest;
 
 use App\Models\Language;
 
@@ -18,12 +19,19 @@ class PromotionController extends Controller
 {   
     protected $promotionService;
     protected $promotionRepository;
+    protected $sourceRepository;
     protected $languageRepository;
     protected $language;
     
-    public function __construct(PromotionService $promotionService, PromotionRepository $promotionRepository, LanguageRepository $languageRepository) {
+    public function __construct(
+        PromotionService $promotionService, 
+        PromotionRepository $promotionRepository, 
+        SourceRepository $sourceRepository, 
+        LanguageRepository $languageRepository
+        ) {
         $this->promotionService = $promotionService;
         $this->promotionRepository = $promotionRepository;
+        $this->sourceRepository = $sourceRepository;
         $this->languageRepository = $languageRepository;
 
         $this->middleware(function($request, $next) {
@@ -68,9 +76,13 @@ class PromotionController extends Controller
         $config['seo'] = __('messages.promotion');
         $config['method'] = 'create';
         $template = 'backend.promotion.promotion.store';
+        $sources = $this->sourceRepository->all();
+        $promotionValue = $this->promotionService->getPromotionValue();
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
+            'sources',
+            'promotionValue'
         ));
     }
 
@@ -91,11 +103,15 @@ class PromotionController extends Controller
         $promotion = $this->promotionRepository->findById($id);
         $album_json = json_encode($promotion->album);
         $album = json_decode($album_json);
+        $sources = $this->sourceRepository->all();
+        $promotionValue = $this->promotionService->getPromotionValue();
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
             'promotion',
             'album',
+            'sources',
+            'promotionValue'
         ));
     }
 

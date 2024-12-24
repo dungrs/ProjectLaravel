@@ -94,6 +94,42 @@ class PromotionService extends BaseService implements PromotionServiceInterface
             die();
         }
     }
+
+    public function getPromotionValue() {
+        $types = [
+            'staff_take_care_customer' => 'User',
+            'customer_group' => 'Customer',
+            'customer_gender' => __('module.gender'),
+            'customer_birthday' => __('module.day'),
+        ];
+    
+        $result = [];
+        foreach ($types as $key => $type) {
+            $objects = [];
+    
+            if (is_string($type)) {
+                $class = $this->loadClass($type);
+                $objects = $class->all()->toArray();
+            } elseif (is_array($type)) {
+                $objects = $type;
+            }
+    
+            if (empty($objects)) {
+                $result[$key] = [];
+                continue;
+            }
+    
+            foreach ($objects as $keyObj => $val) {
+                $result[$key][] = [
+                    'id' => $val['id'] ?? $keyObj,
+                    'name' => $val['name'] ?? $val,
+                ];
+            }
+        }
+    
+        return $result;
+    }
+
     private function paginateSelect() {
         return [
             'id',

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Request;
+namespace App\Http\Request\Promotion;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePromotionRequest extends FormRequest
+class UpdatePromotionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

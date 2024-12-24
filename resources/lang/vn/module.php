@@ -33,6 +33,12 @@
             'Product' => 'Phiên bản sản phẩm',
             'ProductCatalogue' => 'Loại sản phẩm',
         ],
+        'applyStatus' => [
+            'staff_take_care_customer' => 'Nhân Viên Phụ Trách',
+            'customer_group' => 'Nhóm Khách Hàng',
+            'customer_gender' => 'Giới Tính',
+            'customer_birthday' => 'Ngày Sinh',
+        ],
         'gender' => [
             [
                 'id' => 1,

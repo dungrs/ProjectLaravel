@@ -98,4 +98,14 @@ class BaseService implements BaseServiceInterface
         }
     }
 
+    protected function loadClass(string $model = '', string $folder = 'Repositories',  $interface = 'Repository') {
+        $serviceInterfaceNamespace = '\App\\' . $folder . '\\' . ucfirst($model) . $interface;
+        if (!class_exists($serviceInterfaceNamespace)) {
+            return response()->json(['error' => 'Repository not found.'], 404);
+        }
+        
+        $serviceInterface = app($serviceInterfaceNamespace);
+
+        return $serviceInterface;
+    }
 }

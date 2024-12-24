@@ -5,16 +5,25 @@
     const doneTypingInterval = 1000; // Thời gian chờ để nhận diện đã dừng gõ (ms)
 
     HT.promotionNeverEnd = () => {
-        $(document).on('click', '#neverEnd', function() {
+        let isChecked = $('#never_end_date').prop('checked');
+        if (isChecked) {
+            $('input[name=end_date]').val('').attr('disabled', true);
+        } else {
+            $('input[name=end_date]').attr('disabled', false);
+        }
+    
+        // Khi người dùng click vào checkbox
+        $(document).on('click', '#never_end_date', function() {
             let _this = $(this);
-            let isChecked = _this.prop('checked')
+            let isChecked = _this.prop('checked');
             if (isChecked) {
                 $('input[name=end_date]').val('').attr('disabled', true);
             } else {
-                $('input[name=end_date]').val('').attr('disabled', false);
+                $('input[name=end_date]').attr('disabled', false);
             }
-        })
-    }
+        });
+    };
+    
 
     HT.promotionSource = () => {
         $(document).on('click', '.chooseSource', function () {
@@ -60,7 +69,7 @@
     
         return `
             <div class="source-wrapper">
-                <select name="source" id="sourceSelect" class="multipleSelect2" multiple>
+                <select name="sourceValue[]" id="sourceSelect" class="multipleSelect2" multiple>
                     ${dataHtml}
                 </select>
             </div>
@@ -75,12 +84,6 @@
             if (_this.attr('id') === 'allApply') {
                 parentContent.find('.apply-wrapper').remove();
             } else if (parentContent.find('.apply-wrapper').length === 0) {
-                let applyData = {
-                    0: { id: 'staff_take_care_customer', name: "Nhân Viên Phụ Trách" },
-                    1: { id: 'customer_group', name: "Nhóm Khách Hàng" },
-                    2: { id: 'customer_gender', name: "Giới tính" },
-                    3: { id: 'customer_birthday', name: "Ngày Sinh" },
-                };
                 parentContent.append(HT.renderApplyCondition(applyData));
                 HT.promotionMultipleSelect2();
             }
@@ -94,7 +97,7 @@
     
         return `
             <div class="apply-wrapper">
-                <select name="apply" id="applySelect" class="multipleSelect2 conditionItem" multiple>
+                <select name="applyValue[]" id="applySelect" class="multipleSelect2 conditionItem" multiple>
                     ${dataHtml}
                 </select>
             </div>
@@ -102,7 +105,7 @@
         `;
     };
 
-    HT.chooseApplyItem = () => {
+    HT.chooseApplyItem = function() {
         $(document).on('change', '.conditionItem', function () {
             HT.handleSelectChange($(this));
         });
@@ -118,10 +121,7 @@
     
     // Xử lý khi thay đổi select2
     HT.handleSelectChange = (_this) => {
-        let selectedValues = _this.val(); // Lấy tất cả giá trị được chọn
-    
-        if (!selectedValues) return; // Kiểm tra nếu không có giá trị nào được chọn
-    
+        let selectedValues = _this.val() || []; // Lấy tất cả giá trị được chọn
         selectedValues.forEach(value => {
             if (!$(`.wrapper-condition .${value}`).length) { // Kiểm tra nếu chưa tồn tại
                 let condition = {
@@ -136,22 +136,20 @@
                     type: 'GET',
                     dataType: 'json',
                     data: { value },
-                    delay: 250, // Giảm tải server bằng cách delay trước khi gửi request
                     success: function (res) {
                         if (res.data && Array.isArray(res.data)) {
-                            optionData[res.selectValue] = res.data.map(item => ({
+                            optionData[condition.value] = res.data.map(item => ({
                                 id: item.id,
                                 name: item.name
                             }));
     
-                            // Tạo HTML sau khi có dữ liệu từ AJAX
                             let html = HT.renderConditionHTML(condition, optionData);
                             $('.wrapper-condition').append(html); // Thêm vào DOM
     
                             // Khởi tạo lại multipleSelect2 sau khi thêm mới
                             HT.promotionMultipleSelect2();
                         } else {
-                            console.error("Dữ liệu trả về không hợp lệ.");
+                            console.error("Dữ liệu trả về không hợp lệ:", res);
                         }
                     },
                     error: function (err) {
@@ -210,11 +208,24 @@
                         </div>
                     </div>
                 </div>
-                <select name="apply_${condition.value}" class="multipleSelect2 mt10" multiple>
+                <select name="apply_${condition.value}[]" class="multipleSelect2 mt10" multiple>
                     ${content}
                 </select>
             </div>
         `;
+    };
+    
+    // Khởi tạo select2
+    HT.promotionMultipleSelect2 = () => {
+        $('.multipleSelect2').each(function () {
+            if ($(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2('destroy');
+            }
+            $(this).select2({
+                placeholder: 'Click vào ô để lựa chọn...',
+                allowClear: true
+            });
+        });
     };
     
 
@@ -302,8 +313,8 @@
             ranges.push({ from: newFrom, to: newTo });
     
             let tdList = [
-                { class: 'order_amount_range_from', name: 'amountFrom[]', value: HT.formatNumberWithCommas(newTo.toString()), attribute: { readonly: false } },
-                { class: 'order_amount_range_to', name: 'amountTo[]', value: 0, attribute: { readonly: false } }
+                { class: 'order_amount_range_from', name: 'promotion_order_amount_range[amountFrom][]', value: HT.formatNumberWithCommas(newTo.toString()), attribute: { readonly: false } },
+                { class: 'order_amount_range_to', name: 'promotion_order_amount_range[amountTo][]', value: 0, attribute: { readonly: false } }
             ];
     
             let inputFields = tdList.map(item => {
@@ -320,8 +331,8 @@
                     ${inputFields}
                     <td class="discountType">
                         <div class="uk-flex uk-flex-middle">
-                            <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
-                            <select name="amountType[]" class="setupSelect2">
+                            <input type="text" name="promotion_order_amount_range[amountValue][]" class="form-control int" placeholder="0" value="0">
+                            <select name="promotion_order_amount_range[amountType][]" class="setupSelect2">
                                 <option value="cash">đ</option>
                                 <option value="percent">%</option>
                             </select>
@@ -350,10 +361,22 @@
     }
 
     HT.renderOrderRangeConditionContainer = () => {
+        // Lấy giá trị hiện tại của .promotionMethod
+        let option = $('.promotionMethod').val();
+    
+        // Nếu có giá trị trước đó, thực hiện hành động ngay lập tức
+        if (option) {
+            performAction(option);
+        } 
+
         $(document).on('change', '.promotionMethod', function () {
             let _this = $(this);
-            let option = _this.val();
+            option = _this.val();
+            performAction(option);
+        });
     
+    
+        function performAction(option) {
             const actions = {
                 order_amount_range: HT.renderOrderAmountRange,
                 product_and_quantity: HT.renderProductAndQuantity,
@@ -361,9 +384,11 @@
                 // goods_discount_by_quantity: () => console.log('goods_discount_by_quantity'),
             };
     
+            // Gọi hành động tương ứng hoặc xóa container nếu không có hành động
             (actions[option] || HT.removePromotionContainer)();
-        });
+        }
     };
+    
     
     HT.renderOrderAmountRange = () => {
         let html = `
@@ -375,33 +400,87 @@
                             <th class="text-right">Giá trị đến</th>
                             <th class="text-right">Chiết khấu(%)</th>
                             <th class="text-right"></th>
-                        </th>
+                        </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="order_amount_range_from">
-                                <input type="text" name="amountFrom[]" class="form-control int" placeholder="0" value="0">
-                            </td>
-                            <td class="order_amount_range_to">
-                                <input type="text" name="amountTo[]" class="form-control int" placeholder="0" value="0">
-                            </td>
-                            <td class="discountType">
-                                <div class="uk-flex uk-flex-middle">
-                                    <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
-                                    <select name="amountType[]" id="" class="setupSelect2">
-                                        <option value="cash">đ</option>
-                                        <option value="percent">%</option>
-                                    </select>
+                        <tbody>
+                        `
+        let datas = JSON.parse($('.input_order_amount_range').val());
+        if (datas && datas.amountFrom && datas.amountFrom.length > 0) {
+            datas.amountFrom.forEach((amountFrom, index) => {
+                html += `
+                    <tr>
+                        <td class="order_amount_range_from">
+                            <input type="text" name="promotion_order_amount_range[amountFrom][]" class="form-control int" placeholder="0" value="${amountFrom}">
+                        </td>
+                        <td class="order_amount_range_to">
+                            <input type="text" name="promotion_order_amount_range[amountTo][]" class="form-control int" placeholder="0" value="${datas.amountTo[index]}">
+                        </td>
+                        <td class="discountType">
+                            <div class="uk-flex uk-flex-middle">
+                                <input type="text" name="promotion_order_amount_range[amountValue][]" class="form-control int" placeholder="0" value="${datas.amountValue[index]}">
+                                <select name="promotion_order_amount_range[amountType][]" class="setupSelect2">
+                                    <option value="cash" ${datas.amountType[index] === 'cash' ? 'selected' : ''}>đ</option>
+                                    <option value="percent" ${datas.amountType[index] === 'percent' ? 'selected' : ''}>%</option>
+                                </select>
+                            </div>
+                        </td>
+                        ${index === 0 ? '' : `
+                            <td>
+                                <div class="delete-some-item delete-order-amount-range-condition">
+                                    <i class="fa fa-trash"></i>
                                 </div>
                             </td>
-                            <td>
-                                
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
-            </div>
+                        `}
+                    </tr>
+                `;
+            });
+
+            html += `
+                </tbody>
+            </table>
+            `
+        } else {
+            html = `
+                <div class="order_amount_range">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-right">Giá trị từ</th>
+                                <th class="text-right">Giá trị đến</th>
+                                <th class="text-right">Chiết khấu(%)</th>
+                                <th class="text-right"></th>
+                            </th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="order_amount_range_from">
+                                    <input type="text" name="promotion_order_amount_range[amountFrom][]" class="form-control int" placeholder="0" value="0">
+                                </td>
+                                <td class="order_amount_range_to">
+                                    <input type="text" name="promotion_order_amount_range[amountTo][]" class="form-control int" placeholder="0" value="0">
+                                </td>
+                                <td class="discountType">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <input type="text" name="promotion_order_amount_range[amountValue][]" class="form-control int" placeholder="0" value="0">
+                                        <select name="promotion_order_amount_range[amountType][]" id="" class="setupSelect2">
+                                            <option value="cash">đ</option>
+                                            <option value="percent">%</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+            `
+        }
+
+        html += `
+            <button class="btn btn-success btn-custom btn-js-100" value="" type="button">Thêm điều kiện</button>
+                </div>
         `
 
         HT.renderPromotionContainer(html)
@@ -410,17 +489,26 @@
     HT.renderProductAndQuantity = () => {
         // Lấy dữ liệu từ thẻ HTML
         const productData = JSON.parse(document.getElementById('productData').dataset.products);
+        var module_type_selected = $('.preload_select_module_type').val();
 
         // Tạo các option từ productData
         const options = Object.entries(productData).map(([key, val]) => {
-            return `<option value="${key}">${val}</option>`;
+            let selected = module_type_selected === key ? 'selected' : '';
+            return `<option value="${key}" ${selected}>${val}</option>`;
         }).join('');
+
+        let preloadData = JSON.parse($('.input_product_and_quantity').val()) || {
+            quantity: ['1'],
+            maxDiscountValue: ['0'],
+            discountValue: ['0'],
+            discountType: ['cash']
+        };
 
         let html = `
             <div class="product-and-quantity">
                 <div class="choose-module mt20">
                     <div class="fix-label" style="color: blue;">Sản phẩm áp dụng</div>
-                    <select name="" id="" class="setupSelect2 select-product-and-quantity">
+                    <select name="module_type" id="" class="setupSelect2 select-product-and-quantity">
                         <option value="">Chọn hình thức</option>
                         ${options}
                     </select>
@@ -429,8 +517,8 @@
                     <table class="table table-striped mt20">
                         <thead>
                             <tr>
-                                <th class="text-right" style="width: 550px;">Sản phẩm mua</th>
-                                <th class="text-right" style="width: 80px;">SL tối thiểu</th>
+                                <th class="text-right" style="width: 500px;">Sản phẩm mua</th>
+                                <th class="text-right" style="width: 100px;">SL tối thiểu</th>
                                 <th class="text-right">Giới hạn KM</th>
                                 <th class="text-right">Chiết khấu</th>
                                 <th></th>
@@ -458,17 +546,17 @@
                                     </div>
                                 </td>
                                 <td class="">
-                                    <input type="text" name="" class="form-control int" placeholder="1" value="1">
+                                    <input type="text" name="product_and_quantity[quantity]" class="form-control int" value="${typeof preloadData.quantity !== 'undefined' ? preloadData.quantity : 1}">
                                 </td>
                                 <td>
-                                    <input type="text" name="" class="form-control int" placeholder="0" value="0">
+                                    <input type="text" name="product_and_quantity[maxDiscountValue]" class="form-control int"  value="${typeof preloadData.maxDiscountValue !== 'undefined' ? preloadData.maxDiscountValue : 0}">
                                 </td>
                                 <td class="discountType">
                                     <div class="uk-flex uk-flex-middle">
-                                        <input type="text" name="amountValue[]" class="form-control int" placeholder="0" value="0">
-                                        <select name="amountType[]" id="" class="setupSelect2">
-                                            <option value="cash">đ</option>
-                                            <option value="percent">%</option>
+                                        <input type="text" name="product_and_quantity[discountValue]" class="form-control int" placeholder="0" value="${typeof preloadData.discountValue !== 'undefined' ? preloadData.discountValue : 0}">
+                                        <select name="product_and_quantity[discountType]" id="" class="setupSelect2">
+                                            <option value="cash" ${preloadData.discountType === 'cash' ? 'selected' : ''}>đ</option>
+                                            <option value="percent" ${preloadData.discountType === 'percent' ? 'selected' : ''}>%</option>
                                         </select>
                                     </div>
                                 </td>
@@ -505,35 +593,6 @@
                 placeholder: 'Click vào ô để lựa chọn...',
             });
         });
-
-    //     $('.multipleSelect2').select2({
-    // //         minimumInputLength: 2,
-    //         placeholder: 'Click vào ô để lựa chọn...',
-    // //         ajax: {
-    // //             url: 'ajax/attribute/getAttribute',
-    // //             type: 'GET',
-    // //             dataType: 'json',
-    // //             delay: 250,
-    // //             // Param là kí tự nhập vào
-    // //             data: function(params) {
-    // //                 return {
-    // //                     search: params.term,
-    // //                     option: option,
-    // //                 }
-    // //             },
-                
-    // //             processResults: function(data){
-    // //                 // console.log(data)
-    // //                 return {
-    // //                     results: $.map(data, function (obj, i){
-    // //                         console.log(obj);
-    // //                         return obj
-    // //                     })
-    // //                 }
-    // //             },
-    // //             cache: true
-    // //         }
-    //     });
     }
 
     HT.searchProducts = () => {
@@ -585,6 +644,7 @@
         const product_catalogues = objects.data;
         const container = $('.search-list'); // Lưu trữ phần tử container để tránh gọi DOM nhiều lần
         container.html('');
+        console.log(objectChooses);
     
         // Kiểm tra nếu có sản phẩm
         if (product_catalogues.length) {
@@ -593,7 +653,7 @@
             // Tạo HTML cho từng sản phẩm
             product_catalogues.forEach(product_catalogue => {
                 // Kiểm tra nếu sản phẩm đã được chọn trong objectChooses
-                const isChecked = objectChooses.some(obj => obj.product_catalogue_id === product_catalogue.id);
+                const isChecked = objectChooses.some(obj => obj.product_catalogue_id == product_catalogue.id);
     
                 htmlContent += `
                     <div class="search-object-item" data-product_catalogue_id="${product_catalogue.id}" data-name="${product_catalogue.name}">
@@ -682,23 +742,80 @@
 
     HT.selectProductAndQuality = () => {
         $(document).on('change', '.select-product-and-quantity', function() {
-            let _this = $(this);
-            let modal = _this.val();
-            objectChooses = []; // Khởi tạo lại mảng khi thay đổi modal
+            const modal = $(this).val();
+            objectChooses = []; // Reset objectChooses
+            HT.checkEmptyGoodList();
+            HT.bindModalOffClick();
 
-            // Xóa sự kiện trước khi gán mới
-            $(document).off('click', '.search-object-item');
-            $(document).off('click', '.confirm-product-promotion');
-
-            if (modal === 'Product') {
-                HT.chooseProductPromotion();
-                HT.confirmProductPromotion();
-            } else if (modal === 'ProductCatalogue') {
-                HT.chooseProductCataloguePromotion();
-                HT.confirmProductCataloguePromotion();
+            if (modal) {
+                HT.productQuanityListProduct();
+                bindModalEvents(modal);
+            } else {
+                $(document).off('click', '.product-quantity');
             }
         });
+
+        const initializeObjectChooses = (modal, objectInput) => {
+            objectChooses = []; // Reset objectChooses
+            if (modal === 'Product') {
+                objectChooses = []
+                if (objectInput.name && Array.isArray(objectInput.name)) {
+                    objectInput.name.forEach((name, index) => {
+                        let objectInputItem = {
+                            product_id: objectInput.product_id[index] || null,
+                            product_variant_id: objectInput.product_variant_id[index] || null,
+                            name: objectInput.name[index] || ''
+                        };
+    
+                        objectChooses.push(objectInputItem);
+                    });
+                }
+            } else if (modal === 'ProductCatalogue') {
+                objectChooses = []
+                if (objectInput.name && Array.isArray(objectInput.name)) {
+                    objectInput.name.forEach((name, index) => {
+                        let objectInputItem = {
+                            product_catalogue_id: objectInput.product_catalogue_id[index] || null,
+                            name: objectInput.name[index] || ''
+                        };
+    
+                        objectChooses.push(objectInputItem);
+                    });
+                }
+
+            }
+
+            HT.productQuanityListProduct();
+        };
+
+        const bindModalEvents = (modal) => {
+            const eventsMap = {
+                Product: () => {
+                    HT.chooseProductPromotion();
+                    HT.confirmProductPromotion();
+                },
+                ProductCatalogue: () => {
+                    HT.chooseProductCataloguePromotion();
+                    HT.confirmProductCataloguePromotion();
+                }
+            };
+
+            eventsMap[modal]?.();
+        };
+
+        // Khởi tạo objectChooses và bind sự kiện
+        const modal = $('.preload_select_module_type').val();
+        const objectInput = JSON.parse($('.input_object').val() || '{}');
+        console.log(objectInput);
+
+        initializeObjectChooses(modal, objectInput);
+        bindModalEvents(modal);
     };
+
+    HT.bindModalOffClick = () => {
+        $(document).off('click', '.search-object-item');
+        $(document).off('click', '.confirm-product-promotion');
+    }
 
     HT.chooseProductPromotion = () => {
         $(document).on('click', '.search-object-item', function(e) {
@@ -714,13 +831,11 @@
             };
 
             if (isChecked) {
-                // Bỏ chọn và xóa phần tử khỏi mảng
                 checkbox.prop('checked', false);
                 objectChooses = objectChooses.filter(
                     obj => obj.product_id !== objectItem.product_id || obj.product_variant_id !== objectItem.product_variant_id
                 );
             } else {
-                // Chọn và thêm phần tử vào mảng
                 objectChooses.push(objectItem);
                 checkbox.prop('checked', true);
             }
@@ -730,15 +845,7 @@
     };
 
     HT.confirmProductPromotion = () => {
-        $(document).on('click', '.confirm-product-promotion', function (e) {
-            e.preventDefault();
-    
-            if (objectChooses.length === 0) {
-                alert('Vui lòng chọn ít nhất một sản phẩm!');
-                return;
-            }
-    
-            // Tạo HTML danh sách sản phẩm đã chọn
+        const renderProductList = () => {
             const html = objectChooses.map(product => `
                 <div class="fix-grid-6">
                     <div class="goods-item">
@@ -749,12 +856,12 @@
                         <div class="hidden">
                             <input type="hidden" name="object[product_id][]" value="${product.product_id}">
                             <input type="hidden" name="object[product_variant_id][]" value="${product.product_variant_id || ''}">
+                            <input type="hidden" name="object[name][]" value="${product.name}">
                         </div>
                     </div>
                 </div>
             `).join('');
     
-            // Thêm nội dung vào danh sách và hiển thị
             const additionalHtml = `
                 <div class="boxSearchInput fix-grid-6">
                     <p>Tìm theo tên, mã sản phẩm...</p>
@@ -762,10 +869,25 @@
             `;
     
             $('.choose-product-list').html(html + additionalHtml).removeClass('hidden');
-            $('#findProduct').modal('hide');
+        };
     
-            HT.deleteProductsItem();
+        $(document).on('click', '.confirm-product-promotion', function (e) {
+            e.preventDefault();
+    
+            if (objectChooses.length === 0) {
+                alert('Vui lòng chọn ít nhất một sản phẩm!');
+            } else {
+                renderProductList();
+                $('#findProduct').modal('hide');
+            }
+    
         });
+        
+        HT.deleteProductsItem();
+        // Render nếu objectChooses đã có sẵn dữ liệu
+        if (objectChooses.length > 0) {
+            renderProductList();
+        }
     };
     
     HT.chooseProductCataloguePromotion = () => {
@@ -788,18 +910,15 @@
                 objectChooses.push(objectItem);
                 checkbox.prop('checked', true);
             }
+
+            console.log('Danh sách objectChooses:', objectChooses); // Debug
         });
     };
     
     HT.confirmProductCataloguePromotion = () => {
-        $(document).on('click', '.confirm-product-promotion', function (e) {
-            e.preventDefault();
-    
-            if (objectChooses.length === 0) {
-                return;
-            }
-    
-            let html = objectChooses.map(product => `
+        const renderProductCatalogueList = () => {
+            // Render danh sách sản phẩm đã chọn
+            const productListHtml = objectChooses.map(product => `
                 <div class="fix-grid-6">
                     <div class="goods-item">
                         <span class="goods-item-name">${product.name}</span>
@@ -808,22 +927,44 @@
                         </button>
                         <div class="hidden">
                             <input type="hidden" name="object[product_catalogue_id][]" value="${product.product_catalogue_id}">
+                            <input type="hidden" name="object[name][]" value="${product.name}">
                         </div>
                     </div>
                 </div>
             `).join('');
     
-            html += `
+            // Thêm ô tìm kiếm
+            const searchBoxHtml = `
                 <div class="boxSearchInput fix-grid-6">
-                    <p>Tìm theo tên, mã sản phẩm..</p>
+                    <p>Tìm theo tên, mã sản phẩm...</p>
                 </div>
             `;
     
-            $('.choose-product-list').html(html).removeClass('hidden');
-            $('#findProduct').modal('hide');
+            $('.choose-product-list')
+                .html(productListHtml + searchBoxHtml)
+                .removeClass('hidden');
+        };
     
-            HT.deleteProductCataloguesItem();
-        });
+        const handleConfirmPromotion = (e) => {
+            e.preventDefault();
+    
+            if (objectChooses.length === 0) {
+                alert('Vui lòng chọn ít nhất một sản phẩm!');
+                return;
+            }
+    
+            renderProductCatalogueList();
+            $('#findProduct').modal('hide');
+            HT.deleteProductsItem(); // Gọi hàm xóa các sản phẩm đã chọn
+        };
+    
+        $(document).on('click', '.confirm-product-promotion', handleConfirmPromotion);
+    
+        if (objectChooses.length > 0) {
+            renderProductCatalogueList();
+        }
+    
+        HT.deleteProductCataloguesItem(); // Gọi hàm xóa catalogue item
     };
     
     HT.checkEmptyGoodList = () => {
@@ -1018,7 +1159,6 @@
         HT.deleteAmountRangeCondition();
         HT.renderOrderRangeConditionContainer();
         HT.searchAjax();
-        HT.productQuanityListProduct();
         HT.getPaginationLinks();
         HT.searchProducts();
         HT.selectProductAndQuality();

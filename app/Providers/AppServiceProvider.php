@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use DateTime;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log; 
 
 class AppServiceProvider extends ServiceProvider
 {   
@@ -50,7 +53,23 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot(): void
-    {   
+    {
+        // Mở rộng phương thức validate cho định dạng ngày tháng
+        Validator::extend('custom_date_format', function($attribute, $value, $parameters, $validator) {
+            // Kiểm tra định dạng ngày với giờ
+            return DateTime::createFromFormat('d/m/Y H:i', $value) !== false;
+        });
+
+        // Mở rộng phương thức validate cho kiểm tra ngày bắt đầu và kết thúc
+        Validator::extend('custom_after', function($attribute, $value, $parameters, $validator) {
+            // Lấy giá trị start_date từ request
+            $startDate = $validator->getData()['start_date'] ?? null;
+        
+            // Kiểm tra nếu start_date và end_date hợp lệ và so sánh
+            return $startDate && DateTime::createFromFormat('d/m/Y H:i', $value) > DateTime::createFromFormat('d/m/Y H:i', $startDate);
+        });
+
+        // Đặt chiều dài mặc định cho chuỗi trong schema
         Schema::defaultStringLength(250);
     }
 }
