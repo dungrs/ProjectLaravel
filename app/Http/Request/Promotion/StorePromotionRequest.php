@@ -3,6 +3,8 @@
 namespace App\Http\Request\Promotion;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\Promotion\OrderAmountRangeRule;
+use App\Rules\Promotion\ProductAndQuantityRule;
 
 class StorePromotionRequest extends FormRequest
 {
@@ -26,11 +28,24 @@ class StorePromotionRequest extends FormRequest
         $rules = [
             'name' => 'required',
             'code' => 'required',
-            'start_date' => 'required|custom_date_format'
+            'start_date' => 'required|custom_date_format',
+            'method' => 'required|in:' . implode(',', array_keys(__('module.promotion')))
         ];
 
         if (!$this->input('never_end_date')) {
             $rules['end_date'] = 'required|custom_date_format|custom_after:start_date';
+        }
+
+        $method = $this->input('method');
+        switch ($method) {
+            case 'order_amount_range':
+                $rules['method'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
+                break;
+            case 'product_and_quantity';
+                $rules['method'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
+                break;
+            default:
+                break;
         }
 
         return $rules;
@@ -43,6 +58,9 @@ class StorePromotionRequest extends FormRequest
             'code.required' => 'Bạn chưa nhập từ khóa của khuyến mại',
             'start_date.required' => 'Bạn chưa nhập vào ngày bắt đầu khuyến mại',
             'start_date.custom_date_format' => 'Ngày bắt đầu khuyến mãi không đúng định dạng',
+            'method.required' => 'Bạn chưa chọn hình thức khuyến mãi',
+            'method.in' => 'Hình thức khuyến mãi không hợp lệ',
+            // 'method_module.required' => 'Bạn chưa nhập thông tin cho hình thức khuyến mãi "order_amount_range"',
         ];
 
         if (!$this->input('never_end_date')) {

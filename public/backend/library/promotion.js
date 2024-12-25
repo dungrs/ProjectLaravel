@@ -228,7 +228,6 @@
         });
     };
     
-
     var ranges = [];
 
     // Hàm kiểm tra xung đột phạm vi

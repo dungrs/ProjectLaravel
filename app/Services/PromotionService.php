@@ -5,9 +5,7 @@ use App\Services\Interfaces\PromotionServiceInterface;
 use App\Repositories\PromotionRepository;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-
+use App\Enums\PromotionEnum;
 
 /**
  * Class PromotionService
@@ -40,8 +38,20 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     
         try {
             // Lấy tất cả dữ liệu từ request
-            $payload = $this->payload($request, $languageId);
-            $this->promotionRepository->create($payload);
+            $method = PromotionEnum::ORDER_AMOUNT_RANGE->value;  // Sử dụng ->value để lấy giá trị của enum
+            dd($method === 'order_amount_range');  // So sánh với chuỗi
+    
+            $payload = $request->only(
+                'name',
+                'code',
+                'description',
+                'method',
+                'start_date',
+                'end_date'
+            );
+            dd($payload);
+    
+            // $this->promotionRepository->create($payload);
             DB::commit(); // Nếu không có lỗi, commit giao dịch
             return true;
         } catch (Exception $e) {
@@ -58,7 +68,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         try {
             // Lấy tất cả dữ liệu từ request
             $payload = $this->payload($request, $languageId); 
-            $promotion = $this->promotionRepository->update($id, $payload);
+            // $promotion = $this->promotionRepository->update($id, $payload);
 
             DB::commit(); // Nếu không có lỗi, commit giao dịch
             return true;
@@ -71,13 +81,9 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     }
 
     private function payload($request, $languageId) {
-        $payload = $request->only(['name', 'keyword', 'short_code', 'album', 'model']);
-        $payload['model_id'] = $request->input('modelItem.id');
-        $payload['description'] = json_encode([
-            $languageId => $request->input('description'),
-        ]);
+  
 
-        return $payload;
+        return '';
     }
 
     public function delete($id) {

@@ -13,9 +13,21 @@ class Promotion extends Model
     use HasFactory, Notifiable, QueryScopes, SoftDeletes;
     
     protected $fillable = [
+        'name',
+        'code',
+        'description',
+        'method',
+        'module_type',
+        'discount_information',
+        'apply_source',
+        'never_end_date',
+        'start_date',
+        'end_date',
+        'publish',
+        'order',
     ];
 
-    protected $table = 'promotion';
+    protected $table = 'promotions';
 
     protected $casts = [
         
