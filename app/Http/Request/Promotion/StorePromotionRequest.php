@@ -5,6 +5,7 @@ namespace App\Http\Request\Promotion;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\Promotion\OrderAmountRangeRule;
 use App\Rules\Promotion\ProductAndQuantityRule;
+use App\Classes\PromotionEnum;
 
 class StorePromotionRequest extends FormRequest
 {
@@ -38,13 +39,11 @@ class StorePromotionRequest extends FormRequest
 
         $method = $this->input('method');
         switch ($method) {
-            case 'order_amount_range':
+            case PromotionEnum::ORDER_AMOUNT_RANGE:
                 $rules['method'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
                 break;
-            case 'product_and_quantity';
+            case PromotionEnum::PRODUCT_AND_QUANTITY;
                 $rules['method'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
-                break;
-            default:
                 break;
         }
 

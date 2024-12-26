@@ -19,9 +19,9 @@
         </div>
     </div>
 </form>
-<input type="hidden" class="preload_select_module_type" value="{{ old('module_type', $promotion->module_type ?? '') }}">
-<input type="hidden" class="input_order_amount_range" value='@json(old('promotion_order_amount_range', []))'>
-<input type="hidden" class="input_product_and_quantity" value='@json(old('product_and_quantity', []))'>\
-<input type="hidden" class="input_object" value='@json(old('object', []))'>
+<input type="hidden" class="preload_select_module_type" value="{{ old('module_type', $promotion->discount_information['info']['model'] ?? '') }}">
+<input type="hidden" class="input_order_amount_range" value='@json(old('promotion_order_amount_range', $promotion->discount_information['info'] ?? []))'>
+<input type="hidden" class="input_product_and_quantity" value='@json(old('product_and_quantity', $promotion->discount_information['info'] ?? []))'>\
+<input type="hidden" class="input_object" value='@json(old('object', $promotion->discount_information['info']['object'] ?? []))'>
 @include('backend.promotion.promotion.component.popup')
 <div id="productData" data-products='@json(__('module.item'))'></div>

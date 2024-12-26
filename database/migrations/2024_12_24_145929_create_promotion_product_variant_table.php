@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('promotion_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('product_variant_id');
+            $table->string('variant_uuid', 36);
             $table->string('model');
             $table->foreign('promotion_id')->references('id')->on('promotions')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

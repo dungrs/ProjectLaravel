@@ -120,7 +120,7 @@ if (!function_exists('recursiveMenuHtml')) {
                     {$menu->name}
                 </div>
                 <a href="{$route}" class="create-children-menu">Quản lý menu con</a>
-HTML;
+            HTML;
 
             // Nếu có children, gọi đệ quy để hiển thị các menu con
             if (!empty($menuNode['children'])) {
@@ -169,5 +169,48 @@ if (!function_exists('convertArray')) {
     }
 }
 
+if (!function_exists('normalizeAmount')) {
+    function normalizeAmount($amount)
+    {
+        return (int) str_replace(',', '', $amount);
+    }
+}
 
+if (!function_exists('convertDateTime')) {
+    function convertDateTime($dateTime)
+    {
+        return \Carbon\Carbon::parse($dateTime)->format('d/m/Y');
+    }
+}
+
+if (!function_exists('renderDiscountInformation')) {
+    function renderDiscountInformation($promotion)
+    {   
+        if ($promotion->method === 'product_and_quantity') {
+            // Giải mã JSON của discount_information (nếu cần)
+            $discountInformation = is_string($promotion->discount_information) 
+                ? json_decode($promotion->discount_information, true) 
+                : $promotion->discount_information;
+
+            if (is_array($discountInformation) && isset($discountInformation['info'])) {
+                $discountValue = $discountInformation['info']['discountValue'] ?? 'Không xác định';
+                $discountType = $discountInformation['info']['discountType'] === 'percent' ? '%' : 'đ';
+
+                return <<<HTML
+                    <span class="label label-success">{$discountValue} {$discountType}</span>
+                HTML;
+            }
+
+            return '<div>Dữ liệu khuyến mãi không hợp lệ</div>';
+        }
+
+        // Nếu không phải phương thức 'product_and_quantity'
+        $route = route("promotion.edit", $promotion->id);
+        return <<<HTML
+            <div>
+                <a href="{$route}">Xem chi tiết</a>
+            </div>
+        HTML;
+    }
+}
 

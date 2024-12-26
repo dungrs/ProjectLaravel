@@ -44,12 +44,12 @@ class OrderAmountRangeRule implements Rule
 
         // Kiểm tra nếu có xung đột giữa các khoảng giá trị
         for ($i = 0; $i < count($this->data['amountFrom']); $i++) {
-            $amount_from_1 = $this->normalizeAmount($this->data['amountFrom'][$i]);
-            $amount_to_1 = $this->normalizeAmount($this->data['amountTo'][$i]);
+            $amount_from_1 = normalizeAmount($this->data['amountFrom'][$i]);
+            $amount_to_1 = normalizeAmount($this->data['amountTo'][$i]);
 
             for ($j = $i + 1; $j < count($this->data['amountTo']); $j++) {
-                $amount_from_2 = $this->normalizeAmount($this->data['amountFrom'][$j]);
-                $amount_to_2 = $this->normalizeAmount($this->data['amountTo'][$j]);
+                $amount_from_2 = normalizeAmount($this->data['amountFrom'][$j]);
+                $amount_to_2 = normalizeAmount($this->data['amountTo'][$j]);
 
                 if ($amount_from_1 <= $amount_to_2 && $amount_to_1 >= $amount_from_2) {
                     $this->errorMessage = 'Có xung đột giữa các khoảng giá trị khuyến mại! Hãy kiểm tra lại dữ liệu';
@@ -67,10 +67,6 @@ class OrderAmountRangeRule implements Rule
      * @param string $amount
      * @return int
      */
-    protected function normalizeAmount($amount)
-    {
-        return (int) str_replace(',', '', $amount);
-    }
 
     /**
      * Get the validation error message.

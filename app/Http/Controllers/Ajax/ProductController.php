@@ -69,6 +69,7 @@ class ProductController extends Controller
                     'products.id', 
                     'products.image',
                     'tb3.price',
+                    'tb3.uuid as variant_uuid',
                     'tb3.quantity',
                     'tb3.sku',
                     'tb2.name',

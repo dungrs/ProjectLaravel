@@ -1036,3 +1036,8 @@ background: #888;
 .search-list::-webkit-scrollbar-thumb:hover {
 background: #555;
 }
+
+.text-small {
+    font-size: 12px;
+    font-weight: 600;
+}

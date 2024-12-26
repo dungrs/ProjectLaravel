@@ -8,6 +8,10 @@ use App\Services\BaseService;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductVariantAttributeRepository;
 use Exception;
+use Ramsey\Uuid\Guid\Guid;
+use Ramsey\Uuid\Guid\GuidInterface;
+use Ramsey\Uuid\Rfc4122\FieldsInterface;
+use Ramsey\Uuid\Rfc4122\GuidInterface as UuidInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -136,7 +140,7 @@ class ProductService extends BaseService implements ProductServiceInterface
 
     private function createVariant($product, $request, $languageId) {
         $payload = $request->only(['variant', 'productVariant', 'attribute']);
-        $variant = $this->createVariantArray($payload);
+        $variant = $this->createVariantArray($payload, $product);
        
         $variants = $product->product_variants()->createMany($variant);
         // Lấy ra tất cả 
@@ -182,11 +186,14 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $combines;
     }
 
-    private function createVariantArray(array $payload = []): array {
+    private function createVariantArray(array $payload = [], $product): array {
         $variant = [];
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach($payload['variant']['sku'] as $key => $val) {
+                $uuId = \Ramsey\Uuid\Guid\Guid::uuid5(\Ramsey\Uuid\Guid\Guid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
+
                 $variant[] = [
+                    'uuid' => $uuId,
                     'code' => ($payload['productVariant']['id'][$key]) ?? '',
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                     'sku' => $val,
@@ -197,6 +204,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'album' => ($payload['variant']['album'][$key]) ?? '',
                     'user_id' => Auth::id(),
                 ];
+
             }
         }
         return $variant;

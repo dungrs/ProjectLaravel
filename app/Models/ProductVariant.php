@@ -11,6 +11,7 @@ class ProductVariant extends Model
     use HasFactory, QueryScopes;
 
     protected $fillable = [
+        'uuid',
         'product_id',
         'code',
         'quantity',
@@ -22,6 +23,8 @@ class ProductVariant extends Model
         'publish',
         'user_id'
     ];
+
+    protected $table = 'product_variants';
 
     public function products() {
         return $this->belongsTo(Product::class, 'product_id', 'id');

@@ -126,8 +126,7 @@ class PostService extends BaseService implements PostServiceInterface
 
     private function updateLanguageForPost($post, $request, $languageId) {
         $payload = $request->only($this->payloadLanguage());
-        $payload = $this->formatLanguagePayload($payload, $post->id, $languageId
-    );
+        $payload = $this->formatLanguagePayload($payload, $post->id, $languageId);
         // Xóa các bản ghi có payload['language_id'] và $post->id trong bảng pivot
         $post->languages()->detach($payload['language_id'], $post->id);
         return $this->postRepository->createPivot($post, $payload, 'languages');

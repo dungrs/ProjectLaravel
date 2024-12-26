@@ -37,7 +37,7 @@
             <h5>Nguồn khách áp dụng</h5>
         </div>
         @php
-            $sourceStatus = old('source', $model->source_status ?? null)
+            $sourceStatus = old('source', $model->discount_information['source']['status'] ?? null)
         @endphp
 
         <div class="ibox-content">
@@ -72,7 +72,7 @@
                         @foreach ($sources as $source)
                             <option 
                                 value="{{ $source->id }}" 
-                                {{ in_array($source->id, old('sourceValue', [])) ? 'selected' : '' }}
+                                {{ in_array($source->id, old('sourceValue', $model->discount_information['source']['data'] ?? [])) ? 'selected' : '' }}
                             >
                                 {{ $source->name }}
                             </option>
@@ -87,7 +87,7 @@
             <h5>Đối tượng áp dụng</h5>
         </div>
         @php
-            $applyStatus = old('apply', $model->apply_status ?? null);
+            $applyStatus = old('apply', $model->discount_information['apply']['status'] ?? null);
             $applyData = __('module.applyStatus');
             $applyDataFormatted = [];
             foreach ($applyData as $key => $value) {
@@ -125,7 +125,7 @@
                         @foreach (__('module.applyStatus') as $key => $val)
                             <option 
                                 value="{{ $key }}" 
-                                {{ in_array($key, old('applyValue', [])) ? 'selected' : '' }}
+                                {{ in_array($key, old('applyValue', $model->discount_information['apply']['data'] ?? [])) ? 'selected' : '' }}
                             >
                                 {{ $val }}
                             </option>
@@ -133,34 +133,23 @@
                     </select>
                 </div>
                 <div class="wrapper-condition">
-                    @if (old('applyValue') && count(old('applyValue')))
-                        @foreach (old('applyValue') as $key => $val)
-                            <div class="{{ $val }} wrapper-condition-item mt10">
-                                <div class="mb5">
-                                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                        <div class="conditionLabel">{{ $applyData[$val] ?? '' }}</div>
-                                        <div class="delete">
-                                            <i class="fa fa-trash"></i>
-                                        </div>
-                                    </div>
+                    @foreach (old('applyValue', $model->discount_information['apply']['data'] ?? []) as $val)
+                        <div class="{{ $val }} wrapper-condition-item mt10">
+                            <div class="mb5">
+                                <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                                    <div class="conditionLabel">{{ $applyData[$val] ?? '' }}</div>
+                                    <div class="delete"><i class="fa fa-trash"></i></div>
                                 </div>
-                                <select name="apply_{{ $val }}[]" class="multipleSelect2 mt10" multiple>
-                                    @php
-                                        $name = "apply_{$val}"; // Tạo name động
-                                        $oldValues = old($name, []); // Lấy giá trị cũ hoặc mảng rỗng
-                                    @endphp
-                                    @foreach ($modelValue[$val] ?? [] as $item)
-                                        <option 
-                                            value="{{ $item['id'] }}"
-                                            {{ in_array($item['id'], $oldValues) ? 'selected' : '' }}
-                                        >
-                                            {{ $item['name'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
                             </div>
-                        @endforeach
-                    @endif
+                            <select name="{{ $val }}[]" class="multipleSelect2 mt10" multiple>
+                                @foreach ($promotionValue[$val] ?? [] as $item)
+                                    <option value="{{ $item['id'] }}" {{ in_array($item['id'], old($val, $model->discount_information['apply']['condition'][$val] ?? [])) ? 'selected' : '' }}>
+                                        {{ $item['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endforeach
                 </div>
             @endif
         </div>

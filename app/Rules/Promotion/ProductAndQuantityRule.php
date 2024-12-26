@@ -26,14 +26,14 @@ class ProductAndQuantityRule implements Rule
     {
         // Kiểm tra nếu không có giá trị số lượng tối thiểu
         if (empty($this->data['product_and_quantity']['quantity']) || 
-            $this->normalizeAmount($this->data['product_and_quantity']['quantity']) <= 0) {
+            normalizeAmount($this->data['product_and_quantity']['quantity']) <= 0) {
             $this->errorMessage = 'Bạn phải nhập số lượng mua tối thiểu để được hưởng chiết khấu.';
             return false;
         }
 
         // Kiểm tra nếu giá trị chiết khấu không hợp lệ
         if (empty($this->data['product_and_quantity']['discountValue']) || 
-            $this->normalizeAmount($this->data['product_and_quantity']['discountValue']) <= 0) {
+            normalizeAmount($this->data['product_and_quantity']['discountValue']) <= 0) {
             $this->errorMessage = 'Bạn phải nhập vào giá trị của chiết khấu.';
             return false;
         }

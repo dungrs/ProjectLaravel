@@ -165,14 +165,36 @@
     
     HT.setupDatepicker = () => {
         $('.datepicker').each(function() {
-            const inputName = $(this).attr('name');
-            const inputValue = $(this).data('value') || $(this).val() || new Date();
-            $(this).datetimepicker({
-                timepicker: true,
-                format: 'd/m/y H:i',
-                value: inputValue,
-                minDate: new Date()
-            });
+            const input = $(this);
+            let rawValue = input.data('value') || input.val(); // Lấy giá trị từ data-value hoặc giá trị input
+    
+            // Kiểm tra nếu rawValue không phải là giá trị hợp lệ
+            if (rawValue && !isNaN(new Date(rawValue).getTime())) {
+                const date = new Date(rawValue);
+                const formattedValue = `${("0" + date.getDate()).slice(-2)}/${("0" + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`;
+                
+                input.val(formattedValue); // Cập nhật giá trị input với định dạng mới
+    
+                input.datetimepicker({
+                    timepicker: true,
+                    format: 'd/m/Y H:i',
+                    value: formattedValue,
+                    minDate: new Date(),
+                });
+            } else {
+                // Nếu không có data-value hợp lệ, sử dụng ngày giờ hiện tại
+                const now = new Date();
+                const currentFormattedValue = `${("0" + now.getDate()).slice(-2)}/${("0" + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()} ${("0" + now.getHours()).slice(-2)}:${("0" + now.getMinutes()).slice(-2)}`;
+                
+                input.val(currentFormattedValue); // Cập nhật giá trị input với định dạng ngày giờ hiện tại
+    
+                input.datetimepicker({
+                    timepicker: true,
+                    format: 'd/m/Y H:i',
+                    value: currentFormattedValue,
+                    minDate: new Date(),
+                });
+            }
         });
     };
 

@@ -40,4 +40,10 @@ class Product extends Model
     public function product_variants() {
         return $this->hasMany(ProductVariant::class, 'product_id', 'id');
     }
+
+    public function promotions() {
+        // Muốn xử lý trên các trường nào thì sử dụng pivot
+        return $this->belongsToMany(Promotion::class, 'promotion_product_variant', 'product_id', 'promotion_id')
+        ->withPivot('variant_uuid', 'model')->withTimestamps();
+    }
 }

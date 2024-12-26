@@ -208,7 +208,7 @@
                         </div>
                     </div>
                 </div>
-                <select name="apply_${condition.value}[]" class="multipleSelect2 mt10" multiple>
+                <select name="${condition.value}[]" class="multipleSelect2 mt10" multiple>
                     ${content}
                 </select>
             </div>
@@ -397,7 +397,7 @@
                         <tr>
                             <th class="text-right">Giá trị từ</th>
                             <th class="text-right">Giá trị đến</th>
-                            <th class="text-right">Chiết khấu(%)</th>
+                            <th class="text-right" style="width: 40px;">Chiết khấu(%)</th>
                             <th class="text-right"></th>
                         </tr>
                     </thead>
@@ -508,7 +508,7 @@
                 <div class="choose-module mt20">
                     <div class="fix-label" style="color: blue;">Sản phẩm áp dụng</div>
                     <select name="module_type" id="" class="setupSelect2 select-product-and-quantity">
-                        <option value="">Chọn hình thức</option>
+                        <option value="none">Chọn hình thức</option>
                         ${options}
                     </select>
                 </div>
@@ -516,10 +516,10 @@
                     <table class="table table-striped mt20">
                         <thead>
                             <tr>
-                                <th class="text-right" style="width: 500px;">Sản phẩm mua</th>
+                                <th class="text-right" style="width: 400px;">Sản phẩm mua</th>
                                 <th class="text-right" style="width: 100px;">SL tối thiểu</th>
                                 <th class="text-right">Giới hạn KM</th>
-                                <th class="text-right">Chiết khấu</th>
+                                <th class="text-right" style="max-width: 40px;">Chiết khấu</th>
                                 <th></th>
                             </th>
                         </thead>
@@ -695,16 +695,16 @@
     
                 // Kiểm tra nếu sản phẩm đã tồn tại trong objectChooses
                 const isChecked = objectChooses.some(obj => 
-                    obj.product_id == product.id && obj.product_variant_id == product.product_variant_id
+                    obj.product_id == product.id && obj.variant_uuid == product.variant_uuid
                 );
     
                 htmlContent += `
-                    <div class="search-object-item" data-product_id="${product.id}" data-product_variant_id="${(product.product_variant_id) ?? ''}" data-name="${product.variant_name}">
+                    <div class="search-object-item" data-product_id="${product.id}" data-variant_uuid="${(product.variant_uuid) ?? ''}" data-name="${product.variant_name}">
                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
                             <div class="object-info">
                                 <div class="uk-flex uk-flex-middle">
                                     <div class="uk-flex uk-flex-middle">
-                                        <input type="checkbox" name="product-${product.id}" value="${product.id + '_' + (product.product_variant_id ?? '')}" class="input-checkbox" ${isChecked ? 'checked' : ''}>
+                                        <input type="checkbox" name="product-${product.id}" value="${product.id + '_' + (product.variant_uuid ?? '')}" class="input-checkbox" ${isChecked ? 'checked' : ''}>
                                     </div>
                                     <span class="img img-scaledown">
                                         <img src="${product.image}" alt="${product.name}">
@@ -762,7 +762,7 @@
                     objectInput.name.forEach((name, index) => {
                         let objectInputItem = {
                             product_id: objectInput.product_id[index] || null,
-                            product_variant_id: objectInput.product_variant_id[index] || null,
+                            variant_uuid: objectInput.variant_uuid[index] || null,
                             name: objectInput.name[index] || ''
                         };
     
@@ -825,14 +825,14 @@
 
             const objectItem = {
                 product_id: _this.data('product_id'),
-                product_variant_id: _this.data('product_variant_id') || null,
+                variant_uuid: _this.data('variant_uuid') || null,
                 name: _this.data('name')
             };
 
             if (isChecked) {
                 checkbox.prop('checked', false);
                 objectChooses = objectChooses.filter(
-                    obj => obj.product_id !== objectItem.product_id || obj.product_variant_id !== objectItem.product_variant_id
+                    obj => obj.product_id !== objectItem.product_id || obj.variant_uuid !== objectItem.variant_uuid
                 );
             } else {
                 objectChooses.push(objectItem);
@@ -854,7 +854,7 @@
                         </button>
                         <div class="hidden">
                             <input type="hidden" name="object[product_id][]" value="${product.product_id}">
-                            <input type="hidden" name="object[product_variant_id][]" value="${product.product_variant_id || ''}">
+                            <input type="hidden" name="object[variant_uuid][]" value="${product.variant_uuid || ''}">
                             <input type="hidden" name="object[name][]" value="${product.name}">
                         </div>
                     </div>
@@ -988,11 +988,11 @@
     
             let _this = $(this);
             let productId = _this.closest('.goods-item').find('input[name="object[product_id][]"]').val();
-            let productVariantId = _this.closest('.goods-item').find('input[name="object[product_variant_id][]"]').val();
+            let productVariantId = _this.closest('.goods-item').find('input[name="object[variant_uuid][]"]').val();
     
             // Lọc và giữ lại các phần tử không trùng với sản phẩm bị xóa
             objectChooses = objectChooses.filter(obj => 
-                obj.product_id != productId || obj.product_variant_id != productVariantId
+                obj.product_id != productId || obj.variant_uuid != productVariantId
             );
     
             // Xóa phần tử khỏi giao diện
