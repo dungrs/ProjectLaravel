@@ -9,6 +9,8 @@ use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 
+use App\Http\Controllers\Frontend\HomeController;
+
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\UserController;
@@ -44,10 +46,11 @@ use App\Http\Controllers\Backend\PromotionController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// FRONTEND ROUTES
+Route::get('/', [HomeController::class, 'index']) -> name('home.index');
 
+
+// BACKEND ROUTES
 Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], function() {
     /* BACKEND ROUTES */
     Route::get('/dashboard/index', [DashboardController::class, 'index']) -> name('dashboard.index');
@@ -269,8 +272,6 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
     Route::get('ajax/product/loadProductAnimation', [AjaxProductController::class, 'loadProductAnimation']) -> name('ajax.product.loadProductAnimation');
     Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource']) -> name('ajax.source.getAllSource');
 });
-
-
 
 Route::get('admin', [AuthController::class, 'index']) -> name('auth.admin') -> middleware('login');
 Route::get('logout', [AuthController::class, 'logout']) -> name('auth.logout');

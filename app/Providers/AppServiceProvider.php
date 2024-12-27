@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Http\ViewComposers\SystemComposer;
+use App\Repositories\SystemRepository;
+use App\Models\Language;
 use DateTime;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log; 
 
 class AppServiceProvider extends ServiceProvider
@@ -53,7 +57,10 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot(): void
-    {
+    {   
+        $locale = app()->getLocale();
+        $language = Language::where('canonical', $locale)->first();
+
         // Mở rộng phương thức validate cho định dạng ngày tháng
         Validator::extend('custom_date_format', function($attribute, $value, $parameters, $validator) {
             // Kiểm tra định dạng ngày với giờ
@@ -67,6 +74,13 @@ class AppServiceProvider extends ServiceProvider
         
             // Kiểm tra nếu start_date và end_date hợp lệ và so sánh
             return $startDate && DateTime::createFromFormat('d/m/Y H:i', $value) > DateTime::createFromFormat('d/m/Y H:i', $startDate);
+        });
+
+        View::composer('*', function ($view) use ($language)  {
+            $systemRepository = app(SystemRepository::class);
+            $languageId = $language->id;
+            $composer = new SystemComposer($systemRepository, $languageId);
+            $composer->compose($view);
         });
 
         // Đặt chiều dài mặc định cho chuỗi trong schema
