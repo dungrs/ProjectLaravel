@@ -1,10 +1,8 @@
 <div class="col-lg-9">
     <div class="ibox">
         <div class="ibox-title">
-            <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                <h5>Danh sách slides</h5>
-                <button type="button" class="addSlide btn">Thêm slide</button>
-            </div>
+            <h5>Danh sách slides</h5>
+            <button type="button" class="addSlide btn">Thêm slide</button>
         </div>
         @php
             $slides = old('slide', isset($slideItem) ? $slideItem : null);

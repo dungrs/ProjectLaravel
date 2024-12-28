@@ -99,6 +99,74 @@ if (!function_exists('recursive')) {
     }
 }
 
+if (!function_exists('loadClass')) {
+    function loadClass(string $model = '', string $folder = 'Repositories',  $interface = 'Repository') {
+        $serviceInterfaceNamespace = '\App\\' . $folder . '\\' . ucfirst($model) . $interface;
+        if (!class_exists($serviceInterfaceNamespace)) {
+            return response()->json(['error' => 'Repository not found.'], 404);
+        }
+        
+        $serviceInterface = app($serviceInterfaceNamespace);
+
+        return $serviceInterface;
+    }
+}
+
+if (!function_exists('writeUrl')) {
+    function writeUrl(string $canonical, bool $fullDomain = true, $suffix = false): string {
+        // If the canonical already contains a protocol (http/https), return it as is.
+        if (filter_var($canonical, FILTER_VALIDATE_URL)) {
+            return $canonical;
+        }
+
+        $fileUrl = ($fullDomain ? config('app.url') : '') . $canonical;
+
+        // Append the suffix if needed.x
+        if ($suffix !== false) {
+            $fileUrl .= $suffix === true ? config('app.general.suffix') : '';
+        }
+
+        return $fileUrl;
+    }
+}
+
+if (!function_exists('frontendRecursiveMenu')) {
+    function frontendRecursiveMenu($datas, $level = 1) {
+        if (empty($datas)) {
+            return '';
+        }
+
+        $html = '';
+
+        foreach($datas as $menuNode) {
+            $menu = $menuNode['item'];
+            $name = $menu->name;
+            $canonical = writeUrl($menu->canonical, true, true);
+
+            $html .= '<li class="' . (($level == 1) ? 'children' : '') . '">';
+            $html .= '<a href="' . $canonical . '" title="">'. $name .'</a>';
+            if ($level === 1) {
+                $html .= '<div class="dropdown-menu">';
+            }
+            if (!empty($menuNode['children'])) {
+                $menuHtml = '';
+                $menuHtml .= '<ul class="uk-list uk-clearfix menu-style menu-level__' . ($level + 1) . '">';
+                $menuHtml .= frontendRecursiveMenu($menuNode['children'], $level + 1);
+                $menuHtml .= "</ul>";
+                $html .= $menuHtml;
+            }
+            if ($level === 1) {
+                $html .= '</div>';
+            }
+
+            $html .= '</li>';
+
+        }
+
+        return $html;
+    }
+}
+
 if (!function_exists('recursiveMenuHtml')) {
     function recursiveMenuHtml($datas, $level = 1) {
         if (empty($datas)) {

@@ -12,4 +12,7 @@ return [
         '2' => 'Follow'
     ],
     'suffix' => '.html',
+    'defaultPublish' => [
+        'publish', '=', 2
+    ]
 ];

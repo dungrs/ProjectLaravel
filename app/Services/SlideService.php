@@ -124,7 +124,8 @@ class SlideService extends BaseService implements SlideServiceInterface
             'id',
             'name',
             'keyword',
-            'item'
+            'item',
+            'publish'
         ];
     }
 }

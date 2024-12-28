@@ -116,7 +116,8 @@ class BaseRepository implements BaseRepositoryInterface
         array $joins = [], 
         array $orderBy = [], 
         array $select = ['*'],
-        $paginate = null // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang
+        $paginate = null, // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang,
+        array $groupBy = [] // Thêm tham số groupBy
     ) {
         $query = $this->model->newQuery();
     
@@ -153,6 +154,11 @@ class BaseRepository implements BaseRepositoryInterface
             foreach ($orderBy as $column => $direction) {
                 $query->orderBy($column, $direction);
             }
+        }
+    
+        // Áp dụng GROUP BY nếu có
+        if (!empty($groupBy)) {
+            $query->groupBy($groupBy);
         }
     
         // Nếu có yêu cầu phân trang, sử dụng paginate, nếu không sẽ trả về kết quả theo flag

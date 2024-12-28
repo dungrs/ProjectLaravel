@@ -120,41 +120,99 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         }
     }
 
-    public function getWidgetItem(string $model = '', array $model_id = [], int $language = 1) {
+    public function getWidgetItem(string $model = '', array $model_id = [], int $language = 1, array $params = []) {
         $modelName = $model;
         $model = Str::snake($model); // Kết quả: 'post_catalogue'
         $tableName = "{$model}s"; // Tên bảng: 'post_catalogues'
     
         // Lấy tên repository dựa trên quy ước
-        $repositoryInterfaceNamespace = "\App\Repositories\\" . ucfirst($modelName) . "Repository";
+        $repositoryInterfaceNamespace = "\\App\\Repositories\\" . ucfirst($modelName) . "Repository";
     
         // Kiểm tra repository có tồn tại không
         if (!class_exists($repositoryInterfaceNamespace)) {
             return response()->json(['error' => 'Repository not found.'], 404);
         }
     
+        $condition = [
+            ["{$model}_language.language_id", '=', $language],
+            ["{$model}_language.{$model}_id", 'IN', $model_id]
+        ];
+    
+        $join = [
+            [
+                'table' => "{$model}_language", // Bảng liên kết
+                'on' => ["{$model}_language.{$model}_id", "{$tableName}.id"] // Điều kiện join
+            ]
+        ];
+    
+        // Kiểm tra tham số children và bổ sung join nếu cần
+        if (!empty($params['children'])) {
+            $tableChild = lcfirst(str_replace('Catalogue', '', $modelName));
+    
+            $join[] = [
+                'type' => 'left',
+                'table' => "{$tableChild}s", // Bảng liên kết
+                'on' => ["{$tableChild}s.{$tableChild}_catalogue_id", "{$tableName}.id"] // Điều kiện join
+            ];
+    
+            $join[] = [
+                'type' => 'left',
+                'table' => "{$tableChild}_language", // Bảng liên kết
+                'on' => ["{$tableChild}_language.{$tableChild}_id", "{$tableChild}s.id"] // Điều kiện join
+            ];
+        }
+    
         $repositoryInterface = app($repositoryInterfaceNamespace);
     
+        // Lấy dữ liệu widget item
+        $columns = [
+            "{$model}s.id", 
+            "{$model}_language.canonical", 
+            "{$model}s.image", 
+            "{$model}_language.name",
+        ];
+    
+        if (!empty($params['children'])) {
+            $columns[] = "{$tableChild}_language.name as child_name"; // Nếu có children, lấy thêm name của child
+            $columns[] = DB::raw('COUNT(' . "{$tableChild}s.id" . ') as child_count'); // Đếm số lượng child
+        }
+    
+        // Cập nhật phần groupBy
+        $groupBy = [
+            "{$model}s.id",
+            "{$model}_language.canonical",
+            "{$model}s.image",
+            "{$model}_language.name",
+        ];
+    
+        if (!empty($params['children'])) {
+            $groupBy[] = "{$tableChild}_language.name";
+        }
+    
+        // Sử dụng hàm findByCondition với điều kiện, join, groupBy và các cột cần lấy
         $widgetItemData = $repositoryInterface->findByCondition(
-            [
-                ['language_id', '=', $language],
-                ["{$model}_language.{$model}_id", 'IN' , $model_id]
-            ],
+            $condition,
             true, // Trả về danh sách
-            [
-                "{$model}_language" => ["{$model}_language.{$model}_id", "{$tableName}.id"],
-            ],
+            $join,
             ["{$model}s.id" => 'ASC'],
-            ["{$model}s.id", 'canonical', 'image', 'name']
+            $columns,
+            null, // Không phân trang
+            $groupBy
         );
-
-        $feild = ['id', 'canonical', 'image', 'name'];
-
-        $widgetItem = convertArray($feild, $widgetItemData);
+    
+        // Chuyển đổi dữ liệu thành mảng theo trường cần lấy
+        $fields = ['id', 'canonical', 'image', 'name'];
+    
+        if (!empty($params['children'])) {
+            $fields[] = 'child_name';
+            $fields[] = 'child_count'; // Thêm trường child_count
+        }
+    
+        $widgetItem = convertArray($fields, $widgetItemData);
     
         return $widgetItem;
     }
-
+    
     private function paginateSelect() {
         return [
             'id',
@@ -164,5 +222,19 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             'publish',
             'description'
         ];
+    }
+
+
+    // FRONTEND SERVICE 
+    public function findWidgetByKeyword(string $keyword = '', int $language, $params = []) {
+        $widget = $this->widgetRepository->findByCondition(
+            [
+                ['keyword', '=', $keyword],
+                config('apps.general.defaultPublish')
+            ],
+        );
+
+        $widgetItems = $this->getWidgetItem($widget->model, $widget->model_id, $language, $params);
+        return $widgetItems;
     }
 }

@@ -129,17 +129,19 @@ class DashBoardController extends Controller
         $keyword = addslashes($get['keyword']);
 
         $column = (strpos($model, '_catalogue') === false) ? $this->paginateSelect($model) : $this->paginateCatalogueSelect($model);
-        $join = [
-            "{$model}_language as tb2" => ["tb2.{$model}_id", "{$model}s.id"]
-        ];
- 
+
         $object = $repository->findByCondition(
             [
                 ['tb2.name', 'LIKE', '%' . $keyword . '%'],
                 ['tb2.language_id', '=', $this->language]
             ],
             true,
-            $join,
+            [
+                [
+                    'table' => "{$model}_language as tb2", // Bảng liên kết
+                    'on' => ["tb2.{$model}_id", "{$model}s.id"] // Điều kiện join
+                ]
+            ],
             ["{$model}s.id" => 'ASC'],
             $column,
         );

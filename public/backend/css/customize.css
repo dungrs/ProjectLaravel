@@ -1,3 +1,7 @@
+* {
+    border-radius: 5px !important;
+}
+
 .error-message {
     color: red;
     font-size: 12px;
@@ -424,6 +428,10 @@ a {
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
     min-height: 27px;
     line-height: 27px;
+}
+
+.switchery > small {
+    border-radius: 100% !important;
 }
 
 .variantTable thead {

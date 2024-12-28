@@ -37,16 +37,14 @@
         <div class="col-lg-8">
             <div class="ibox">
                 <div class="ibox-title">
-                    <div class="uk-flex-space-between uk-flex uk-flex-middle">
-                        <h5>
-                            @if ($menus instanceof \Illuminate\Support\Collection)
-                                {{ $menus->firstWhere('menu_catalogue_name')?->menu_catalogue_name ?? '' }}
-                            @else
-                                {{ $menus->name ?? '' }}
-                            @endif
-                        </h5>                        
-                        <a href="{{ route('menu.editMenu', $menus instanceof \Illuminate\Support\Collection ? ($menus->firstWhere('menu_catalogue_id')?->menu_catalogue_id ?? '') : ($menus->id ?? '')) }}" class="custom-button">Cập nhật Menu Cấp 1</a>
-                    </div>
+                    <h5>
+                        @if ($menus instanceof \Illuminate\Support\Collection)
+                            {{ $menus->firstWhere('menu_catalogue_name')?->menu_catalogue_name ?? '' }}
+                        @else
+                            {{ $menus->name ?? '' }}
+                        @endif
+                    </h5>                        
+                    <a href="{{ route('menu.editMenu', $menus instanceof \Illuminate\Support\Collection ? ($menus->firstWhere('menu_catalogue_id')?->menu_catalogue_id ?? '') : ($menus->id ?? '')) }}" class="custom-button">Cập nhật Menu Cấp 1</a>
                 </div>
                 <div class="ibox-content">
                     @if (count($menuList) > 0)

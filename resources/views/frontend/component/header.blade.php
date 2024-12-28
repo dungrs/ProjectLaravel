@@ -3,25 +3,37 @@
         <div class="uk-container uk-container-center">
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
                 <div class="sitelink">
-                    <?php $sitelink = ['About Us','My Account','Wishlist','Order Tracking'];  ?>    
                     <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                        <?php for($i = 0; $i < count($sitelink); $i++){  ?>
-                        <li><a href="" title=""><?php echo $sitelink[$i] ?></a></li>
-                        <?php }  ?>
+                        @foreach ($menus['menu-header'] as $menu)
+                            <li>
+                                <a href="{{ $menu['item']->canonical }}" title="">{{ $menu['item']->name }}</a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="slogan">Siêu khuyến mãi, tiết kiệm tới 35% ngay hôm nay</div>
                 <div class="header-widget">
                     <div class="uk-flex uk-flex-middle">
                         <div class="call-us">Cần hỗ trợ? Gọi cho chúng tôi: <a href="tel:098 236 5824" title="">{{ $systems['contact_hotline'] }}</a></div>
-                        <div class="language">
-                            <a href="" class="active">Tiếng Việt</a>
-                            <i class="fa fa-caret-down ml5" aria-hidden="true"></i>
-                            <ul class="uk-list uk-clearfix language-dropdown">
-                                <li><a href="" title="">Tiếng Anh</a></li>
-                                <li><a href="" title="">Tiếng Trung</a></li>
-                            </ul>
-                        </div>
+                        @if (isset($languages))
+                            <div class="language">
+                                @foreach ($languages as $key => $value)
+                                    @if($key > 0)
+                                        @break
+                                    @endif
+                                    <a href="" class="active">{{ $value->name }}</a>
+                                @endforeach
+                                <i class="fa fa-caret-down ml5" aria-hidden="true"></i>
+                                <ul class="uk-list uk-clearfix language-dropdown">
+                                    @foreach ($languages as $key=>$val)
+                                        @if ($key == 0)
+                                            @continue
+                                        @endif
+                                        <li><a href="" title="" class="change-language">{{ $val->name }}</a></li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -153,7 +165,7 @@
                         </div>
                     </div>
                 </div>
-                @extends('frontend.component.navigation')
+                @include('frontend.component.navigation')
             </div>
         </div>
     </div>
