@@ -75,6 +75,9 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                 break;
                 
             case PromotionEnum::PRODUCT_AND_QUANTITY:
+                $payload['discountValue'] = normalizeAmount($request->input('product_and_quantity.discountValue'));
+                $payload['maxDiscountValue'] = normalizeAmount($request->input('product_and_quantity.maxDiscountValue'));
+                $payload['discountType'] = $request->input('product_and_quantity.discountType');
                 $payload['discount_information'] = $this->productAndQuantity($request);
                 $promotion = $this->handlePromotionCreateOrUpdate($id, $payload);
                 $this->creatPromotionProductVariant($promotion, $request);
@@ -143,7 +146,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     }
 
     private function productAndQuantity($request) {
-        $data['info'] = $request->input('product_and_quantity');
+        // $data['info'] = $request->input('product_and_quantity');
         $data['info']['model'] = $request->input('module_type');
         $data['info']['object'] = $request->input('object');
         return $data + $this->handleSourceAndCondition($request);
@@ -218,6 +221,9 @@ class PromotionService extends BaseService implements PromotionServiceInterface
             'name',
             'code',
             'discount_information',
+            'discountValue',
+            'maxDiscountValue',
+            'discountType',
             'method',
             'never_end_date',
             'start_date',

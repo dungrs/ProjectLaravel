@@ -517,7 +517,7 @@
                         <thead>
                             <tr>
                                 <th class="text-right" style="width: 400px;">Sản phẩm mua</th>
-                                <th class="text-right" style="width: 100px;">SL tối thiểu</th>
+                                <th class="text-right" style="width: 70px;">SL tối thiểu</th>
                                 <th class="text-right">Giới hạn KM</th>
                                 <th class="text-right" style="max-width: 40px;">Chiết khấu</th>
                                 <th></th>
@@ -525,7 +525,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="">
+                                <td class="" style="max-width: 400px">
                                     <div 
                                     class="product-quantity" 
                                     data-toggle="modal" 

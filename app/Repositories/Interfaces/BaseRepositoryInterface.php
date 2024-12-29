@@ -29,6 +29,15 @@ interface BaseRepositoryInterface
     public function createPivot($model, array $payload, string $relation);
     public function deleteByCondition(array $condition = [], $forceDelete = true);
     public function createBatch(array $payload = []);
-    public function findByCondition($condition, $flag = false, array $joins = [], array $orderBy = [], array $select = ['*']);
+    public function findByCondition(
+        $condition, 
+        $flag = false, 
+        array $joins = [], 
+        array $orderBy = [], 
+        array $select = ['*'], 
+        $paginate = null, // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang
+        array $relations = [], // Thêm tham số để chứa các mối quan hệ cần eager load
+        array $groupBy = [] // Thêm tham số để hỗ trợ groupBy
+    ) ;
     public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');
 }

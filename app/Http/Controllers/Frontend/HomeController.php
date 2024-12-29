@@ -26,6 +26,8 @@ class HomeController extends FrontendController
         $config = $this->config();
         $widget = [
             'category' => $this->widgetService->findWidgetByKeyword('category', $this->language, ['children' => true]),
+            'new' => $this->widgetService->findWidgetByKeyword('post-catalogue-hl', $this->language),
+            'category-hl' => $this->widgetService->findWidgetByKeyword('catagory-hl', $this->language),
         ];
         $slides = $this->slideRepository->findByCondition(
             [
@@ -37,10 +39,10 @@ class HomeController extends FrontendController
             ['id' => 'desc'],
         );
 
-        dd($widget['category']);
         return view('frontend.homepage.home.index', compact(
             'config',
-            'slides'
+            'slides',
+            'widget'
         ));
     }
 

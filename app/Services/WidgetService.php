@@ -3,12 +3,11 @@
 namespace App\Services;
 use App\Services\Interfaces\WidgetServiceInterface;
 use App\Repositories\WidgetRepository;
-use Illuminate\Support\Carbon;
+use App\Repositories\PromotionRepository;
+use App\Repositories\ProductCatalogueRepository;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
 
 /**
  * Class WidgetService
@@ -17,9 +16,13 @@ use Illuminate\Support\Str;
 class WidgetService extends BaseService implements WidgetServiceInterface
 {   
     protected $widgetRepository;
+    protected $promotionRepository;
+    protected $productCatalogueRepository;
 
-    public function __construct(WidgetRepository $widgetRepository) {
+    public function __construct(WidgetRepository $widgetRepository, PromotionRepository $promotionRepository, ProductCatalogueRepository $productCatalogueRepository) {
         $this->widgetRepository = $widgetRepository;
+        $this->promotionRepository = $promotionRepository;
+        $this->productCatalogueRepository = $productCatalogueRepository;
     }
 
     public function paginate($request) {
@@ -125,10 +128,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
         $model = Str::snake($model); // Kết quả: 'post_catalogue'
         $tableName = "{$model}s"; // Tên bảng: 'post_catalogues'
     
-        // Lấy tên repository dựa trên quy ước
         $repositoryInterfaceNamespace = "\\App\\Repositories\\" . ucfirst($modelName) . "Repository";
     
-        // Kiểm tra repository có tồn tại không
         if (!class_exists($repositoryInterfaceNamespace)) {
             return response()->json(['error' => 'Repository not found.'], 404);
         }
@@ -145,26 +146,8 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             ]
         ];
     
-        // Kiểm tra tham số children và bổ sung join nếu cần
-        if (!empty($params['children'])) {
-            $tableChild = lcfirst(str_replace('Catalogue', '', $modelName));
-    
-            $join[] = [
-                'type' => 'left',
-                'table' => "{$tableChild}s", // Bảng liên kết
-                'on' => ["{$tableChild}s.{$tableChild}_catalogue_id", "{$tableName}.id"] // Điều kiện join
-            ];
-    
-            $join[] = [
-                'type' => 'left',
-                'table' => "{$tableChild}_language", // Bảng liên kết
-                'on' => ["{$tableChild}_language.{$tableChild}_id", "{$tableChild}s.id"] // Điều kiện join
-            ];
-        }
-    
         $repositoryInterface = app($repositoryInterfaceNamespace);
     
-        // Lấy dữ liệu widget item
         $columns = [
             "{$model}s.id", 
             "{$model}_language.canonical", 
@@ -172,40 +155,31 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             "{$model}_language.name",
         ];
     
-        if (!empty($params['children'])) {
-            $columns[] = "{$tableChild}_language.name as child_name"; // Nếu có children, lấy thêm name của child
-            $columns[] = DB::raw('COUNT(' . "{$tableChild}s.id" . ') as child_count'); // Đếm số lượng child
+        if (isset($params['children'])) {
+            $columns[] = "{$model}s.lft";
+            $columns[] = "{$model}s.rgt";
+            $columns[] = DB::raw(
+                "(
+                    SELECT COUNT(*) 
+                    FROM `products` 
+                    WHERE `products`.`product_catalogue_id` = `{$tableName}`.`id` 
+                      AND `products`.`deleted_at` IS NULL
+                ) AS product_count"
+            );
         }
     
-        // Cập nhật phần groupBy
-        $groupBy = [
-            "{$model}s.id",
-            "{$model}_language.canonical",
-            "{$model}s.image",
-            "{$model}_language.name",
-        ];
-    
-        if (!empty($params['children'])) {
-            $groupBy[] = "{$tableChild}_language.name";
-        }
-    
-        // Sử dụng hàm findByCondition với điều kiện, join, groupBy và các cột cần lấy
         $widgetItemData = $repositoryInterface->findByCondition(
             $condition,
             true, // Trả về danh sách
             $join,
             ["{$model}s.id" => 'ASC'],
             $columns,
-            null, // Không phân trang
-            $groupBy
+            null // Không phân trang   
         );
     
-        // Chuyển đổi dữ liệu thành mảng theo trường cần lấy
         $fields = ['id', 'canonical', 'image', 'name'];
-    
-        if (!empty($params['children'])) {
-            $fields[] = 'child_name';
-            $fields[] = 'child_count'; // Thêm trường child_count
+        if (isset($params['children'])) {
+            return $widgetItemData;
         }
     
         $widgetItem = convertArray($fields, $widgetItemData);
@@ -234,7 +208,96 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             ],
         );
 
-        $widgetItems = $this->getWidgetItem($widget->model, $widget->model_id, $language, $params);
+        $widgetItems = $this->getWidgetItem($widget->model, $widget->model_id, $language, $params = ['children' => true]);
+        if (isset($params['children'])) {
+            $model = lcfirst(str_replace('Catalogue', '', $widget->model)) . 's';
+            
+            foreach ($widgetItems as $key => $val) {
+                if (!empty($val->products) && $val->products->isNotEmpty()) {
+                    $productId = $val->products->pluck('id');
+            
+                    $promotion = $this->promotionRepository->findByCondition(
+                        [
+                            ['promotions.publish', '=', 2],
+                            ['products.publish', '=', 2],
+                            ['products.id', 'IN', $productId],
+                        ],
+                        true, 
+                        [
+                            [
+                                'table' => "promotion_product_variant as ppv",
+                                'on' => ["ppv.promotion_id", "promotions.id"]
+                            ],
+                            [
+                                'table' => "products",
+                                'on' => ["products.id", "ppv.product_id"]
+                            ],
+                            [
+                                'table' => "product_variants",
+                                'on' => ["product_variants.uuid", "ppv.variant_uuid"]
+                            ]
+                        ],
+                        ["products.id" => 'ASC'], // Sắp xếp theo products.id
+                        [
+                            DB::raw("
+                                MAX(
+                                    LEAST(
+                                        CASE
+                                            WHEN promotions.discountType = 'cash' THEN promotions.discountValue
+                                            WHEN promotions.discountType = 'percent' THEN (product_variants.price * promotions.discountValue / 100)
+                                            ELSE 0
+                                        END,
+                                        CASE
+                                            WHEN promotions.maxDiscountValue > 0 THEN promotions.maxDiscountValue
+                                            ELSE 1e9 -- Một giá trị lớn để loại bỏ maxDiscountValue nếu nó bằng 0
+                                        END
+                                    )
+                                ) AS finalDiscount
+                            "),
+                            "products.id AS product_id",
+                            "product_variants.price AS product_price",
+                            "promotions.discountType",
+                            "promotions.discountValue",
+                            "promotions.maxDiscountValue",
+                        ],
+                        null,
+                        [], // Không sử dụng eager loading trong trường hợp này
+                        [
+                            'products.id', 
+                            'product_variants.price', // Thêm vào `GROUP BY` trường `product_variants.price`
+                            'promotions.discountType', 
+                            'promotions.discountValue', 
+                            'promotions.maxDiscountValue'
+                        ] // Áp dụng groupBy cho các trường cần thiết
+                    );
+            
+                    // Lọc các promotions theo product_id và chọn promotion có finalDiscount lớn nhất
+                    $bestPromotions = collect($promotion)
+                        ->groupBy('product_id') // Nhóm theo product_id
+                        ->map(function ($group) {
+                            // Chọn bản ghi có finalDiscount lớn nhất
+                            return $group->sortByDesc('finalDiscount')->first();
+                        })
+                        ->values();
+            
+                        
+                        $val->products = $bestPromotions;
+                } 
+                if (!empty($params['children']) && $params['children'] === true) {
+                    $childProductCatalogue = $this->productCatalogueRepository->findByCondition(
+                        [
+                            ["product_catalogues.lft", '>', $val->lft],
+                            ["product_catalogues.rgt", '<', $val->rgt]
+                        ],
+                        true
+                    );
+                } else {
+                    $childProductCatalogue = null;
+                }
+                $val->children = $childProductCatalogue;
+            }
+        }
+        
         return $widgetItems;
     }
 }

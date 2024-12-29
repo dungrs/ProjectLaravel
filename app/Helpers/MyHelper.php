@@ -261,8 +261,8 @@ if (!function_exists('renderDiscountInformation')) {
                 : $promotion->discount_information;
 
             if (is_array($discountInformation) && isset($discountInformation['info'])) {
-                $discountValue = $discountInformation['info']['discountValue'] ?? 'Không xác định';
-                $discountType = $discountInformation['info']['discountType'] === 'percent' ? '%' : 'đ';
+                $discountValue = $promotion->discountValue ?? 'Không xác định';
+                $discountType = $promotion->discountType === 'percent' ? '%' : 'đ';
 
                 return <<<HTML
                     <span class="label label-success">{$discountValue} {$discountType}</span>

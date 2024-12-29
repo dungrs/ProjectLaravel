@@ -4,38 +4,40 @@
         @include('frontend.component.slide')
         <div class="panel-category page-setup">
             <div class="uk-container uk-container-center">
-                <div class="panel-head">
-                    <div class="uk-flex uk-flex-middle">
-                        <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
-                        <div class="category-children">
-                            <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
-                                <li class=""><a href="" title="">Bánh & Sữa</a></li>
-                                <li class=""><a href="" title="">Cà phê & Trà</a></li>
-                                <li class=""><a href="" title="">Thức ăn cho vật nuôi</a></li>
-                                <li class=""><a href="" title="">Rau củ</a></li>
-                                <li class=""><a href="" title="">Hoa Quả</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <?php $category = ['Cake & Milk','Oganic Kiwi','Peach','Read Apple','Snacks','Vegetables','Strawbery','Black plum','Custard apple','Coffe & Tea','Headphone','Kiwi','Iphone']  ?>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                    <div class="swiper-container">
-                        <div class="swiper-wrapper">
-                            <?php for($i = 0; $i < count($category); $i++){  ?>
-                            <div class="swiper-slide">
-                                <div class="category-item bg-<?php echo rand(1,7) ?>">
-                                    <a href="" class="image img-scaledown img-zoomin"><img src="{{ asset('frontend/resources/img/cat-'.($i + 1).'.png') }}" alt=""></a>
-                                    <div class="title"><a href="" title=""><?php echo $category[$i] ?></a></div>
-                                    <div class="total-product"><?php echo rand(0, 100) ?> sản phẩm</div>
-                                </div>
+                @if (!is_null($widget['category-hl']))
+                    <div class="panel-head">
+                        <div class="uk-flex uk-flex-middle">
+                            <h2 class="heading-1"><span>Danh mục sản phẩm</span></h2>
+                            <div class="category-children">
+                                <ul class="uk-list uk-clearfix uk-flex uk-flex-middle">
+                                    @foreach ($widget['category-hl'] as $categoryHl)
+                                        <li class=""><a href="{{ writeUrl($categoryHl->canonical) }}" title="">{{ $categoryHl->name }}</a></li>
+                                    @endforeach
+                                </ul>
                             </div>
-                            <?php }  ?>
                         </div>
                     </div>
-                </div>
+                @endif
+                <?php $categoryItem = ['Cake & Milk','Oganic Kiwi','Peach','Read Apple','Snacks','Vegetables','Strawbery','Black plum','Custard apple','Coffe & Tea','Headphone','Kiwi','Iphone']  ?>
+                @if (!is_null($widget['category']))
+                    <div class="panel-body">
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-container">
+                            <div class="swiper-wrapper">
+                                @foreach ($widget['category'] as $category)
+                                    <div class="swiper-slide">
+                                        <div class="category-item bg-<?php echo rand(1,7) ?>">
+                                            <a href="" class="image img-scaledown img-zoomin"><img src="{{ asset($category->image) }}" alt=""></a>
+                                            <div class="title"><a href="{{ writeUrl($category->canonical) }}" title="">{{ $category->name }}</a></div>
+                                            <div class="total-product">{{ $category->product_count }} sản phẩm</div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="panel-banner">
@@ -116,7 +118,7 @@
                                 <div class="swiper-button-prev"></div>
                                 <div class="swiper-container">
                                     <div class="swiper-wrapper">
-                                        <?php for($i = 0; $i < count($category); $i++){  ?>
+                                        <?php for($i = 0; $i < count($categoryItem); $i++){  ?>
                                         <div class="swiper-slide">
                                             @include('frontend.component.product-item')
                                         </div>

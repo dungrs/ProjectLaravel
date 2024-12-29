@@ -115,9 +115,10 @@ class BaseRepository implements BaseRepositoryInterface
         $flag = false, 
         array $joins = [], 
         array $orderBy = [], 
-        array $select = ['*'],
-        $paginate = null, // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang,
-        array $groupBy = [] // Thêm tham số groupBy
+        array $select = ['*'], 
+        $paginate = null, // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang
+        array $relations = [], // Thêm tham số để chứa các mối quan hệ cần eager load
+        array $groupBy = [] // Thêm tham số để hỗ trợ groupBy
     ) {
         $query = $this->model->newQuery();
     
@@ -149,6 +150,16 @@ class BaseRepository implements BaseRepositoryInterface
             }
         }
     
+        // Áp dụng eager loading các mối quan hệ nếu có
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+    
+        // Áp dụng groupBy nếu có
+        if (!empty($groupBy)) {
+            $query->groupBy($groupBy);
+        }
+    
         // Áp dụng sắp xếp nếu có
         if (!empty($orderBy)) {
             foreach ($orderBy as $column => $direction) {
@@ -156,12 +167,6 @@ class BaseRepository implements BaseRepositoryInterface
             }
         }
     
-        // Áp dụng GROUP BY nếu có
-        if (!empty($groupBy)) {
-            $query->groupBy($groupBy);
-        }
-    
-        // Nếu có yêu cầu phân trang, sử dụng paginate, nếu không sẽ trả về kết quả theo flag
         if ($paginate) {
             return $query->paginate($paginate); // Trả về kết quả phân trang với số lượng mỗi trang là tham số paginate
         }

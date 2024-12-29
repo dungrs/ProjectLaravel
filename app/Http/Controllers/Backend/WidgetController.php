@@ -89,7 +89,7 @@ class WidgetController extends Controller
         $config['seo'] = __('messages.widget');
         $config['method'] = 'edit';
         $widget = $this->widgetRepository->findById($id);
-        $widget->description = $widget->description[$this->language]; // Lấy dữ liệu dạng json
+        $widget->description = json_decode($widget->description, true)[$this->language]; // Lấy dữ liệu dạng json
         $widgetItem = $this->widgetService->getWidgetItem($widget->model, $widget->model_id, $this->language);
         $album_json = json_encode($widget->album);
         $album = json_decode($album_json);

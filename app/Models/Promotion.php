@@ -27,6 +27,9 @@ class Promotion extends Model
         'end_date',
         'publish',
         'order',
+        'discountValue',
+        'discountType',
+        'maxDiscountValue'
     ];
 
     protected $table = 'promotions';
