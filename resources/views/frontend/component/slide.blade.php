@@ -1,9 +1,10 @@
-@if (count($slides->item))
-    <div class="panel-slide page-setup" data-setting="{{ json_encode($slides->setting) }}">
+
+@if (count($slides[$slideKeyword::MAIN]['item']))
+    <div class="panel-slide page-setup" data-setting="{{ json_encode($slides[$slideKeyword::MAIN]['setting']) }}">
         <div class="uk-container uk-container-center">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    @foreach ($slides->item[1] as $key => $val)
+                    @foreach ($slides[$slideKeyword::MAIN]['item'] as $key => $val)
                         <div class="swiper-slide">
                             <div class="slide-item">
                                 <div class="slide-overlay">

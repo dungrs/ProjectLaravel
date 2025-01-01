@@ -3,6 +3,7 @@
 namespace App\Repositories;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class BaseService
@@ -118,7 +119,8 @@ class BaseRepository implements BaseRepositoryInterface
         array $select = ['*'], 
         $paginate = null, // Thêm tham số paginate, nếu có giá trị sẽ sử dụng phân trang
         array $relations = [], // Thêm tham số để chứa các mối quan hệ cần eager load
-        array $groupBy = [] // Thêm tham số để hỗ trợ groupBy
+        array $groupBy = [], // Thêm tham số để hỗ trợ groupBy
+        int $limit = null
     ) {
         $query = $this->model->newQuery();
     
@@ -166,6 +168,10 @@ class BaseRepository implements BaseRepositoryInterface
                 $query->orderBy($column, $direction);
             }
         }
+
+        if ($limit !== null) {
+            $query->limit($limit); 
+        }
     
         if ($paginate) {
             return $query->paginate($paginate); // Trả về kết quả phân trang với số lượng mỗi trang là tham số paginate
@@ -189,5 +195,31 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function createBatch(array $payload = []) {
         return $this->model->insert($payload);
+    }
+    
+    public function recursveCategory(string $parameter = '', $table = '') {
+        $table = $table . '_catalogues';
+        $query = "
+            WITH RECURSIVE category_tree AS (
+                SELECT id, parent_id, deleted_at
+                FROM $table
+                WHERE id IN (?)
+                UNION ALL
+                SELECT c.id, c.parent_id, c.deleted_at
+                FROM $table as c
+                JOIN category_tree as ct ON ct.id = c.parent_id
+            )
+            SELECT id FROM category_tree WHERE deleted_at IS NULL
+        ";
+    
+        // Thực thi truy vấn
+        $result = DB::select($query, [$parameter]);
+    
+        // Chuyển kết quả thành mảng đơn giản
+        $ids = array_map(function ($row) {
+            return $row->id;
+        }, $result);
+    
+        return $ids;
     }
 }

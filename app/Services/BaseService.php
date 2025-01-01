@@ -108,4 +108,35 @@ class BaseService implements BaseServiceInterface
 
         return $serviceInterface;
     }
+
+    protected function getItemsByParent($model, $parentTable, $childTable, $language, $parentIds) {
+        $items = loadClass($model)->findByCondition(
+            [
+                ["{$childTable}s.publish", '=', 2], // Lọc sản phẩm đã xuất bản
+                ["{$parentTable}_{$childTable}.{$parentTable}_id", '=', $parentIds], // Lọc theo danh mục sản phẩm
+                ["{$childTable}_language.language_id", '=', $language], // Lọc theo ngôn ngữ
+            ],
+            true,
+            [
+                [
+                    'table' => "{$childTable}_language",
+                    'on' => ["{$childTable}_language.{$childTable}_id", "{$childTable}s.id"]
+                ],
+                [
+                    'table' => "{$parentTable}_{$childTable}",
+                    'on' => ["{$parentTable}_{$childTable}.{$childTable}_id", "{$childTable}s.id"] // Sửa lại ON để khớp SQL
+                ]
+            ],
+            ["{$childTable}s.id" => 'ASC'], // Sắp xếp theo ID tăng dần
+            [
+                "{$childTable}s.id", 
+                "{$childTable}_language.canonical", 
+                "{$childTable}s.image", 
+                "{$childTable}_language.name"
+            ]
+        );
+    
+        return $items;
+    }
+    
 }

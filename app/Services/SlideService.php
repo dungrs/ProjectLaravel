@@ -119,6 +119,25 @@ class SlideService extends BaseService implements SlideServiceInterface
         }
     }
 
+    public function getSlide($conditionKeyword = [], $languageId) {
+        $slides = $this->slideRepository->findByCondition(
+            [
+                config('apps.general.defaultPublish'),
+                ['keyword', 'IN', $conditionKeyword]
+            ],
+            true,
+            [],
+            ['id' => 'desc'],
+        );
+        $temp = [];
+        foreach($slides as $slide) {
+            $temp[$slide->keyword]['item'] = $slide->item[$languageId];
+            $temp[$slide->keyword]['setting'] = $slide->setting;
+        }
+
+        return $temp;
+    }
+
     private function paginateSelect() {
         return [
             'id',

@@ -14,4 +14,13 @@ CKFinder.customConfig = function( config )
 	// config.language = 'fr';
 	// config.removePlugins = 'basket';
 
+	// Cấu hình định dạng tệp tin được phép tải lên
+    config.fileTypes = {
+        images: ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'tiff', 'webp'], // Thêm WebP
+        files: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'zip', 'rar']
+    };
+
+    // Kích hoạt hiển thị các tệp tin WebP trong CKFinder
+    config.extraAllowedContent = 'img[src|alt|title|width|height|data-*];';
+
 };

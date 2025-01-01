@@ -1,12 +1,28 @@
+@php
+    $name = $product->name;
+    $image = asset(image($product->image));
+    $price = number_format($product->product_variants->first()->price ?? 0); // Giá gốc
+    if (isset($product->promotion)) {
+        $promotion = $product->promotion;
+        $discount = getDiscountType($promotion);
+    }
+    
+    $review = getReview();
+    $canonical = $product->canonical
+@endphp
 <div class="product-item-2 product">
-    <a href="" class="image img-cover"><img src="resources/img/p-<?php echo rand(1,4) ?>.png" alt=""></a>
+    <a href="" class="image img-cover"><img src="{{ $image }}" alt=""></a>
     <div class="info">
         <div class="info-wrapper">
-            <h3 class="title"><a href="" title="">Naturally Flavored Cinnamon Vanilla</a></h3>
+            <h3 class="title"><a href="" title="">{{ $name }}</a></h3>
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
                 <div class="price uk-flex uk-flex-bottom">
-                    <div class="price-sale"><?php echo number_format(rand(600000, 5000000)) ?>đ</div>
-                    <div class="price-old">400.000đ</div>
+                    @if(isset($product->promotion))
+                        <div class="price-sale">{{ $discount['sale_price'] }} đ</div>
+                        <div class="price-old">{{ $discount['old_price'] }} đ</div>
+                    @else
+                        <div class="price-sale">{{ $price }} đ</div>
+                    @endif
                 </div>
                 <div class="addcart">
                     <a href="" title="" class="btn-addCart">

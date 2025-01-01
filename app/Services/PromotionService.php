@@ -214,6 +214,73 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     
         return $result;
     }
+    
+    public function applyPromotionsToItems($items, $bestPromotions) {
+        return $items->map(function ($item) use ($bestPromotions) {
+            if ($promotion = $bestPromotions->firstWhere('product_id', $item->id)) {
+                $item->promotion = $promotion;
+            }
+            return $item;
+        });
+    }
+
+    public function getBestPromotion($tableChild, $itemIdPromotions) {
+        $promotion = $this->promotionRepository->findByCondition(
+            [
+                ['promotions.publish', '=', 2],
+                ["{$tableChild}s.publish", '=', 2],
+                ["{$tableChild}s.id", 'IN', $itemIdPromotions],
+            ],
+            true,
+            [
+                ['table' => "promotion_{$tableChild}_variant as ppv", 'on' => ["ppv.promotion_id", "promotions.id"]],
+                ['table' => "{$tableChild}s", 'on' => ["{$tableChild}s.id", "ppv.{$tableChild}_id"]],
+                ['table' => "{$tableChild}_variants", 'on' => ["{$tableChild}_variants.uuid", "ppv.variant_uuid"]]
+            ],
+            ["{$tableChild}s.id" => 'ASC'],
+            [
+                DB::raw("MAX(LEAST(CASE WHEN promotions.discountType = 'cash' THEN promotions.discountValue 
+                    WHEN promotions.discountType = 'percent' THEN ({$tableChild}_variants.price * promotions.discountValue / 100) ELSE 0 END,
+                    CASE WHEN promotions.maxDiscountValue > 0 THEN promotions.maxDiscountValue ELSE 1e9 END)) AS finalDiscount"),
+                "{$tableChild}s.id AS {$tableChild}_id", "{$tableChild}_variants.price AS {$tableChild}_price",
+                "promotions.discountType", "promotions.discountValue", "promotions.maxDiscountValue"
+            ],
+            null,
+            [],
+            [
+                "{$tableChild}s.id", "{$tableChild}_variants.price", 'promotions.discountType', 
+                'promotions.discountValue', 'promotions.maxDiscountValue'
+            ],
+            8
+        );
+
+        // Lọc và áp dụng promotion tốt nhất cho sản phẩm
+        $bestPromotions = collect($promotion)->groupBy("{$tableChild}_id")
+        ->map(fn($group) => $group->sortByDesc('finalDiscount')->first())
+        ->values();
+
+        return $bestPromotions;
+    }
+
+    public function applyPromotionToProduct(&$product, $tableChild) {
+       $bestPromotions = $this->getBestPromotion($tableChild, [$product->id]);
+       if ($promotion = $bestPromotions->firstWhere('product_id', $product->id)) {
+           $product->promotion = $promotion;
+       }
+   }
+   
+
+    public function applyPromotionToProductCollection($productCollection, $productSource, $tableChild) {
+       $itemIdPromotions = $productSource->pluck('id')->unique();
+       $bestPromotions = $this->getBestPromotion($tableChild, $itemIdPromotions);
+   
+       return $productCollection->map(function ($product) use ($bestPromotions) {
+           if ($promotion = $bestPromotions->firstWhere('product_id', $product->id)) {
+               $product->promotion = $promotion;
+           }
+           return $product;
+       });
+   }
 
     private function paginateSelect() {
         return [
