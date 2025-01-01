@@ -214,6 +214,14 @@ class PromotionService extends BaseService implements PromotionServiceInterface
     
         return $result;
     }
+
+    public function getInputProductAndQuantity($promotion) {
+        return [
+            'discountValue' => $promotion->discountValue,
+            'discountType' => $promotion->discountType,
+            'maxDiscountValue' => $promotion->maxDiscountValue,
+        ];
+    }
     
     public function applyPromotionsToItems($items, $bestPromotions) {
         return $items->map(function ($item) use ($bestPromotions) {
@@ -230,6 +238,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                 ['promotions.publish', '=', 2],
                 ["{$tableChild}s.publish", '=', 2],
                 ["{$tableChild}s.id", 'IN', $itemIdPromotions],
+                ['promotions.end_date', '>', now()],
             ],
             true,
             [

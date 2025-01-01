@@ -101,6 +101,7 @@ class PromotionController extends Controller
         $config['seo'] = __('messages.promotion');
         $config['method'] = 'edit';
         $promotion = $this->promotionRepository->findById($id);
+        $inputProductAndQuantity = $this->promotionService->getInputProductAndQuantity($promotion);
         $album_json = json_encode($promotion->album);
         $album = json_decode($album_json);
         $sources = $this->sourceRepository->all();
@@ -111,7 +112,8 @@ class PromotionController extends Controller
             'promotion',
             'album',
             'sources',
-            'promotionValue'
+            'promotionValue',
+            'inputProductAndQuantity'
         ));
     }
 
