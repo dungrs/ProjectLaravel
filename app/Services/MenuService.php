@@ -104,27 +104,42 @@ class MenuService extends BaseService implements MenuServiceInterface
                         'menu_catalogue_id' => $menu->menu_catalogue_id,
                         'user_id' => Auth::id()
                     ];
-
+    
                     if ($menuId == 0) {
                         $menuSave = $this->menuRepository->create($menuArray);
                     } else {
                         $menuSave = $this->menuRepository->updateAndGetData($menuId, $menuArray);
                     }
+    
                     if ($menuSave->id > 0) {
-                        $menuSave->languages()->detach([$languageId, $menuSave->id]);
                         $payloadLanguage = [
                             'language_id' => $languageId,
-                            'name' => $val,
+                            'name' => $val, // Đảm bảo cung cấp trường 'name'
                             'menu_id' => $menuSave->id,
                             'canonical' => $payload['menu']['canonical'][$key]
                         ];
-                        $this->menuRepository->createPivot($menuSave, $payloadLanguage, 'languages');
+    
+                        // Tạo hoặc cập nhật dữ liệu trong bảng menu_language
+                        $existingLanguage = $menuSave->languages()
+                            ->where('language_id', $languageId)
+                            ->first();
+    
+                        if ($existingLanguage) {
+                            // Nếu bản ghi ngôn ngữ đã tồn tại, chỉ cần cập nhật
+                            $existingLanguage->update([
+                                'name' => $val,
+                                'canonical' => $payload['menu']['canonical'][$key]
+                            ]);
+                        } else {
+                            // Nếu bản ghi ngôn ngữ chưa tồn tại, tạo mới
+                            $this->menuRepository->createPivot($menuSave, $payloadLanguage, 'languages');
+                        }
                     }
                 }
                 $this->initialize($languageId);
                 $this->nestedSet();
             }
-
+    
             DB::commit(); // Nếu không có lỗi, commit giao dịch
             return true;
         } catch (Exception $e) {

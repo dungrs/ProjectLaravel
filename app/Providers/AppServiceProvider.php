@@ -90,7 +90,7 @@ class AppServiceProvider extends ServiceProvider
         foreach ($composers as $composerClass => $repositoryClass) {
             View::composer('frontend.homepage.layout', function ($view) use ($composerClass, $repositoryClass, $language) {
                 $repository = app($repositoryClass);
-                $languageId = $language->id;
+                $languageId = $language->id ?? app('App\\Repositories\\LanguageRepository')->findById(1)->id;
                 $composer = new $composerClass($repository, $languageId);
                 $composer->compose($view);
             });

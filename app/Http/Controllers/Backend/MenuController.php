@@ -192,9 +192,9 @@ class MenuController extends Controller
     public function saveChildren(StoreMenuChildrenRequest $request, $id) {
         $menu = $this->menuRepository->findById($id);
         if ($this->menuService->saveChildren($request, $this->language, $menu)) {
-            return redirect() -> route('menu.edit') -> with('success', 'Thêm mới bản ghi thành công');
+            return redirect() -> route('menu.index') -> with('success', 'Thêm mới bản ghi thành công');
         } else {
-            return redirect() -> route('menu.edit') -> with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
+            return redirect() -> route('menu.index') -> with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
         }
     }
 

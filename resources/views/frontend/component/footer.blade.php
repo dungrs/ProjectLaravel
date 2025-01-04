@@ -1,3 +1,4 @@
+
 <footer class="footer">
     <div class="uk-container uk-container-center">
         <div class="footer-upper">
@@ -15,32 +16,32 @@
                     </div>
                 </div>
                 <div class="uk-width-large-3-5">
+                    @isset($menus['menu-footer'])
                     <div class="footer-menu">
                         <div class="uk-grid uk-grid-medium">
-                            <?php for($i = 0; $i<=3; $i++){  ?>
-                            <div class="uk-width-large-1-4">
-                                <div class="ft-menu">
-                                    <div class="heading">Company</div>
-                                    <ul class="uk-list uk-clearfix">
-                                        <li><a href="">About Us</a></li>
-                                        <li><a href="">Delivery Information</a></li>
-                                        <li><a href="">Privacy Policy</a></li>
-                                        <li><a href="">Term & Conditions</a></li>
-                                        <li><a href="">Contact us</a></li>
-                                        <li><a href="">Support Center</a></li>
-                                    </ul>
+                            @foreach ($menus['menu-footer'] as $menu)
+                                <div class="uk-width-large-1-4">
+                                    <div class="ft-menu">
+                                        <div class="heading">{{ $menu['item']->name }}</div>
+                                        @isset($menu['children'])
+                                            <ul class="uk-list uk-clearfix">
+                                                @foreach ($menu['children'] as $menuChild)
+                                                    <li><a href="">{{ $menuChild['item']->name }}</a></li>
+                                                @endforeach
+                                            </ul>
+                                        @endisset
+                                    </div>
                                 </div>
-                            </div>
-                            <?php }  ?>
+                            @endforeach
                         </div>
                     </div>
+                    @endisset
                 </div>
                 <div class="uk-width-large-1-5">
                     <div class="fanpage-facebook">
                         <div class="ft-menu">
                             <div class="heading">Fanpage Facebook</div>
                             <div class="fanpage">
-                                <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook">Facebook</a></blockquote></div>
                             </div>
                         </div>
                     </div>
@@ -51,15 +52,15 @@
     <div class="copyright">
         <div class="uk-container uk-container-center">
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                <div class="copyright-text">© 2023, HT Web VietNam.<br> All rights reserved</div>
+                <div class="copyright-text">{!! $systems['homepage_copyright'] !!}</div>
                 <div class="copyright-contact">
                     <div class="uk-flex uk-flex-middle">
                         <div class="phone-item">
-                            <div class="p">Hotline: 09823 65 824</div>
+                            <div class="p">Hotline: {{ $systems['contact_hotline'] }}</div>
                             <div class="worktime">Làm việc: 8:00 - 22:00</div>
                         </div>
                         <div class="phone-item">
-                            <div class="p">Support: 0965 763 389</div>
+                            <div class="p">Support: {{ $systems['contact_phone'] }}</div>
                             <div class="worktime">Hỗ trợ 24/7</div>
                         </div>
                     </div>
@@ -68,11 +69,13 @@
                     <div class="uk-flex uk-flex-middle">
                         <div class="span">Follow us:</div>
                         <div class="social-list">
+                            @php
+                                $social = ['facebook', 'twitter', 'youtube']
+                            @endphp
                             <div class="uk-flex uk-flex-middle">
-                                <a href="" class=""><i class="fa fa-facebook"></i></a>
-                                <a href="" class=""><i class="fa fa-twitter"></i></a>
-                                <a href="" class=""><i class="fa fa-skype"></i></a>
-                                <a href="" class=""><i class="fa fa-youtube"></i></a>
+                                @foreach ($social as $key => $val)
+                                    <a target="_blank" href="{{ $systems['social_' . $val] }}" class=""><i class="fa fa-{{ $val }}"></i></a>
+                                @endforeach
                             </div>
                         </div>
                     </div>

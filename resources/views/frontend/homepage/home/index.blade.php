@@ -1,7 +1,7 @@
 @extends('frontend.homepage.layout')
 @section('content')
     @php
-        $slideKeyword = app('App\\Classes\\SlideEnum')
+        $slideKeyword = app('App\\Classes\\SlideEnum');
     @endphp
     <div id="homepage" class="homepage">
         @include('frontend.component.slide')
@@ -140,24 +140,7 @@
                 </div>
             </div>
         @endif
-        <div class="panel-deal page-setup">
-            <div class="uk-container uk-container-center">
-                <div class="panel-head">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <h2 class="heading-1"><span>Giảm giá trong ngày</span></h2>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="uk-grid uk-grid-medium">
-                        <?php for($i = 0; $i<=3; $i++){  ?>
-                        <div class="uk-width-large-1-4">
-                            @include('frontend.component.product-item-2')
-                        </div>
-                        <?php }  ?>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="uk-container uk-container-center">
             <div class="panel-group">
                 <div class="panel-body">
