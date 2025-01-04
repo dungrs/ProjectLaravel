@@ -16,6 +16,7 @@ class Product extends Model
     protected $fillable = [
         'image',
         'album',
+        'made_in',
         'publish',
         'order',
         'user_id',
@@ -46,4 +47,8 @@ class Product extends Model
         return $this->belongsToMany(Promotion::class, 'promotion_product_variant', 'product_id', 'promotion_id')
         ->withPivot('variant_uuid', 'model')->withTimestamps();
     }
+
+    // protected $casts = [
+    //     'variant' => 'json',
+    // ];
 }

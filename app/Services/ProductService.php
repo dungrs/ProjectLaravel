@@ -8,10 +8,6 @@ use App\Services\BaseService;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductVariantAttributeRepository;
 use Exception;
-use Ramsey\Uuid\Guid\Guid;
-use Ramsey\Uuid\Guid\GuidInterface;
-use Ramsey\Uuid\Rfc4122\FieldsInterface;
-use Ramsey\Uuid\Rfc4122\GuidInterface as UuidInterface;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -299,7 +295,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     }
 
     private function payload() {
-        return ['follow', 'publish', 'image', 'album', 'product_catalogue_id', 'attributeCatalogue', 'attribute', 'variant'];
+        return ['follow', 'publish','made_in', 'image', 'album', 'product_catalogue_id', 'attributeCatalogue', 'attribute', 'variant'];
     }
 
     private function payloadLanguage() {

@@ -32,9 +32,10 @@ class HomeController extends FrontendController
             'category-hl' => ['keyword' => 'catagory-hl', 'options' => ['object' => true, 'children' => true]],
             'category-home' => ['keyword' => 'category-home', 'options' => ['object' => true, 'promotion' => true, 'children' => true]],
         ];
-
+        
         $widget = $this->widgetService->getWidget($keywords, $this->language);
         $slides = $this->slideService->getSlide([SlideEnum::MAIN, SlideEnum::BANNER], $this->language);
+        dd($widget['category-home']);
         return view('frontend.homepage.home.index', compact(
             'config',
             'slides',

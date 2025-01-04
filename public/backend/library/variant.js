@@ -529,15 +529,13 @@
         let variantAlbumItem = HT.variantAlbumList(albumVariant);
         let html = `
             <tr class="updateVariantTr">
-                <td colspan="6">
+                <td colspan="10">
                     <div class="updateVariant ibox">
                         <div class="ibox-title">
-                            <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                                <h5>Cập nhật thông tin phiên bản</h5>
-                                <div class="uk-flex uk-flex-middle">
-                                    <button type="button" class="cancleUpdate btn btn-danger mr10">Hủy bỏ</button>
-                                    <button type="button" class="saveUpdateVariant btn btn-success">Lưu lại</button>
-                                </div>
+                            <h5>Cập nhật thông tin phiên bản</h5>
+                            <div class="uk-flex uk-flex-middle">
+                                <button type="button" class="cancleUpdate btn btn-danger mr10">Hủy bỏ</button>
+                                <button type="button" class="saveUpdateVariant btn btn-success">Lưu lại</button>
                             </div>
                         </div>
                         <div class="ibox-content">

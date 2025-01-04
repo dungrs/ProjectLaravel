@@ -7,7 +7,7 @@
         @include('frontend.component.slide')
         <div class="panel-category page-setup">
             <div class="uk-container uk-container-center">
-                @if (!is_null($widget['category-hl']))
+                @if (isset($widget['category-hl']))
                     <div class="panel-head">
                         <div class="uk-flex uk-flex-middle">
                             <h2 class="heading-1"><span>{{ $widget['category-hl']['name'] }}</span></h2>
@@ -19,7 +19,7 @@
                         </div>
                     </div>
                 @endif
-                @if (!is_null($widget['category']))
+                @if (isset($widget['category']))
                     <div class="panel-body">
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
@@ -67,7 +67,7 @@
             </div>
         </div>
         @endif
-        @if (!is_null($widget['category-home']))
+        @if (isset($widget['category-home']))
             @foreach ($widget['category-home']['object'] as $object)
             <div class="panel-popular">
                 <div class="uk-container uk-container-center">
