@@ -8,14 +8,14 @@
     }
     
     $review = getReview();
-    $canonical = $product->canonical
+    $canonical = writeUrl($product->canonical, true, true)
 @endphp
 
 <div class="product-item product">
     @if (isset($product->promotion))
         <div class="badge badge-bg<?php echo rand(1,3) ?>">-{{ $discount['value'] }} {{ $discount['type'] }}</div>
     @endif
-    <a href="" class="image img-cover"><img src="{{ $image }}" alt=""></a>
+    <a href="{{ $canonical }}" class="image img-cover"><img src="{{ $image }}" alt=""></a>
     <div class="info">
         <div class="category-title"><a href="" title="">{{ isset($product_catalogue) ? $product_catalogue : '' }}</a></div>
         <h3 class="title"><a href="" title="">{{ $name }}</a></h3>

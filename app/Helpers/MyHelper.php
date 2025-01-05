@@ -281,6 +281,40 @@ if (!function_exists('convertDateTime')) {
     }
 }
 
+if (!function_exists('cutnchar')) {
+    function cutnchar($str = null, $n = 200)
+    {
+        if (strlen($str) < $n) return $str;
+        $html = substr($str, 0, $n);
+        $html = substr($html, 0, strrpos($html, '' ));
+        return $str;
+    }
+}
+
+if (!function_exists('cutStringAndDecode')) {
+    function cutStringAndDecode($str = null, $n = 200)
+    {
+        $str = html_entity_decode($str);
+        $str = strip_tags($str);
+        $str = cutnchar($str, $n);
+        return $str;
+    }
+}
+
+if (!function_exists('seo')) {
+    function seo($model, $page = 1)
+    {       
+        $canonical = ($page > 1) ? writeUrl($model->canonical, true, false) . '/trang-' . $page . config('apps.general.suffix') : writeUrl($model->canonical, true, true);
+        return [
+            'meta_title' => (!empty($model->meta_title)) ? $model->meta_title : $model->name,
+            'meta_keyword' => (!empty($model->meta_keyword)) ? $model->meta_keyword : $model->keyword,
+            'meta_description' => (!empty($model->meta_description)) ? $model->meta_description : cutStringAndDecode($model->description, 168),
+            'meta_image' => $model->image,
+            'canonical' => $canonical,
+        ];
+    }
+}
+
 if (!function_exists('renderDiscountInformation')) {
     function renderDiscountInformation($promotion)
     {   

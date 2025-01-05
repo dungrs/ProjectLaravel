@@ -20,6 +20,8 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
     public function getProductCatalogueById(int $id = 0,int $language_id = 0) {
         return $this->model->select([
             'product_catalogues.id',
+            'product_catalogues.lft',
+            'product_catalogues.rgt',
             'product_catalogues.parent_id',
             'product_catalogues.image',
             'product_catalogues.icon',

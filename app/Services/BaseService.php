@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Services\Interfaces\BaseServiceInterface;
 use App\Repositories\RouterRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Class UserService
@@ -137,6 +138,24 @@ class BaseService implements BaseServiceInterface
         );
     
         return $items;
+    }
+
+    public function breadcrumb($modelString, $model, $languageId) {
+        $modelTable = Str::snake($modelString);
+        return loadClass($modelString)->findByCondition(
+            [
+                ['lft', '<=', $model->lft],
+                ['rgt', '>=', $model->rgt],
+                ["{$modelTable}_language.language_id", "=", $languageId]
+            ],
+            true, // Lấy nhiều kết quả
+            [
+                [
+                    'table' => "{$modelTable}_language", // Bảng liên kết
+                    "on" => ["{$modelTable}_language.{$modelTable}_id", "{$modelTable}s.id"] // Điều kiện join
+                ]
+            ]
+        );
     }
     
 }

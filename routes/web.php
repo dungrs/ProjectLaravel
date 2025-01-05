@@ -10,6 +10,7 @@ use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\RouterController;
 
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -48,7 +49,8 @@ use App\Http\Controllers\Backend\PromotionController;
 
 // FRONTEND ROUTES
 Route::get('/', [HomeController::class, 'index']) -> name('home.index');
-
+Route::get('{canonical}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9\-]+');
+Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9\-]+')->where('page', '[0-9]+');
 
 // BACKEND ROUTES
 Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], function() {

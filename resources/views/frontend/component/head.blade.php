@@ -21,10 +21,27 @@
 <meta property="twitter:title" content="{{ $seo['meta_title'] }}" />
 <meta property="twitter:description" content="{{ $seo['meta_description'] }}" />
 <meta property="twitter:image" content="{{ $seo['meta_image'] }}" />
-<link rel="stylesheet" href="{{ asset('frontend/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}" />
-<link rel="stylesheet" href="{{ asset('frontend/resources/uikit/css/uikit.modify.css') }}" />
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
-<link rel="stylesheet" href="{{ asset('frontend/resources/library/css/library.css') }}" />
-<link rel="stylesheet" href="{{ asset('frontend/resources/plugins/wow/css/libs/animate.css') }}" />
-<link rel="stylesheet" href="{{ asset('frontend/resources/style.css') }}" />
-<script src="{{ asset('frontend/resources/library/js/jquery.js') }}" /></script>
+@php
+    $stylesheets = [
+        asset('frontend/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css'),
+        asset('frontend/resources/uikit/css/uikit.modify.css'),
+        'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+        'https://unpkg.com/swiper/swiper-bundle.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.css',
+        asset('frontend/resources/library/css/library.css'),
+        asset('frontend/resources/plugins/wow/css/libs/animate.css'),
+        asset('frontend/resources/style.css')
+    ];
+
+    $scripts = [
+        asset('frontend/resources/library/js/jquery.js'),
+    ];
+@endphp
+
+@foreach ($stylesheets as $stylesheet)
+    <link rel="stylesheet" href="{{ $stylesheet }}" />
+@endforeach
+
+@foreach ($scripts as $script)
+    <script src="{{ $script }}"></script>
+@endforeach
