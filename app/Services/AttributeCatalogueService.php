@@ -120,6 +120,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         }
     }
 
+
     private function initialize($languageId) {
         $this->nestedSet = new Nestedsetbie([
             'table' => 'attribute_catalogues',

@@ -3,7 +3,7 @@
     $image = asset(image($product->image));
     $price = number_format($product->product_variants->first()->price ?? 0); // Giá gốc
     if (isset($product->promotion)) {
-        $promotion = $product->promotion;
+        $promotion = $product->promotion->toArray();
         $discount = getDiscountType($promotion);
     }
     

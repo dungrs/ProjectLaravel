@@ -6,6 +6,8 @@ use App\Repositories\RouterRepository;
 use App\Repositories\ProductVariantLanguageRepository;
 use App\Services\BaseService;
 use App\Repositories\ProductRepository;
+use App\Repositories\AttributeCatalogueRepository;
+use App\Repositories\AttributeRepository;
 use App\Repositories\ProductVariantAttributeRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -21,16 +23,23 @@ class ProductService extends BaseService implements ProductServiceInterface
 {   
     protected $productRepository;
     protected $routerRepository;
+    protected $attributeRepository;
+    protected $attributeCatalogueRepository;
     protected $productVariantLanguageRepository;
     protected $productVariantAttributeRepository;
 
     public function __construct(
         ProductRepository $productRepository, 
-        RouterRepository $routerRepository, 
+        RouterRepository $routerRepository,
         ProductVariantLanguageRepository $productVariantLanguageRepository,
-        ProductVariantAttributeRepository $productVariantAttributeRepository) {
+        ProductVariantAttributeRepository $productVariantAttributeRepository,
+        AttributeCatalogueRepository $attributeCatalogueRepository,
+        AttributeRepository $attributeRepository,
+    ) {
         $this->productRepository = $productRepository;
         $this->routerRepository = $routerRepository;
+        $this->attributeCatalogueRepository = $attributeCatalogueRepository;
+        $this->attributeRepository = $attributeRepository;
         $this->productVariantLanguageRepository = $productVariantLanguageRepository;
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
         $this->controllerName = 'ProductController';
@@ -152,6 +161,28 @@ class ProductService extends BaseService implements ProductServiceInterface
             echo $e->getMessage();
             die();
         }
+    }
+
+    public function getAttribute($product, $languageId) {
+        $attributeCatalogueId = array_keys(json_decode($product->attribute, true));
+        $attrCatalogues = $this->attributeCatalogueRepository->getAttributeCatalogue($attributeCatalogueId, $languageId);
+
+        $attributeId = array_merge(...json_decode($product->attribute, true));
+        $attrs = $this->attributeRepository->findAttributeByIdArray($attributeId, $languageId);
+        if (!is_null($attrCatalogues)) {
+            foreach($attrCatalogues as $key => $val) {
+                $tempAttributes = [];
+                foreach($attrs as $attr) {
+                    if ($val->attribute_catalogue_id  == $attr->attribute_catalogue_id) {
+                        $tempAttributes[] = $attr;
+                    }
+                }
+                $val->attributes = $tempAttributes;
+            }
+        }
+
+        $product->attributeCatalogue = $attrCatalogues;
+        return $product;
     }
 
     private function createVariant($product, $request, $languageId) {

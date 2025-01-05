@@ -265,10 +265,10 @@ if (!function_exists('getDiscount')) {
     function getDiscountType($promotion)
     {
         $discount = [
-            'type' => $promotion->discountType === 'percent' ? '%' : 'đ',
-            'value' => number_format($promotion->discountValue),
-            'old_price' => number_format($promotion->product_price),
-            'sale_price' => number_format($promotion->product_price - $promotion->finalDiscount)
+            'type' => $promotion['discountType'] === 'percent' ? '%' : 'đ',
+            'value' => number_format($promotion['discountValue']),
+            'old_price' => number_format($promotion['product_price']),
+            'sale_price' => number_format($promotion['product_price'] - $promotion['finalDiscount'])
         ];
         return $discount;
     }

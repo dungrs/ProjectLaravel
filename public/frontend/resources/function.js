@@ -69,6 +69,37 @@
 		});
 	}
 
+	HT.swiperProduct = () => {
+		// Swiper for thumbnails
+		var thumbsSwiper = new Swiper('.swiper-container-thumbs', {
+			slidesPerView: 4, // Hiển thị 4 ảnh nhỏ
+			spaceBetween: 10, // Khoảng cách giữa các slide nhỏ
+			freeMode: true, // Kích hoạt chế độ kéo tự do
+			watchSlidesVisibility: true, // Cập nhật trạng thái slide hiển thị
+			watchSlidesProgress: true, // Cập nhật trạng thái tiến trình
+		});
+	
+		// Swiper for main gallery
+		var mainSwiper = new Swiper('.swiper-container', {
+			spaceBetween: 10, // Khoảng cách giữa các slide chính
+			navigation: {
+				nextEl: '.swiper-button-next', // Nút "next"
+				prevEl: '.swiper-button-prev', // Nút "prev"
+			},
+			pagination: {
+				el: '.swiper-pagination', // Phân trang
+				clickable: true, // Phân trang có thể nhấp
+			},
+			thumbs: {
+				swiper: thumbsSwiper, // Liên kết với Swiper thumbnails
+			},
+			autoplay: {
+				delay: 2000, // Tự động chuyển slide mỗi 2 giây
+				disableOnInteraction: false, // Không tắt autoplay khi tương tác
+			},
+		});
+	}
+
 	HT.swiperBestSeller = () => {
 		var swiper = new Swiper(".panel-bestseller .swiper-container", {
 			loop: false,
@@ -98,9 +129,6 @@
 			
 		});
 	}
-	
-	
-	
 
 	HT.wow = () => {
 		var wow = new WOW(
@@ -134,6 +162,7 @@
 		HT.wow()
 		HT.swiperCategory()
 		HT.swiperBestSeller()
+		HT.swiperProduct()
 		
 		/* CORE JS */
 		HT.swiper()

@@ -271,13 +271,61 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         return $bestPromotions;
     }
 
+    public function getPromotionForProduct($tableChild, $productId) {
+        // Lấy thông tin khuyến mãi cho từng variant
+        $promotions = $this->promotionRepository->findByCondition(
+            [
+                ['promotions.publish', '=', 2],
+                ["{$tableChild}s.publish", '=', 2],
+                ["{$tableChild}s.id", '=', $productId],
+                ['promotions.end_date', '>', now()],
+            ],
+            true,
+            [
+                ['table' => "promotion_{$tableChild}_variant as ppv", 'on' => ["ppv.promotion_id", "promotions.id"]],
+                ['table' => "{$tableChild}s", 'on' => ["{$tableChild}s.id", "ppv.{$tableChild}_id"]],
+                ['table' => "{$tableChild}_variants", 'on' => ["{$tableChild}_variants.uuid", "ppv.variant_uuid"]],
+            ],
+            ["{$tableChild}s.id" => 'ASC'],
+            [
+                DB::raw("CASE WHEN promotions.discountType = 'cash' THEN promotions.discountValue 
+                    WHEN promotions.discountType = 'percent' THEN ({$tableChild}_variants.price * promotions.discountValue / 100) ELSE 0 END AS finalDiscount"),
+                "{$tableChild}s.id AS {$tableChild}_id", "{$tableChild}_variants.uuid AS variant_uuid", "{$tableChild}_variants.price AS variant_price",
+                "promotions.discountType", "promotions.discountValue", "promotions.maxDiscountValue"
+            ],
+            null,
+            [],
+            [
+                "{$tableChild}s.id", "{$tableChild}_variants.uuid", "{$tableChild}_variants.price", 'promotions.discountType', 
+                'promotions.discountValue', 'promotions.maxDiscountValue'
+            ],
+            8
+        );
+
+        // Trả về khuyến mãi cho từng variant
+        return collect($promotions)->map(function ($promotion) {
+            // Tính toán giá trị giảm giá cho từng variant
+            $finalDiscount = $promotion->discountType == 'cash'
+                ? $promotion->discountValue
+                : ($promotion->variant_price * $promotion->discountValue / 100);
+
+            return [
+                'discountType' => $promotion->discountType,
+                'discountValue' => $promotion->discountValue,
+                'variant_uuid' => $promotion->variant_uuid,
+                'finalDiscount' => $finalDiscount,
+                'product_price' => $promotion->variant_price,
+                'finalPrice' => $promotion->variant_price - $finalDiscount
+            ];
+        });
+    }
+
     public function applyPromotionToProduct(&$product, $tableChild) {
        $bestPromotions = $this->getBestPromotion($tableChild, [$product->id]);
        if ($promotion = $bestPromotions->firstWhere('product_id', $product->id)) {
            $product->promotion = $promotion;
        }
    }
-   
 
     public function applyPromotionToProductCollection($productCollection, $productSource, $tableChild) {
        $itemIdPromotions = $productSource->pluck('id')->unique();

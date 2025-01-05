@@ -50,5 +50,6 @@ class Product extends Model
 
     // protected $casts = [
     //     'variant' => 'json',
+    //     'attribute' => 'json'
     // ];
 }

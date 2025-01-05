@@ -44,5 +44,29 @@ class AttributeCatalogueRepository extends BaseRepository implements AttributeCa
             $query->where('language_id', $languageId);
         }])->get();
     }
+    
+    public function getAttributeCatalogue($attributeCatalogueId, $languageId) {
+        $attributeCatalogues = $this->findByCondition(
+            [
+                ['attribute_catalogue_language.language_id', '=', $languageId],
+                ['attribute_catalogues.id', 'IN', $attributeCatalogueId],
+                config('apps.general.defaultPublish')
+            ],
+            true,
+            [
+                [
+                    'table' => 'attribute_catalogue_language', // Bảng liên kết
+                    'on' => ['attribute_catalogue_language.attribute_catalogue_id', 'attribute_catalogues.id'] // Điều kiện join
+                ]
+            ],
+            
+            ['attribute_catalogues.id' => 'DESC'],
+            [
+                'attribute_catalogues.id', 
+                'attribute_catalogue_language.*', 
+            ]
+        );
+        return $attributeCatalogues;
+    }
 
 }
