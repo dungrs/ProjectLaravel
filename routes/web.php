@@ -272,6 +272,7 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
     Route::post('ajax/menu/createCatalogue', [AjaxMenuController::class, 'createCatalogue']) -> name('ajax.menu.createCatalogue');
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag']) -> name('ajax.menu.drag');
     Route::get('ajax/product/loadProductAnimation', [AjaxProductController::class, 'loadProductAnimation']) -> name('ajax.product.loadProductAnimation');
+    Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant']) -> name('ajax.product.loadVariant');
     Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource']) -> name('ajax.source.getAllSource');
 });
 

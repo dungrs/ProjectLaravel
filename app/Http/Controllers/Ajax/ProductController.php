@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Ajax;
 use App\Http\Controllers\Controller;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductCatalogueRepository;
+use App\Repositories\ProductVariantRepository;
 use App\Services\ProductCatalogueService;
 use App\Services\ProductService;
+use App\Services\PromotionService;
 use Illuminate\Support\Facades\DB;
 use App\Models\Language;
 use Illuminate\Http\Request;
@@ -15,17 +17,27 @@ class ProductController extends Controller
 {   
     protected $productRepository;
     protected $productService;
+    protected $promotionService;
     protected $productCatalogueService;
     protected $productCatalogueRepository;
-
+    protected $productVariantRepository;
     protected $language;
     protected $nestedSet;
 
-    public function __construct(ProductRepository $productRepository, ProductCatalogueService $productCatalogueService, ProductService $productService, ProductCatalogueRepository $productCatalogueRepository) {
+    public function __construct(
+        ProductRepository $productRepository, 
+        ProductCatalogueService $productCatalogueService, 
+        ProductService $productService, 
+        PromotionService $promotionService, 
+        ProductCatalogueRepository $productCatalogueRepository,
+        ProductVariantRepository $productVariantRepository
+        ) {
         $this->productRepository = $productRepository;
         $this->productCatalogueService = $productCatalogueService;
         $this->productService = $productService;
+        $this->promotionService = $promotionService;
         $this->productCatalogueRepository = $productCatalogueRepository;
+        $this->productVariantRepository = $productVariantRepository;
         $this->middleware(function($request, $next) {
             // Lấy ra ngôn ngữ hiện tại     
             $locale = app()->getLocale();
@@ -105,5 +117,55 @@ class ProductController extends Controller
             'model' => $get['model'],
             'objects' => $objects,
         ]);
+    }
+
+    public function loadVariant(Request $request) {
+        $get = $request->input();
+    
+        $attributeId = $get['attribute_id'];
+        sort($attributeId); // Sắp xếp mảng để đảm bảo tính nhất quán
+    
+        // Loại bỏ khoảng trắng dư và nối chuỗi
+        $attributeString = implode(', ', array_map('trim', $attributeId)); 
+    
+        $variants = $this->productVariantRepository->findByCondition(
+            [
+                ['tb2.language_id', '=', $get['language_id']],
+                ['product_variants.product_id', '=', $get['product_id']]
+            ],
+            true,
+            [
+                [
+                    'table' => 'product_variant_language as tb2', // Bảng liên kết với alias
+                    'on' => ['tb2.product_variant_id', 'product_variants.id'] // Điều kiện join
+                ]
+            ],
+            ['product_variants.id' => 'ASC'], // Sắp xếp theo id
+            [
+                'product_variants.id',          // Lấy các cột từ bảng chính
+                'product_variants.code',
+                'product_variants.price',
+                'tb2.*',                        // Lấy tất cả các cột từ bảng liên kết
+            ]
+        );
+    
+        // Duyệt qua các biến thể sản phẩm để tìm bản ghi phù hợp
+        foreach ($variants as $variant) {
+            $dbAttributeId = explode(',', $variant->code);
+            sort($dbAttributeId); // Sắp xếp để đồng nhất
+            $dbAttributeString = implode(', ', array_map('trim', $dbAttributeId)); 
+    
+            if ($dbAttributeString == $attributeString) {
+                $productVariant = $variant;
+                $productList = [$get['product_id']];
+                $extend['promotions'] =  ['promotions.variant_uuid', '=', $productVariant->uuId];
+                $bestPromotion = $this->promotionService->getBestPromotion("product", $productList, $extend);
+                $productVariant->promotion = $bestPromotion;
+                return response()->json(['object' => $productVariant]); // Trả về bản ghi nếu khớp
+            }
+        }
+    
+        // Trả về nếu không tìm thấy bản ghi phù hợp
+        return response()->json(['message' => 'Variant not found'], 404);
     }
 }

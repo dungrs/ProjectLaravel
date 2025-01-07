@@ -17,7 +17,7 @@
 @endphp
 <div class="panel-body">
     <div class="uk-grid uk-grid-medium">
-        <div class="uk-width-large-1-2">
+        <div class="uk-width-large-1-3">
             <div class="popup-gallery">
                 <div class="swiper-container">
                     <div class="swiper-button-next"></div>
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="uk-width-large-1-2">
+        <div class="uk-width-large-1-3">
             <div class="popup-product">
                 <h1 class="title">
                     <span>{{ $product->name }}</span>
@@ -71,22 +71,7 @@
                 <div class="description">
                     {!! $description !!}
                 </div>
-                @if (!is_null($attributeCatalogue))
-                    @foreach ($attributeCatalogue as $key => $val)
-                        <div class="attribute">
-                            <div class="attribute-item attribute-color">
-                                <div class="label">{{ $val->name }}: </div>
-                                @if (!is_null($val->attributes))
-                                    <div class="attribute-value">
-                                        @foreach ($val->attributes as $attr)
-                                            <a data-attributeID="{{ $attr->id }}" title="{{ $attr->name }}">{{ $attr->name }}</a>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        </div><!-- .attribute -->
-                    @endforeach
-                @endif
+                @include('frontend.product.product.component.variant')
                 <div class="quantity">
                     <div class="text">Quantity</div>
                     <div class="uk-flex uk-flex-middle">
@@ -101,6 +86,47 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="uk-width-large-1-4">
+            <div class="aside">
+                @if (isset($objectCategory))
+                    @foreach ($objectCategory as $key => $val)
+                        @php
+                            $name = $val['item']->name;
+                        @endphp
+                        <div class="aside-panel aside-category">
+                            <div class="aside-heading">
+                                {{ $name }}
+                            </div>
+                            @if(!is_null($val['children']))
+                                <div class="aside-body">
+                                    <ul class="uk-list uk-clearfix">
+                                        @foreach ($val['children'] as $item)
+                                        @php
+                                            $itemName = $item['item']->name;
+                                            $itemImage = $item['item']->image;
+                                            $itemCanonical = writeUrl($item['item']->canonical);
+                                            $productCount = $item['item']->product_count
+                                        @endphp
+                                            <li class="mb20">
+                                                <div class="categories-item-1">
+                                                    <a class="uk-flex uk-flex-space-between" href="{{ $itemCanonical }}" title="{{ $itemName }}">
+                                                        <div class="uk-flex uk-flex-middle">
+                                                            <img src="{{ $itemImage }}" alt="{{ $itemName }}">
+                                                            <span class="title">{{ $itemName }}</span>
+                                                        </div>
+                                                        <span class="total">{{ $productCount }}</span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

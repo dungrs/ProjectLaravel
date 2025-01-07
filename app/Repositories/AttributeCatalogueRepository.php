@@ -60,7 +60,7 @@ class AttributeCatalogueRepository extends BaseRepository implements AttributeCa
                 ]
             ],
             
-            ['attribute_catalogues.id' => 'DESC'],
+            ['attribute_catalogues.id' => 'ASC'],
             [
                 'attribute_catalogues.id', 
                 'attribute_catalogue_language.*', 

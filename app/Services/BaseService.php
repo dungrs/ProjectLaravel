@@ -157,5 +157,4 @@ class BaseService implements BaseServiceInterface
             ]
         );
     }
-    
 }

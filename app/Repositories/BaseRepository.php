@@ -103,8 +103,16 @@ class BaseRepository implements BaseRepositoryInterface
         return ($forceDelete === true) ? $query->forceDelete() : $query->delete();
     }
 
-    public function all(array $relation = []) {
-        return $this->model->with($relation)->get();
+    public function all(array $relation = [], string $selectRaw = '*') {
+        $query = $this->model->newQuery();
+    
+        $query->selectRaw($selectRaw);
+    
+        if (!empty($relation)) {
+            $query->with($relation);
+        }
+    
+        return $query->get();
     }
 
     public function findById(int $modelId, array $column = ['*'], array $relation = []) {

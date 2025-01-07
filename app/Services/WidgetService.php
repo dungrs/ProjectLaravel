@@ -161,6 +161,7 @@ class WidgetService extends BaseService implements WidgetServiceInterface
             "{$model}_language.canonical", 
             "{$model}s.image", 
             "{$model}_language.name",
+            "{$model}s.album"
         ];
     
         if (isset($params['object']) && $params['object'] === true) {

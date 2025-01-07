@@ -238,10 +238,11 @@ class ProductService extends BaseService implements ProductServiceInterface
         if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
             foreach($payload['variant']['sku'] as $key => $val) {
                 $uuId = \Ramsey\Uuid\Guid\Guid::uuid5(\Ramsey\Uuid\Guid\Guid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
-
+                $vId =  ($payload['productVariant']['id'][$key]) ?? '';
+                $productVariantId = sortString($vId);
                 $variant[] = [
                     'uuid' => $uuId,
-                    'code' => ($payload['productVariant']['id'][$key]) ?? '',
+                    'code' => $productVariantId,
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                     'sku' => $val,
                     'price' => ($payload['variant']['price'][$key]) ? str_replace(',', '', $payload['variant']['price'][$key])  : 0,

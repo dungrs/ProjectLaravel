@@ -232,14 +232,20 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         });
     }
 
-    public function getBestPromotion($tableChild, $itemIdPromotions) {
+    public function getBestPromotion($tableChild, $itemIdPromotions, $extend = []) {
+        $condition = [
+            ['promotions.publish', '=', 2],
+            ["{$tableChild}s.publish", '=', 2],
+            ["{$tableChild}s.id", 'IN', $itemIdPromotions],
+            ['promotions.end_date', '>', now()],
+        ];
+
+        if (!empty($extend) && isset($extend['condition'])) {
+            $condition[] = $extend['condition'];
+        }
+        
         $promotion = $this->promotionRepository->findByCondition(
-            [
-                ['promotions.publish', '=', 2],
-                ["{$tableChild}s.publish", '=', 2],
-                ["{$tableChild}s.id", 'IN', $itemIdPromotions],
-                ['promotions.end_date', '>', now()],
-            ],
+            $condition,
             true,
             [
                 ['table' => "promotion_{$tableChild}_variant as ppv", 'on' => ["ppv.promotion_id", "promotions.id"]],

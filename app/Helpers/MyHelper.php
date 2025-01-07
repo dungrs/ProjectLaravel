@@ -376,3 +376,44 @@ if (!function_exists('renderQuickBuy')) {
         return $html;
     }
 }
+
+if (!function_exists('categorySelectRaw')) {
+    function categorySelectRaw($table = 'product')
+    {
+        $table_plural = $table . 's';
+        $catalogue_table = $table . '_catalogues';
+        $pivot_table = $table . '_catalogue_' . $table;
+
+        return "
+            (
+                SELECT COUNT(DISTINCT items.id)
+                FROM {$table_plural} AS items
+                JOIN {$pivot_table} AS pivot ON pivot.{$table}_id = items.id
+                WHERE pivot.{$table}_catalogue_id IN (
+                    SELECT sub_catalogue.id
+                    FROM {$catalogue_table} AS sub_catalogue
+                    WHERE sub_catalogue.lft >= (
+                        SELECT parent.lft
+                        FROM {$catalogue_table} AS parent
+                        WHERE parent.id = main_catalogue.id
+                    )
+                    AND sub_catalogue.rgt <= (
+                        SELECT parent.rgt
+                        FROM {$catalogue_table} AS parent
+                        WHERE parent.id = main_catalogue.id
+                    )
+                )
+            ) AS product_count
+        ";
+    }
+}
+
+if (!function_exists('sortString')) {
+    function sortString($string = '')
+    {
+        $extract = explode(',', $string);
+        sort($extract, SORT_NUMERIC);
+        $newArray = implode(',', $extract);
+        return $newArray;
+    }
+}

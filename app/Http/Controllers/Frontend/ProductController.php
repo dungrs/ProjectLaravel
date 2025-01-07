@@ -13,6 +13,8 @@ use App\Services\ProductCatalogueService;
 use App\Services\PromotionService;
 use App\Services\ProductService;
 
+use Illuminate\Support\Facades\DB;
+
 class ProductController extends FrontendController
 {   
     protected $routerRepository;
@@ -42,13 +44,47 @@ class ProductController extends FrontendController
 
     public function index($request, $canonical, $id) {
         $config = $this->config();
+        $languageId = $this->language;
 
-        $product = $this->productRepository->getProductById($id, $this->language);
-        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($product->product_catalogue_id, $this->language);
+        $product = $this->productRepository->getProductById($id, $languageId);
+        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($product->product_catalogue_id, $languageId);
         $product->promotions = $this->promotionService->getPromotionForProduct('product', $id);
 
-        $breadcrumb = $this->productCatalogueService->breadcrumb("ProductCatalogue", $productCatalogue, $this->language);
-        $product->attributes = $this->productService->getAttribute($product, $this->language);
+        $breadcrumb = $this->productCatalogueService->breadcrumb("ProductCatalogue", $productCatalogue, $languageId);
+        $product->attributes = $this->productService->getAttribute($product, $languageId);
+
+        $objectCategory = recursive($this->productCatalogueRepository->findByCondition(
+            [
+                ['tb3.language_id', '=', $languageId],
+            ],
+            true,
+            [
+                [
+                    'table' => 'product_catalogue_language as tb3', // Bảng liên kết
+                    'on' => ['tb3.product_catalogue_id', 'product_catalogues.id'] // Điều kiện join
+                ]
+            ],
+            [],
+            [
+                'product_catalogues.*', 
+                'tb3.name', 'tb3.canonical',
+                DB::raw("
+                    (
+                        SELECT COUNT(DISTINCT items.id)
+                        FROM products AS items
+                        JOIN product_catalogue_product AS pivot 
+                          ON pivot.product_id = items.id
+                        WHERE pivot.product_catalogue_id IN (
+                            SELECT sub_catalogue.id
+                            FROM product_catalogues AS sub_catalogue
+                            WHERE sub_catalogue.lft >= product_catalogues.lft
+                              AND sub_catalogue.rgt <= product_catalogues.rgt
+                        )
+                    ) AS product_count
+                ")
+            ]
+        ));
+   
         $seo = seo($product);
 
         return view('frontend.product.product.index', compact(
@@ -56,11 +92,15 @@ class ProductController extends FrontendController
             'seo',
             'productCatalogue',
             'breadcrumb',
-            'product'
+            'product',
+            'objectCategory',
+            'languageId'
         ));
     }
 
     public function config() {
-        
+        return [
+            'language' => $this->language
+        ];
     }
 }
