@@ -96,14 +96,6 @@ class AppServiceProvider extends ServiceProvider
             });
         }
 
-        // LengthAwarePaginator::macro('customUrl', function($route, $page) {
-        //     $queryParams = Request::query();
-        //     $newRoute = "{$route}/trang-{$page}";
-        //     $url = url($newRoute, $queryParams);
-
-        //     return $url;
-        // });
-
         // Đặt chiều dài mặc định cho chuỗi trong schema
         Schema::defaultStringLength(250);
     }

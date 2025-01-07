@@ -264,7 +264,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
             [],
             [
                 "{$tableChild}s.id", "{$tableChild}_variants.price", 'promotions.discountType', 
-                'promotions.discountValue', 'promotions.maxDiscountValue'
+                'promotions.discountValue', 'promotions.maxDiscountValue', "{$tableChild}_variants.uuid"
             ],
             8
         );

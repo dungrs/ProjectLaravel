@@ -44,8 +44,9 @@
         </div>
         <div class="uk-width-large-1-3">
             <div class="popup-product">
-                <h1 class="title">
+                <h1 class="title product-main-title">
                     <span>{{ $product->name }}</span>
+                    <input type="hidden" class="product-name" value="{{ $product->name }}">
                 </h1>
                 <div class="rating">
                     <div class="uk-flex uk-flex-middle">
@@ -131,3 +132,5 @@
         </div>
     </div>
 </div>
+<input type="hidden" class="attributeCatalogue" value="{{ $attributeCatalogue }}">
+<input type="hidden" class="productCanonical" value="{{ $canonical }}">

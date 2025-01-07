@@ -699,27 +699,32 @@
 
         $('.variant-row').each(function(index, value) {
             let _this = $(this)
-            let inputHiddenFields = [
-                { name : 'variant[quantity][]', class : 'variant_quantity', value : variant.quantity[index] },
-                { name : 'variant[sku][]', class : 'variant_sku', value : variant.sku[index] },
-                { name : 'variant[price][]', class : 'variant_price', value : variant.price[index] },
-                { name : 'variant[barcode][]', class : 'variant_barcode', value : variant.barcode[index] },
-                { name : 'variant[file_name][]', class : 'variant_filename', value : variant.file_name[index] },
-                { name : 'variant[file_url][]', class : 'variant_fileurl', value : variant.file_url[index] },
-                { name : 'variant[album][]', class : 'variant_album', value : variant.album[index] },
-            ]
+            let variantKey = _this.attr('class').match(/tr-variant-(\d+-\d+)/)[1]
+            let dataIndex = variant.sku.findIndex(sku => sku.includes(variantKey))
 
-            for (let i = 0; i < inputHiddenFields.length; i++) {
-                _this.find("." + inputHiddenFields[i].class).val((inputHiddenFields[i].value) ? inputHiddenFields[i].value : 0)
+            if (dataIndex !== -1) {
+                let inputHiddenFields = [
+                    { name : 'variant[quantity][]', class : 'variant_quantity', value : variant.quantity[index] },
+                    { name : 'variant[sku][]', class : 'variant_sku', value : variant.sku[index] },
+                    { name : 'variant[price][]', class : 'variant_price', value : variant.price[index] },
+                    { name : 'variant[barcode][]', class : 'variant_barcode', value : variant.barcode[index] },
+                    { name : 'variant[file_name][]', class : 'variant_filename', value : variant.file_name[index] },
+                    { name : 'variant[file_url][]', class : 'variant_fileurl', value : variant.file_url[index] },
+                    { name : 'variant[album][]', class : 'variant_album', value : variant.album[index] },
+                ]
+    
+                for (let i = 0; i < inputHiddenFields.length; i++) {
+                    _this.find("." + inputHiddenFields[i].class).val((inputHiddenFields[i].value) ? inputHiddenFields[i].value : 0)
+                }
+    
+                let album = variant.album[index]
+                let variantImage = (album) ? album.split(',')[0] : 'https://th.bing.com/th/id/OIP.n2J-te2edVD91F8w6udMmgHaHa?rs=1&pid=ImgDetMain';
+    
+                _this.find('.td_quantity').html(variant.quantity[index])
+                _this.find('.td_price').html(variant.price[index])
+                _this.find('.td_sku').html(variant.sku[index])
+                _this.find('.imageVariant').attr('src', variantImage)
             }
-
-            let album = variant.album[index]
-            let variantImage = (album) ? album.split(',')[0] : 'https://th.bing.com/th/id/OIP.n2J-te2edVD91F8w6udMmgHaHa?rs=1&pid=ImgDetMain';
-
-            _this.find('.td_quantity').html(variant.quantity[index])
-            _this.find('.td_price').html(variant.price[index])
-            _this.find('.td_sku').html(variant.sku[index])
-            _this.find('.imageVariant').attr('src', variantImage)
         })
     }
 

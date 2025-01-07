@@ -202,26 +202,9 @@
 				},
 				success: function (res) {
 					let object = res.object;
-					let price = object.price;
-		
-					if (object.promotion[0]) {
-						let promotion = object.promotion[0];
-						let discountValue = promotion.discountValue;
-						let finalDiscount = promotion.finalDiscount;
-						let priceDiscount = price - finalDiscount;
-		
-						// Định dạng giá sau khi khuyến mãi (với dấu phẩy)
-						let formattedPriceDiscount = priceDiscount.toLocaleString('vi-VN'); // Định dạng giá
-						let formattedPrice = price.toLocaleString('vi-VN'); // Định dạng giá cũ
-		
-						// Cập nhật giá sau khi áp dụng khuyến mãi
-						$('.price-sale').text(formattedPriceDiscount + ' đ');
-						$('.price-old').text(formattedPrice + ' đ'); // Hiển thị giá cũ
-					} else {
-						// Nếu không có khuyến mãi, chỉ hiển thị giá gốc
-						let formattedPrice = price.toLocaleString('vi-VN'); // Định dạng giá
-						$('.price-sale').text(formattedPrice + ' đ');
-					}
+					HT.setupVariantPrice(object);
+					HT.setupVariantName(object);
+					HT.setupVariantUrl(object, attribute_id);
 				},
 				error: function (err) {
 					console.error(err);
@@ -233,12 +216,56 @@
 		
 	}
 
+	HT.setupVariantUrl = (object, attribute_id) => {
+		let queryString = '?attribute_id=' + attribute_id.join(',')
+		let productCanonical = $('.productCanonical').val();
+		productCanonical = productCanonical + queryString;
+		let stateObject = {attribute_id : attribute_id}
+		history.pushState(stateObject, "Page Title", productCanonical)
+	}
+
+	HT.setupVariantPrice = (object) => {
+		let price = object.price;
+		if (object.promotion[0]) {
+			let promotion = object.promotion[0];
+			let discountValue = promotion.discountValue;
+			let finalDiscount = promotion.finalDiscount;
+			let priceDiscount = price - finalDiscount;
+
+			// Định dạng giá sau khi khuyến mãi (với dấu phẩy)
+			let formattedPriceDiscount = priceDiscount.toLocaleString('vi-VN'); // Định dạng giá
+			let formattedPrice = price.toLocaleString('vi-VN'); // Định dạng giá cũ
+
+			// Cập nhật giá sau khi áp dụng khuyến mãi
+			$('.price-sale').text(formattedPriceDiscount + ' đ');
+			$('.price-old').text(formattedPrice + ' đ'); // Hiển thị giá cũ
+		} else {
+			// Nếu không có khuyến mãi, chỉ hiển thị giá gốc
+			let formattedPrice = price.toLocaleString('vi-VN'); // Định dạng giá
+			$('.price-sale').text(formattedPrice + ' đ');
+		}
+	}
+
+	HT.setupVariantName = (object) => {
+		let productName = $('.product-name').val();
+		let productVariantName = productName + ' ' + object.name
+		$('.product-main-title span').html(productVariantName);
+	}
+
+	HT.loadProductVariant = () => {
+		let attributeCatalogue = JSON.parse($('.attributeCatalogue').val())
+		if (attributeCatalogue.length && typeof attributeCatalogue) {
+			HT.handleAttribute();
+		}
+	}
+
 	$(document).ready(function(){
 		HT.wow()
 		HT.swiperCategory()
 		HT.swiperBestSeller()
 		HT.swiperProduct()
 		HT.selectVariantProduct()
+		HT.loadProductVariant()
 		
 		/* CORE JS */
 		HT.swiper()

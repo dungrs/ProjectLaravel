@@ -42,7 +42,7 @@ class ProductController extends Controller
             // Lấy ra ngôn ngữ hiện tại     
             $locale = app()->getLocale();
             $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+            $this->language = $language->id ?? app('App\\Repositories\\LanguageRepository')->findById(1)->id;
             // Sau khi xử lý xong nó sẽ truyền $request tới cấc middlewere khác để xử lý nốt phần còn lại
             // Rồi mới đến phần Controller
             return $next($request);
