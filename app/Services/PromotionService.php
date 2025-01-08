@@ -232,6 +232,13 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         });
     }
 
+    public function getPromotionForProductVariant($product_id, $productVariant) {
+        $productList = [$product_id];
+        $extend['condition'] =  ['ppv.variant_uuid', '=', $productVariant->uuid];
+        $bestPromotion = $this->getBestPromotion("product", $productList, $extend);
+        return $bestPromotion;
+    }
+
     public function getBestPromotion($tableChild, $itemIdPromotions, $extend = []) {
         $condition = [
             ['promotions.publish', '=', 2],
@@ -243,7 +250,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         if (!empty($extend) && isset($extend['condition'])) {
             $condition[] = $extend['condition'];
         }
-        
+
         $promotion = $this->promotionRepository->findByCondition(
             $condition,
             true,
@@ -258,7 +265,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                     WHEN promotions.discountType = 'percent' THEN ({$tableChild}_variants.price * promotions.discountValue / 100) ELSE 0 END,
                     CASE WHEN promotions.maxDiscountValue > 0 THEN promotions.maxDiscountValue ELSE 1e9 END)) AS finalDiscount"),
                 "{$tableChild}s.id AS {$tableChild}_id", "{$tableChild}_variants.price AS {$tableChild}_price",
-                "promotions.discountType", "promotions.discountValue", "promotions.maxDiscountValue"
+                "promotions.discountType", "promotions.discountValue", "promotions.maxDiscountValue",  "{$tableChild}_variants.uuid"
             ],
             null,
             [],

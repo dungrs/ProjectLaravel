@@ -417,3 +417,13 @@ if (!function_exists('sortString')) {
         return $newArray;
     }
 }
+
+if (!function_exists('sortAttributeId')) {
+    function sortAttributeId($attributeId = [])
+    {
+        sort($attributeId); // Sắp xếp mảng để đảm bảo tính nhất quán
+        $attributeString = implode(', ', array_map('trim', $attributeId));
+        return $attributeString;
+    }
+}
+

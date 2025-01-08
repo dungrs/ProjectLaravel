@@ -31,25 +31,6 @@
 		});
 	}
 
-	HT.changeQuantity = () => {
-		
-		$(document).on('click','.quantity-button', function(){
-			let _this = $(this)
-			let quantity = $('.quantity-text').val()
-			let newQuantity = 0
-			if(_this.hasClass('minus')){
-				 newQuantity =  quantity - 1
-			}else{
-				 newQuantity = parseInt(quantity) + 1
-			}
-			if(newQuantity < 1){
-				newQuantity = 1
-			}
-			$('.quantity-text').val(newQuantity)
-		})
-
-	}
-
 	HT.selectVariantProduct = () => {
 		if($('.choose-attribute').length){
 			$(document).on('click', '.choose-attribute', function(e){

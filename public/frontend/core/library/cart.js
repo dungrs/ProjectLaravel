@@ -20,7 +20,7 @@
       $(document).on('click', '.addToCart', function(e){
          e.preventDefault()
          let _this = $(this)
-         let id = _this.attr('data-id')
+         let product_id = _this.attr('data-id')
          let quantity = $('.quantity-text').val()
          if(typeof quantity === 'undefined'){
             quantity = 1
@@ -35,7 +35,7 @@
          })
 
          let option = {
-            id : id,
+            product_id : product_id,
             quantity: quantity,
             attribute_id: attribute_id,
             _token: _token

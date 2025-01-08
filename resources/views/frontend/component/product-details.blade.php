@@ -77,13 +77,13 @@
                     <div class="text">Quantity</div>
                     <div class="uk-flex uk-flex-middle">
                         <div class="quantitybox uk-flex uk-flex-middle">
-                            <div class="minus quantity-button"><img src="resources/img/minus.svg" alt=""></div>
+                            <div class="minus quantity-button"><img src="{{ asset("frontend/resources/img/minus.svg") }}" alt=""></div>
                             <input type="text" name="" value="1" class="quantity-text">
-                            <div class="plus quantity-button"><img src="resources/img/plus.svg" alt=""></div>
+                            <div class="plus quantity-button"><img src="{{asset("frontend/resources/img/plus.svg") }}" alt=""></div>
                         </div>
                         <div class="btn-group uk-flex uk-flex-middle">
-                            <div class="btn-item btn-1"><a href="" title="">Add To Cart</a></div>
-                            <div class="btn-item btn-2"><a href="" title="">Buy Now</a></div>
+                            <div class="btn-item btn-1 addToCart" data-id="{{ $product->id }}"><a href="" title="">Thêm vào giỏ hàng</a></div>
+                            {{-- <div class="btn-item btn-2"><a href="" title="">Buy Now</a></div> --}}
                         </div>
                     </div>
                 </div>

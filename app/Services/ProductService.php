@@ -62,13 +62,13 @@ class ProductService extends BaseService implements ProductServiceInterface
             : $request->integer('product_catalogue_id');
     
         // Thiết lập `path` dựa trên `productCatalogue`
-        $basePath = $productCatalogue 
+        $basePath = $productCatalogue
             ? $productCatalogue->canonical 
             : 'product/index';
             
         $perpage = 15; 
         if (is_null($productCatalogue)) {
-            $perpage = $request->integer('perpage'); 
+            $perpage = $request->integer('perpage');
         }
 
         $products = $this->productRepository->pagination(
@@ -76,7 +76,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             $condition, 
             $perpage,
             [
-                'path' => url($basePath), // Đảm bảo URL đúng
+                'path' => $basePath, // Đảm bảo URL đúng
                 'groupBy' => $this->paginateSelect()
             ],
             ['products.id', 'DESC'],

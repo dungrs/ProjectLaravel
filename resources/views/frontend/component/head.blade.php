@@ -8,6 +8,7 @@
 <meta name="keyword" content="{{ $seo['meta_keyword'] }}" />
 <link rel="canonical" href="{{ $seo['canonical'] }}" />
 <meta property="og:locale" content="vi_VN" />
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <meta property="og:title" content="{{ $seo['meta_title'] }}" />
 <meta property="og:type" content="website" />
@@ -28,6 +29,7 @@
         'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
         'https://unpkg.com/swiper/swiper-bundle.min.css',
         'https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
         asset('frontend/resources/library/css/library.css'),
         asset('frontend/resources/plugins/wow/css/libs/animate.css'),
         asset('frontend/resources/style.css')

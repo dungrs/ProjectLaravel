@@ -258,6 +258,24 @@
 			HT.handleAttribute();
 		}
 	}
+	
+	
+	HT.changeQuantity = () => {
+		$(document).on('click','.quantity-button', function(){
+			let _this = $(this)
+			let quantity = $('.quantity-text').val()
+			let newQuantity = 0
+			if(_this.hasClass('minus')){
+				 newQuantity =  quantity - 1
+			}else{
+				 newQuantity = parseInt(quantity) + 1
+			}
+			if(newQuantity < 1){
+				newQuantity = 1
+			}
+			$('.quantity-text').val(newQuantity)
+		})
+	}
 
 	$(document).ready(function(){
 		HT.wow()
@@ -266,7 +284,7 @@
 		HT.swiperProduct()
 		HT.selectVariantProduct()
 		HT.loadProductVariant()
-		
+		HT.changeQuantity();		
 		/* CORE JS */
 		HT.swiper()
 		HT.niceSelect()		
