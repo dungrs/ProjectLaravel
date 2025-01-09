@@ -28,7 +28,7 @@ class CartController extends FrontendController
         return response()->json([
             'cart' => $cart,
             'messages' => 'Thêm sản phẩm vào giỏ hàng thành công',
-            'code' => ($flag) ? 10 : 11
+            'code' => $flag ? 10 : 11
         ]);
     }
 }

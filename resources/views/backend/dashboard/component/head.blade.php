@@ -22,6 +22,6 @@
 
 <script>
     var BASE_URL = '{{ url('/') }}';
-    var SUFFIX = '{{ config('apps.general.suffix') }}'
+    var SUFFIX = '{{ config('apps.general.suffix') }}';
 </script>
 

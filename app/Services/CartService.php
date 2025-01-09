@@ -75,8 +75,65 @@ class CartService extends BaseService implements CartServiceInterface
             echo $e->getMessage();
             die();
         }
-
-        
-
     }
+
+    public function remakeCart($carts) {
+        $cartId = $carts->pluck('id')->all();
+        $temp = [];
+        $objects = [];
+
+        if(count($cartId)) {
+            foreach($cartId as $key => $val) {
+                $extract = explode('_', $val);
+                if (count($extract) > 1) {
+                    $temp['variants'][] = $extract[1];
+                } else {
+                    $temp['products'][] = $extract[0];
+                }
+            }
+        }
+
+        if (isset($temp['variants']) && count($temp['variants'])) {
+            $objects['variants'] = $this->productVariantRepository->findByCondition(
+                [
+                    ['product_variants.uuid', 'IN', $temp['variants']],
+                ],
+                true,
+                [],
+                ['id' => 'DESC']
+            )->keyBy('uuid');
+        }
+    
+        if (isset($temp['products']) && count($temp['products'])) {
+            $objects['products'] = $this->productRepository->findByCondition(
+                [
+                    ['products.id', 'IN', $temp['products']],
+                ],
+                true,
+                [],
+                ['id' => 'DESC']
+            )->keyBy('id');
+        }
+
+        /* 
+            Chưa tính được khuyến mãi của 1 sản phẩm không có phiên bản
+        */
+        foreach($carts as $keyCart => $cart) {
+            $explode = explode('_', $cart->id);
+            $objectId = $explode[1] ?? $explode[0];
+
+            if (isset($objects['variants'][$objectId])) {
+                $variantItem = $objects['variants'][$objectId];
+                $variantImage = explode(',', $variantItem->album)[0] ?? null;
+                $cart->image = $variantImage;
+                $cart->priceOriginal = $variantItem->price;
+            } elseif (isset($objects['products'][$objectId])) {
+                $productItem = $objects['products'][$objectId];
+                $cart->image = $productItem->image;
+                $cart->priceOriginal = $productItem->price;
+            }
+        }
+
+        return $carts;
+    }   
 }

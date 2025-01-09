@@ -18,6 +18,18 @@ if (!function_exists('convert_array')) {
     }
 }
 
+if (!function_exists('convert_price')) {
+    function convert_price($price)
+    {
+        // Đảm bảo giá trị là số
+        $price = is_numeric($price) ? $price : 0;
+
+        // Định dạng số với dấu phẩy hàng nghìn và thêm ký tự "đ"
+        return number_format($price, 0, '.', ',') . ' đ';
+    }
+}
+
+
 if (!function_exists('renderSystemInput')) {
     function renderSystemInput(string $name = '', $systems = null) {
         return '<input type="text" name="config['. $name .']" value="'. old($name, isset($systems[$name]) ? $systems[$name] : '' ) .'" class="form-control" placeholder="" autocomplete="off" >';

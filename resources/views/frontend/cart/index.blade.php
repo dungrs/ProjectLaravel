@@ -35,18 +35,26 @@
                                         </div>
                                         <div class="uk-grid uk-grid-medium mb20">
                                             <div class="uk-width-large-1-3">
-                                                <select name="" id="" class="nice-select">
-                                                    <option value="">Chọn thành phố</option>
+                                                <select name="province_id" class="form-control nice-select province location" data-target="districts" id="">
+                                                    <option value="0">[Chọn Thành Phố]</option>
+                                                    @if (isset($provinces))
+                                                        @foreach ($provinces as $province)
+                                                            <option @if (old('province_id') == $province->code)
+                                                                selected
+                                                            @endif 
+                                                            value="{{ $province->code }}">{{ $province->name }}</option>
+                                                        @endforeach
+                                                    @endif
                                                 </select>
                                             </div>
                                             <div class="uk-width-large-1-3">
-                                                <select name="" id="" class="nice-select">
-                                                    <option value="">Chọn Quận Huyện</option>
+                                                <select name="district_id" class="form-control nice-select districts location" data-target="wards" id="">
+                                                    <option value="0">[Chọn Quận\Huyện]</option>
                                                 </select>
                                             </div>
                                             <div class="uk-width-large-1-3">
-                                                <select name="" id="" class="nice-select">
-                                                    <option value="">Chọn Phường Xã</option>
+                                                <select name="ward_id" class="form-control nice-select wards" id="">
+                                                    <option value="0">[Chọn Phường/Xã]</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -83,39 +91,56 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="cart-list">
-                                        @for ($i = 1; $i < 5; $i++)
-                                            <div class="cart-item">
-                                                <div class="uk-grid uk-grid-medium">
-                                                    <div class="uk-width-small-1-1 uk-width-medium-1-5">
-                                                        <div class="cart-item-image">
-                                                            <span class="image img-scaledown">
-                                                                <img src="https://cdnb.artstation.com/p/assets/images/images/075/961/095/20240515214859/smaller_square/wlop-2se.jpg?1715827739" alt="">
-                                                            </span>
-                                                            <span class="cart-item-number">1</span>
+                                        @php
+                                            $total = 0
+                                        @endphp
+                                        @foreach ($carts as $cart)
+                                            @php
+                                                $total += $cart->price * $cart->qty
+                                            @endphp
+                                        @endforeach
+                                        @if (count($carts) && !is_null($carts))
+                                            @foreach ($carts as $cart)
+                                                <div class="cart-item">
+                                                    <div class="uk-grid uk-grid-medium">
+                                                        <div class="uk-width-small-1-1 uk-width-medium-1-5">
+                                                            <div class="cart-item-image">
+                                                                <span class="image img-scaledown">
+                                                                    <img src="{{ $cart->image }}" alt="">
+                                                                </span>
+                                                                <span class="cart-item-number">{{ $cart->qty }}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="uk-width-small-1-1 uk-width-medium-4-5">
-                                                        <div class="cart-item-info">
-                                                            <h3 class="title"><span>Iphone 13 Pro</span></h3>
-                                                            <div class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
-                                                                <div class="cart-item-qty">
-                                                                    <button type="button" class="btn-qty minus">-</button>
-                                                                    <input type="text" class="input-qty" value="1">
-                                                                    <button type="button" class="btn-qty plus">+</button>
-                                                                </div>
-                                                                <div class="cart-item-price">35.990.000 đ</div>
-                                                                <div class="cart-item-remove">
-                                                                    <span>X</span>
+                                                        <div class="uk-width-small-1-1 uk-width-medium-4-5">
+                                                            <div class="cart-item-info">
+                                                                <h3 class="title"><span>{{ $cart->name }}</span></h3>
+                                                                <div class="cart-item-action uk-flex uk-flex-middle uk-flex-space-between">
+                                                                    <div class="cart-item-qty">
+                                                                        <button type="button" class="btn-qty minus">-</button>
+                                                                        <input type="text" class="input-qty" value="{{ $cart->qty }}">
+                                                                        <button type="button" class="btn-qty plus">+</button>
+                                                                    </div>
+                                                                    <div class="cart-item-price">
+                                                                        <div class="uk-flex uk-flex-middle">
+                                                                            @if ($cart->price != $cart->priceOriginal)
+                                                                                <span class="cart-price-old mr10">{{ convert_price($cart->priceOriginal * $cart->qty) }}</span>
+                                                                            @endif
+                                                                            <span class="cart-price-sale">{{ convert_price($cart->price * $cart->qty) }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="cart-item-remove">
+                                                                        <span>X</span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endfor
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="panel-voucher">
+                                <div class="panel-voucher uk-hidden">
                                     <div class="voucher-list">
                                         @for ($j = 0; $j < 3; $j++)
                                             <div class="voucher-item {{ $j == 0 ? 'active' : '' }}">
@@ -136,7 +161,7 @@
                                         <a href="#" class="apply-voucher">Áp dụng</a>
                                     </div>
                                 </div>
-                                <div class="panel-foot">
+                                <div class="panel-foot mt30">
                                     <div class="cart-summary">
                                         <div class="cart-summary-item">
                                             <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -153,7 +178,7 @@
                                         <div class="cart-summary-item">
                                             <div class="uk-flex uk-flex-middle uk-flex-space-between">
                                                 <span class="summary-title bold">Tổng tiền</span>
-                                                <div class="summary-value cart-total">29.900.000 đ</div>
+                                                <div class="summary-value cart-total">{{ convert_price($total) }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -165,4 +190,9 @@
             </form>
         </div>
     </div>
+    {{-- <script>
+        var province_id = '{{ (isset($user->province_id)) ? $user->province_id : old('province_id') }}';
+        var district_id = '{{ (isset($user->district_id)) ? $user->district_id : old('district_id') }}';
+        var ward_id = '{{ (isset($user->ward_id)) ? $user->ward_id : old('ward_id') }}';
+    </script> --}}
 @endsection

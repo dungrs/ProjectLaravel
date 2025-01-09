@@ -102,7 +102,8 @@ class ProductController extends FrontendController
         return [
             'language' => $this->language,
             'js' => [
-                'frontend/core/library/cart.js'
+                'frontend/core/library/cart.js',
+                'frontend/core/library/product.js',
             ]
         ];
     }

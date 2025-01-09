@@ -203,5 +203,5 @@
 <script>
     var province_id = '{{ (isset($user->province_id)) ? $user->province_id : old('province_id') }}';
     var district_id = '{{ (isset($user->district_id)) ? $user->district_id : old('district_id') }}';
-    var ward_id = '{{ (isset($user->ward_id)) ? $user->ward_id : old('ward_id') }}'
+    var ward_id = '{{ (isset($user->ward_id)) ? $user->ward_id : old('ward_id') }}';
 </script>
