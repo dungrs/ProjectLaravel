@@ -108,7 +108,7 @@
                                                                 <span class="image img-scaledown">
                                                                     <img src="{{ $cart->image }}" alt="">
                                                                 </span>
-                                                                <span class="cart-item-number">{{ $cart->qty }}</span>
+                                                                <span class="cart-item-number" id="cartTotalItem">{{ $cart->qty }}</span>
                                                             </div>
                                                         </div>
                                                         <div class="uk-width-small-1-1 uk-width-medium-4-5">
@@ -118,6 +118,7 @@
                                                                     <div class="cart-item-qty">
                                                                         <button type="button" class="btn-qty minus">-</button>
                                                                         <input type="text" class="input-qty" value="{{ $cart->qty }}">
+                                                                        <input type="hidden" class="rowId" value="{{ $cart->rowId }}">
                                                                         <button type="button" class="btn-qty plus">+</button>
                                                                     </div>
                                                                     <div class="cart-item-price">
@@ -128,7 +129,7 @@
                                                                             <span class="cart-price-sale">{{ convert_price($cart->price * $cart->qty) }}</span>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="cart-item-remove">
+                                                                    <div class="cart-item-remove" data-row-id="{{ $cart->rowId }}">
                                                                         <span>X</span>
                                                                     </div>
                                                                 </div>
@@ -190,9 +191,9 @@
             </form>
         </div>
     </div>
-    {{-- <script>
-        var province_id = '{{ (isset($user->province_id)) ? $user->province_id : old('province_id') }}';
-        var district_id = '{{ (isset($user->district_id)) ? $user->district_id : old('district_id') }}';
-        var ward_id = '{{ (isset($user->ward_id)) ? $user->ward_id : old('ward_id') }}';
-    </script> --}}
+    <script>
+        var province_id = '{{ (isset($order->province_id)) ? $order->province_id : old('province_id') }}';
+        var district_id = '{{ (isset($order->district_id)) ? $order->district_id : old('district_id') }}';
+        var ward_id = '{{ (isset($order->ward_id)) ? $order->ward_id : old('ward_id') }}';
+    </script>
 @endsection

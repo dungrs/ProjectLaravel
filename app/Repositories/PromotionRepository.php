@@ -17,4 +17,13 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
         $this->model = $model;
     }
 
+    public function getPromotionByCartTotal() {
+        return $this->model
+                ->where('promotions.publish', 2)
+                ->where('promotions.method', 'order_amount_range')
+                ->whereDate('promotions.end_date', '>=', now())
+                ->whereDate('promotions.start_date', '<=', now())
+                ->get();
+    }
+
 }

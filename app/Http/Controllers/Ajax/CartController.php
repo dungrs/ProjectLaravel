@@ -31,4 +31,22 @@ class CartController extends FrontendController
             'code' => $flag ? 10 : 11
         ]);
     }
+
+    public function update(Request $request) {
+        $response = $this->cartService->update($request, $this->language);
+        return response()->json([
+            'response' => $response,
+            'messages' => 'Cập nhật số lượng thành công',
+            'code' => $response['flag'] ? 10 : 11
+        ]);
+    }
+
+    public function delete(Request $request) {
+        $response = $this->cartService->delete($request, $this->language);
+        return response()->json([
+            'response' => $response,
+            'messages' => 'Xóa sản phẩm khỏi giỏ hàng thành công',
+            'code' => $response['flag'] ? 10 : 11
+        ]);
+    }
 }

@@ -58,6 +58,8 @@ Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterCo
 // FRONEND AJAX
 Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant']) -> name('ajax.product.loadVariant');
 Route::post('ajax/cart/create', [AjaxCartController::class, 'create']) -> name('ajax.cart.create');
+Route::post('ajax/cart/update', [AjaxCartController::class, 'update']) -> name('ajax.cart.update');
+Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete']) -> name('ajax.cart.delete');
 
 // BACKEND ROUTES
 Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], function() {

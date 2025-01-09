@@ -25,7 +25,7 @@ if (!function_exists('convert_price')) {
         $price = is_numeric($price) ? $price : 0;
 
         // Định dạng số với dấu phẩy hàng nghìn và thêm ký tự "đ"
-        return number_format($price, 0, '.', ',') . ' đ';
+        return number_format($price, 0, '.', '.') . ' đ';
     }
 }
 

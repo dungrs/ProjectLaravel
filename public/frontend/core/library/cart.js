@@ -6,8 +6,8 @@
 
 /* MAIN VARIABLE */
 
-   var   $window = $(window),
-         $document = $(document);
+   var $window = $(window),
+      $document = $(document);
 
 
    // FUNCTION DECLARGE
@@ -58,13 +58,11 @@
                }
 				},
 			});
-
-
       })
    }
 
 
-   HT.changeQuantity = () => {
+   HT.changeQuantity = function() {
       $(document).on('click', '.btn-qty', function(){
          let _this = $(this)
          let qtyElement = _this.siblings('.input-qty')
@@ -113,6 +111,7 @@
          success: function(res) {
             toastr.clear()
             if(res.code === 10){
+               console.log(res);
                HT.changeMinyCartQuantity(res)
                HT.changeMinyQuantityItem(_this, option)
                HT.changeCartItemSubTotal(_this, res)
@@ -139,7 +138,7 @@
 
    HT.changeCartTotal = (res) => {
       $('.cart-total').html(addCommas(res.response.cartTotal)+'đ')
-      $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + 'đ')
+      // $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + 'đ')
    }
 
    HT.removeCartItem = () => {
@@ -183,13 +182,24 @@
    }
 
    // Document ready functions
-   $document.ready(function() {
+   $(document).ready(function() {
       HT.addCart()
       HT.setupSelect2()
       HT.changeQuantity()
       HT.changeQuantityInput()
       HT.removeCartItem()
-      
    });
 
 })(jQuery);
+
+addCommas = (nStr) => { 
+   nStr = String(nStr);
+   nStr = nStr.replace(/\./gi, "");
+   let str ='';
+   for (let i = nStr.length; i > 0; i -= 3){
+       let a = ( (i-3) < 0 ) ? 0 : (i-3);
+       str= nStr.slice(a,i) + '.' + str;
+   }
+   str= str.slice(0,str.length-1);
+   return str;
+}

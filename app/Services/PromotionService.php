@@ -71,6 +71,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         switch ($payload['method']) {
             case PromotionEnum::ORDER_AMOUNT_RANGE:
                 $payload['discount_information'] = $this->orderByRange($request);
+                $payload['discountType'] = '';
                 $promotion = $this->handlePromotionCreateOrUpdate($id, $payload);
                 break;
                 
@@ -78,6 +79,9 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                 $payload['discountValue'] = normalizeAmount($request->input('product_and_quantity.discountValue'));
                 $payload['maxDiscountValue'] = normalizeAmount($request->input('product_and_quantity.maxDiscountValue'));
                 $payload['discountType'] = $request->input('product_and_quantity.discountType');
+                if (is_null($payload['discountType'])) {
+                    $payload['discountType'] = '';
+                }
                 $payload['discount_information'] = $this->productAndQuantity($request);
                 $promotion = $this->handlePromotionCreateOrUpdate($id, $payload);
                 $this->creatPromotionProductVariant($promotion, $request);
@@ -245,6 +249,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
             ["{$tableChild}s.publish", '=', 2],
             ["{$tableChild}s.id", 'IN', $itemIdPromotions],
             ['promotions.end_date', '>', now()],
+            ['promotions.start_date', '<', now()],
         ];
 
         if (!empty($extend) && isset($extend['condition'])) {
@@ -292,6 +297,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
                 ["{$tableChild}s.publish", '=', 2],
                 ["{$tableChild}s.id", '=', $productId],
                 ['promotions.end_date', '>', now()],
+                ['promotions.start_date', '<', now()],
             ],
             true,
             [

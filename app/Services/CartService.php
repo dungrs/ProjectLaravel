@@ -118,7 +118,7 @@ class CartService extends BaseService implements CartServiceInterface
         /* 
             Chưa tính được khuyến mãi của 1 sản phẩm không có phiên bản
         */
-        foreach($carts as $keyCart => $cart) {
+        foreach($carts as $cart) {
             $explode = explode('_', $cart->id);
             $objectId = $explode[1] ?? $explode[0];
 
@@ -135,5 +135,59 @@ class CartService extends BaseService implements CartServiceInterface
         }
 
         return $carts;
-    }   
+    }
+
+    public function update($request, $language) {
+        DB::beginTransaction(); // Bắt đầu một giao dịch
+    
+        try {
+            $payload = $request->input();
+            Cart::instance('shopping')->update($payload['rowId'], $payload['qty']);
+            $cartItem = Cart::instance('shopping')->get($payload['rowId']);
+            $cartRecaculate = $this->reCalculate();
+            $cartRecaculate['cartItemSubTotal'] = $cartItem->qty * $cartItem->price;
+
+            return $cartRecaculate;
+        } catch (Exception $e) {
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
+            echo $e->getMessage();
+            die();
+        }
+
+    }
+
+    public function delete($request, $language) {
+        DB::beginTransaction(); // Bắt đầu một giao dịch
+    
+        try {
+            $payload = $request->input();
+            Cart::instance('shopping')->remove($payload['rowId']);
+            $cartRecaculate = $this->reCalculate();
+
+            return $cartRecaculate;
+        } catch (Exception $e) {
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
+            echo $e->getMessage();
+            die();
+        }
+
+    }
+
+    private function reCalculate() {
+        $carts = Cart::instance('shopping')->content();
+        $total = 0;
+        $totalItem = 0;
+        foreach($carts as $cart) {
+            $total += $cart->price * $cart->qty;
+            $totalItem += $cart->qty;
+        }
+
+        return [
+            'flag' => true,
+            'cartTotal' => $total,
+            'cartTotalItems' => $totalItem,
+        ];
+    }
 }
