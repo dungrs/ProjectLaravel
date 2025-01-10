@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\FrontendController;
-use App\Models\Promotion;
 use App\Repositories\SystemRepository;
 use App\Repositories\ProvinceRepository;
 use App\Repositories\PromotionRepository;
@@ -18,30 +17,24 @@ class CartController extends FrontendController
     protected $slideService;
     protected $cartService;
     protected $provinceRepository;
-    protected $promotionRepository;
 
     public function __construct(
         SystemRepository $systemRepository,
         ProvinceRepository $provinceRepository,
-        PromotionRepository $promotionRepository,
         CartService $cartService,
     ) {
         parent::__construct($systemRepository);
         $this->provinceRepository = $provinceRepository;
-        $this->promotionRepository = $promotionRepository;
         $this->cartService = $cartService;
     }
 
     public function checkout() {
         // Cart::instance('shopping')->destroy();
         $carts = Cart::instance('shopping')->content();
-        $carts = $this->cartService->remakeCart($carts);
         $provinces = $this->provinceRepository->all();
-
-        $cartConfig = $this->cartConfig();
-        $cartPromotion = $this->promotionRepository->getPromotionByCartTotal();
-        dd($cartPromotion);
-
+        $reCalculateCart = $this->cartService->reCalculate();
+        $cartPromotion = $this->cartService->cartPromotion($reCalculateCart['cartTotal']);
+        $carts = $this->cartService->remakeCart($carts);
         $config = $this->config();
         $seo = [
             'meta_title' => 'Trang thanh toán đơn hàng',
@@ -58,7 +51,8 @@ class CartController extends FrontendController
             'config',
             'provinces',
             'carts',
-            'cartConfig'
+            'cartPromotion',
+            'reCalculateCart'
         ));
     }
 

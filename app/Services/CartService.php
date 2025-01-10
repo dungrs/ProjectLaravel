@@ -8,6 +8,7 @@ use App\Services\PromotionService;
 use App\Services\ProductVariantService;
 
 use App\Repositories\ProductRepository;
+use App\Repositories\PromotionRepository;
 use App\Repositories\ProductVariantRepository;
 
 use Exception;
@@ -23,17 +24,20 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 class CartService extends BaseService implements CartServiceInterface
 {   
     protected $productRepository;
+    protected $promotionRepository;
     protected $productVariantRepository;
     protected $productVariantService;
     protected $promotionService;
 
     public function __construct(
-        ProductRepository $productRepository, 
+        ProductRepository $productRepository,
+        PromotionRepository $promotionRepository,
         ProductVariantRepository $productVariantRepository,
         ProductVariantService $productVariantService,
         PromotionService $promotionService,
         ) {
         $this->productRepository = $productRepository;
+        $this->promotionRepository = $promotionRepository;
         $this->productVariantRepository = $productVariantRepository;
         $this->productVariantService = $productVariantService;
         $this->promotionService = $promotionService;
@@ -144,7 +148,8 @@ class CartService extends BaseService implements CartServiceInterface
             $payload = $request->input();
             Cart::instance('shopping')->update($payload['rowId'], $payload['qty']);
             $cartItem = Cart::instance('shopping')->get($payload['rowId']);
-            $cartRecaculate = $this->reCalculate();
+            $cartRecaculate = $this->cartAndPromotion();
+            
             $cartRecaculate['cartItemSubTotal'] = $cartItem->qty * $cartItem->price;
 
             return $cartRecaculate;
@@ -163,7 +168,7 @@ class CartService extends BaseService implements CartServiceInterface
         try {
             $payload = $request->input();
             Cart::instance('shopping')->remove($payload['rowId']);
-            $cartRecaculate = $this->reCalculate();
+            $cartRecaculate = $this->cartAndPromotion();
 
             return $cartRecaculate;
         } catch (Exception $e) {
@@ -175,7 +180,16 @@ class CartService extends BaseService implements CartServiceInterface
 
     }
 
-    private function reCalculate() {
+    private function cartAndPromotion() {
+        $cartRecaculate = $this->reCalculate();
+        $cartPromotion = $this->cartPromotion($cartRecaculate['cartTotal']);
+        $cartRecaculate['cartTotal'] = $cartRecaculate['cartTotal'] - $cartPromotion['discount'];
+        $cartRecaculate['cartDiscount'] = $cartPromotion['discount'];
+
+        return $cartRecaculate;
+    }
+
+    public function reCalculate() {
         $carts = Cart::instance('shopping')->content();
         $total = 0;
         $totalItem = 0;
@@ -190,4 +204,47 @@ class CartService extends BaseService implements CartServiceInterface
             'cartTotalItems' => $totalItem,
         ];
     }
+
+    public function cartPromotion($cartTotal) {
+        $maxDiscount = 0;
+        $promotions = $this->promotionRepository->getPromotionByCartTotal();
+        $selectedPromotion = null;
+
+        if (!is_null($promotions)) {
+            foreach ($promotions as $promotion) {
+                $discount = $promotion->discount_information['info'];
+                $amountFrom = $discount['amountFrom'] ?? [];
+                $amountTo = $discount['amountTo'] ?? [];
+                $amountValue = $discount['amountValue'] ?? [];
+                $amountType = $discount['amountType'] ?? [];
+    
+                if (!empty($amountFrom) && count($amountFrom) == count($amountTo) && count($amountTo) == count($amountValue)) {
+                    for ($i = 0; $i < count($amountFrom); $i++) {
+                        $currentAmountFrom = convert_price($amountFrom[$i], true);
+                        $currentAmountTo = convert_price($amountTo[$i], true);
+                        $currentAmountValue = convert_price($amountValue[$i], true);
+                        $currentAmountType = $amountType[$i];
+    
+                        // Kiểm tra giá trị cartTotal
+                        if (($cartTotal > $currentAmountFrom && $cartTotal <= $currentAmountTo) || $cartTotal > $currentAmountTo) {
+                            if ($currentAmountType == 'cash') {
+                                $maxDiscount = max($maxDiscount, $currentAmountValue);
+                            } elseif ($currentAmountType == 'percent') {
+                                $discountValue = ($currentAmountValue / 100) * $cartTotal;
+                                $maxDiscount = max($maxDiscount, $discountValue);
+                            }
+
+                            $selectedPromotion = $promotion;
+                        }
+                    }
+                }
+            }
+        }
+    
+        return [
+            'discount' => $maxDiscount,
+            'selectedPromotion' => $selectedPromotion,
+        ];
+    }
+    
 }

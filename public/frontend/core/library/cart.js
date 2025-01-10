@@ -129,7 +129,7 @@
    }
 
    HT.changeCartItemSubTotal = (item, res) => {
-      item.parents('.cart-item-info').find('.cart-price-sale').html(addCommas(res.response.cartItemSubTotal)+'đ')
+      item.parents('.cart-item-info').find('.cart-price-sale').html(addCommas(res.response.cartItemSubTotal)+' đ')
    }
 
    HT.changeMinyCartQuantity = (res) => {
@@ -138,7 +138,7 @@
 
    HT.changeCartTotal = (res) => {
       $('.cart-total').html(addCommas(res.response.cartTotal)+'đ')
-      // $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + 'đ')
+      $('.discount-value').html('-' + addCommas(res.response.cartDiscount) + ' đ')
    }
 
    HT.removeCartItem = () => {

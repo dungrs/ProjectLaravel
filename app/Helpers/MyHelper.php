@@ -19,12 +19,24 @@ if (!function_exists('convert_array')) {
 }
 
 if (!function_exists('convert_price')) {
-    function convert_price($price)
+    function convert_price($price, $convertString = false)
     {
+        // Nếu flag $convertString được bật và $price là một chuỗi chứa dấu phẩy
+        if ($convertString && is_string($price)) {
+            $price = str_replace(',', '', $price);
+
+            // Đảm bảo giá trị đã chuyển đổi là số
+            if (!is_numeric($price)) {
+                return 0; // Nếu không hợp lệ, trả về 0
+            }
+
+            return (float)$price; // Trả về giá trị dạng số thực
+        }
+
         // Đảm bảo giá trị là số
         $price = is_numeric($price) ? $price : 0;
 
-        // Định dạng số với dấu phẩy hàng nghìn và thêm ký tự "đ"
+        // Định dạng số với dấu chấm hàng nghìn và thêm ký tự "đ"
         return number_format($price, 0, '.', '.') . ' đ';
     }
 }
