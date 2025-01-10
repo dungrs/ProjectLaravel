@@ -11,17 +11,17 @@
         <div class="uk-grid uk-grid-medium mb20">
             <div class="uk-width-large-1-2">
                 <div class="form-row">
-                    <input type="text" name="fullname" value="" placeholder="Nhập vào Họ Tên" class="input-text">
+                    <input type="text" name="fullname" value="{{ old('fullname') }}" placeholder="Nhập vào Họ Tên" class="input-text">
                 </div>
             </div>
             <div class="uk-width-large-1-2">
                 <div class="form-row">
-                    <input type="text" name="phone" value="" placeholder="Nhập vào Số điện thoại" class="input-text">
+                    <input type="text" name="phone" value="{{ old('name') }}" placeholder="Nhập vào Số điện thoại" class="input-text">
                 </div>
             </div>
         </div>
         <div class="form-row mb20">
-            <input type="text" name="email" value="" placeholder="Nhập vào Email" class="input-text">
+            <input type="text" name="email" value="{{ old('email') }}" placeholder="Nhập vào Email" class="input-text">
         </div>
         <div class="uk-grid uk-grid-medium mb20">
             <div class="uk-width-large-1-3">
@@ -49,10 +49,10 @@
             </div>
         </div>
         <div class="form-row mb20">
-            <input type="text" name="address" value="" placeholder="Nhập vào Địa chỉ" class="input-text">
+            <input type="text" name="address" value="{{ old('address') }}" placeholder="Nhập vào Địa chỉ: ví dụ đường Lạc Long Quân" class="input-text">
         </div>
         <div class="form-row">
-            <input type="text" name="description" value="" placeholder="Ghi chú thêm (Ví dụ: Giao hàng vào lúc 3 giờ chiều)" class="input-text">
+            <input type="text" name="description" value="{{ old('description') }}" placeholder="Ghi chú thêm (Ví dụ: Giao hàng vào lúc 3 giờ chiều)" class="input-text">
         </div>
     </div>
 </div>

@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\FrontendController;
 use App\Repositories\SystemRepository;
 use App\Repositories\ProvinceRepository;
-use App\Repositories\PromotionRepository;
+
+use App\Http\Request\StoreCartRequest;
 
 use App\Services\CartService;
 
@@ -56,10 +57,8 @@ class CartController extends FrontendController
         ));
     }
 
-    private function cartConfig() {
-        return [
-            'cartTotal' => Cart::instance('shopping')->total(),
-        ];
+    public function create() {
+
     }
 
     public function config() {
