@@ -48,6 +48,11 @@ class Product extends Model
         ->withPivot('variant_uuid', 'model')->withTimestamps();
     }
 
+    public function orders() {
+        return $this->belongsToMany(Order::class, 'order_product', 'product_id', 'order_id')
+        ->withPivot('uuid', 'name', 'qty', 'price', 'price_original', 'promotion', 'option')->withTimestamps();
+    }
+
     // protected $casts = [
     //     'variant' => 'json',
     //     'attribute' => 'json'

@@ -25,7 +25,7 @@
         </div>
         <div class="uk-grid uk-grid-medium mb20">
             <div class="uk-width-large-1-3">
-                <select name="province_id" class="form-control nice-select province location" data-target="districts" id="">
+                <select name="province_id" class="form-control setupSelect2 province location" data-target="districts" id="">
                     <option value="0">[Chọn Thành Phố]</option>
                     @if (isset($provinces))
                         @foreach ($provinces as $province)
@@ -38,12 +38,12 @@
                 </select>
             </div>
             <div class="uk-width-large-1-3">
-                <select name="district_id" class="form-control nice-select districts location" data-target="wards" id="">
+                <select name="district_id" class="form-control setupSelect2 districts location" data-target="wards" id="">
                     <option value="0">[Chọn Quận\Huyện]</option>
                 </select>
             </div>
             <div class="uk-width-large-1-3">
-                <select name="ward_id" class="form-control nice-select wards" id="">
+                <select name="ward_id" class="form-control setupSelect2 wards" id="">
                     <option value="0">[Chọn Phường/Xã]</option>
                 </select>
             </div>

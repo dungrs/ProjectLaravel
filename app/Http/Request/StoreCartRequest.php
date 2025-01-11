@@ -25,17 +25,21 @@ class StoreCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'canonical' => 'required|unique:routers'
+            'fullname' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email',
+            'address' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'name.required' => "Bạn chưa nhập vào ô tiêu đề.",
-            'canonical.required' => "Bạn chưa nhập vào đường dẫn.",
-            'canonical.unique' => "Đường dẫn đã tồn tại, Hãy chọn đường dẫn khác.",
+            'fullname.required' => "Bạn chưa nhập vào Họ Tên.",
+            'phone.required' => "Bạn chưa nhập vào Số điện thoại.",
+            'address.required' => "Bạn chưa nhập vào địa chỉ.",
+            'email.required' => "Bạn chưa nhập vào email.",
+            'email.email' => "Email chưa đúng định dạng. Ví dụ: abc@gmail.com",
         ];
     }
 }

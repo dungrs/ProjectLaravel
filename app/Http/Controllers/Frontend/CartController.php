@@ -57,8 +57,12 @@ class CartController extends FrontendController
         ));
     }
 
-    public function create() {
-
+    public function store(StoreCartRequest $request) {
+        if ($this->cartService->order($request)) {
+            return redirect()->route('cart.success')->with('success', 'Đặt hàng thành công');
+        } else {
+            return redirect()->route('cart.checkout')->with('error', 'Đặt hàng không thành công. Hãy thử lại');
+        }
     }
 
     public function config() {

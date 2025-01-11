@@ -3,7 +3,13 @@
     <div class="cart-method mb30">
         @foreach (__('payment.method') as $key => $val)
             <label for="{{ $val['name'] }}" class="uk-flex uk-flex-middle method-item">
-                <input type="radio" name="method" value="{{ $val['name'] }}" {{ $key = 0 ? 'checked' : '' }} id="{{ $val['name'] }}">
+                <input 
+                    type="radio" 
+                    name="method" 
+                    value="{{ $val['name'] }}" 
+                    id="{{ $val['name'] }}"
+                    @if (old('method', '') == $val['name'] || (!old('method') && $key == 0)) checked @endif
+                >
                 <span class=image><img src="{{ $val['image'] }}" alt=""></span>
                 <span class="title">{{ $val['title'] }}</span>
             </label>

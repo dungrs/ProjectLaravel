@@ -8,11 +8,11 @@ use App\Services\PromotionService;
 use App\Services\ProductVariantService;
 
 use App\Repositories\ProductRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\PromotionRepository;
 use App\Repositories\ProductVariantRepository;
 
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Gloudemans\Shoppingcart\Facades\Cart;
@@ -25,6 +25,7 @@ class CartService extends BaseService implements CartServiceInterface
 {   
     protected $productRepository;
     protected $promotionRepository;
+    protected $orderRepository;
     protected $productVariantRepository;
     protected $productVariantService;
     protected $promotionService;
@@ -32,12 +33,14 @@ class CartService extends BaseService implements CartServiceInterface
     public function __construct(
         ProductRepository $productRepository,
         PromotionRepository $promotionRepository,
+        OrderRepository $orderRepository,
         ProductVariantRepository $productVariantRepository,
         ProductVariantService $productVariantService,
         PromotionService $promotionService,
         ) {
         $this->productRepository = $productRepository;
         $this->promotionRepository = $promotionRepository;
+        $this->orderRepository = $orderRepository;
         $this->productVariantRepository = $productVariantRepository;
         $this->productVariantService = $productVariantService;
         $this->promotionService = $promotionService;
@@ -155,7 +158,6 @@ class CartService extends BaseService implements CartServiceInterface
             return $cartRecaculate;
         } catch (Exception $e) {
             DB::rollBack(); // Nếu có lỗi, rollback giao dịch
-            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
             echo $e->getMessage();
             die();
         }
@@ -173,11 +175,89 @@ class CartService extends BaseService implements CartServiceInterface
             return $cartRecaculate;
         } catch (Exception $e) {
             DB::rollBack(); // Nếu có lỗi, rollback giao dịch
-            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
             echo $e->getMessage();
             die();
         }
+    }
 
+    public function order($request) {
+        DB::beginTransaction(); // Bắt đầu một giao dịch
+            $payload = $this->request($request);
+            $order = $this->orderRepository->create($payload);
+            if ($order->id > 0) {
+                $this->createOrderProduct($payload, $order);
+                $this->paymentOnline($payload['method']);
+                // Cart::instance('shopping')->destroy();
+            }
+
+            DB::commit();
+        try {
+        } catch (Exception $e) {
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            echo $e->getMessage();
+            die();
+        }
+    }
+
+    private function paymentOnline($method = '') {
+        // switch ($method) {
+        //     case 'zalo':
+        //         $this->zaloPay();
+        //         break;
+        //     case 'momo':
+        //         $this->momoPay();
+        //         break;
+        //     case 'shopee':
+        //         $this->shopeePay();
+        //         break;
+        //     case 'vnpay':
+        //         $this->vnpayPay();
+        //         break;
+        //     case 'paypal':
+        //         $this->paypal();
+        //         break;
+        // }
+    }
+
+    private function createOrderProduct($payload, $order) {
+        $temp = [];
+        if (!is_null($payload['cart']['details'])) {
+            foreach ($payload['cart']['details'] as $key => $val) {
+                $extract = explode('_', $val->id);
+                $temp[] = [
+                    'product_id' => $extract[0],
+                    'uuid' => ($extract[1]) ?? null,
+                    'name' => $val->name,
+                    'qty' => $val->qty,
+                    'price' => $val->price,
+                    'price_original' => $val->priceOriginal,
+                    'option' => json_encode($val->option),
+                ];
+            }
+
+            $order->products()->sync($temp);
+        }
+    }
+
+    private function request($request) {
+        $carts = Cart::instance('shopping')->content();
+        $carts = $this->remakeCart($carts);
+        $reCalculateCart = $this->reCalculate();
+        $cartPromotion = $this->cartPromotion($reCalculateCart['cartTotal']);
+        
+        $payload = $request->except(['_token', 'voucher', 'create']);
+        $payload['code'] = time();
+        $payload['cart'] = $reCalculateCart;
+        $payload['cart']['details'] = $carts;
+        $payload['promotion']['discount'] = $cartPromotion['discount'];
+        $payload['promotion']['name'] = $cartPromotion['selectedPromotion']->name;
+        $payload['promotion']['start_date'] = $cartPromotion['selectedPromotion']->start_date;
+        $payload['promotion']['end_date'] = $cartPromotion['selectedPromotion']->end_date;
+        $payload['confirm'] = 'pending';
+        $payload['delivery'] = 'pending';
+        $payload['payment'] = 'unpaid';
+
+        return $payload;
     }
 
     private function cartAndPromotion() {

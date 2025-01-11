@@ -5,7 +5,14 @@
 @endphp
     <div class="cart-container">
         <div class="uk-container uk-container-center">
-            <form action="uk-form form" class="uk-form form" method="post">
+            @if ($errors -> any())
+                <div class="uk-alert uk-alert-danger">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </div>
+            @endif
+            <form action="{{ route('cart.store') }}" class="uk-form form" method="post">
                 @csrf
                 <div class="cart-wrapper">
                     <div class="uk-grid uk-grid-medium">

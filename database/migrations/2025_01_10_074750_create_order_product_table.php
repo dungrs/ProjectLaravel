@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('qty');
             $table->integer('price');
-            $table->integer('priceOriginal');
-            $table->json('promotion');
+            $table->integer('price_original');
             $table->json('option');
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
