@@ -301,7 +301,7 @@ if (!function_exists('getDiscount')) {
 if (!function_exists('convertDateTime')) {
     function convertDateTime($dateTime)
     {
-        return \Carbon\Carbon::parse($dateTime)->format('d/m/Y');
+        return \Carbon\Carbon::parse($dateTime)->format('d/m/Y H:i');
     }
 }
 

@@ -21,6 +21,7 @@ class Order extends Model
         'ward_id',
         'address',
         'description',
+        'promotion',
         'cart',
         'customer_id',
         'guest_cookie',
@@ -40,7 +41,7 @@ class Order extends Model
 
     public function products() {
         return $this->belongsToMany(Product::class, 'order_product', 'order_id', 'product_id')
-        ->withPivot('uuid', 'name', 'qty', 'price', 'price_original', 'promotion', 'option')->withTimestamps();
+        ->withPivot('uuid', 'name', 'qty', 'price', 'price_original', 'option')->withTimestamps();
     }
 
     public function order_payments() {

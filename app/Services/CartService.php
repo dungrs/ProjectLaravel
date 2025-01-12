@@ -191,11 +191,18 @@ class CartService extends BaseService implements CartServiceInterface
             }
 
             DB::commit();
+            return [
+                'order' => $order,
+                'flag' => true,
+            ];
         try {
         } catch (Exception $e) {
-            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
             echo $e->getMessage();
-            die();
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            return [
+                'order' => null,
+                'flag' => false,
+            ];
         }
     }
 
@@ -231,7 +238,7 @@ class CartService extends BaseService implements CartServiceInterface
                     'qty' => $val->qty,
                     'price' => $val->price,
                     'price_original' => $val->priceOriginal,
-                    'option' => json_encode($val->option),
+                    'option' => json_encode($val->options),
                 ];
             }
 
@@ -250,6 +257,7 @@ class CartService extends BaseService implements CartServiceInterface
         $payload['cart'] = $reCalculateCart;
         $payload['cart']['details'] = $carts;
         $payload['promotion']['discount'] = $cartPromotion['discount'];
+        $payload['promotion']['code'] = $cartPromotion['selectedPromotion']->code;
         $payload['promotion']['name'] = $cartPromotion['selectedPromotion']->name;
         $payload['promotion']['start_date'] = $cartPromotion['selectedPromotion']->start_date;
         $payload['promotion']['end_date'] = $cartPromotion['selectedPromotion']->end_date;

@@ -2647,6 +2647,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover,
     font-size: 14px;
     color:#000;
     border-bottom:1px solid #ccc;
+    max-width: 200px !important;
 }
 .cart-success tfoot{
     background: #fff;

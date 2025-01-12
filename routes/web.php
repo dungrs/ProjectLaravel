@@ -55,6 +55,7 @@ Route::get('thanh-toan'  . config('apps.general.suffix'), [CartController::class
 Route::get('{canonical}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9\-]+');
 Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9\-]+')->where('page', '[0-9]+');
 Route::post('cart/store', [CartController::class, 'store']) -> name('cart.store');
+Route::get('cart/{code}/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success')->where('code', '[0-9]+');
 
 // FRONEND AJAX
 Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant']) -> name('ajax.product.loadVariant');
