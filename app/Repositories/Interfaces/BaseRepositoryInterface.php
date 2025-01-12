@@ -10,7 +10,7 @@ interface BaseRepositoryInterface
 {
     public function all(array $relation, string $selectRaw = '*');
     public function findById(int $modelId);
-    public function create(array $payload);
+    public function create(array $payload = []);
     public function update(int $id = 0, array $payload = []);
     public function updateOrInsert(array $condition = [], array $payload = []);
     public function updateByWhereIn(string $whereInField = '', array $whereIn = [], array $payload = []);

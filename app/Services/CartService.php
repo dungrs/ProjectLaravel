@@ -16,6 +16,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use App\Mail\OrderMail;
 
 /**
  * Class CartService
@@ -29,6 +30,8 @@ class CartService extends BaseService implements CartServiceInterface
     protected $productVariantRepository;
     protected $productVariantService;
     protected $promotionService;
+    protected $priceOriginal;
+    protected $image;
 
     public function __construct(
         ProductRepository $productRepository,
@@ -132,12 +135,10 @@ class CartService extends BaseService implements CartServiceInterface
             if (isset($objects['variants'][$objectId])) {
                 $variantItem = $objects['variants'][$objectId];
                 $variantImage = explode(',', $variantItem->album)[0] ?? null;
-                $cart->image = $variantImage;
-                $cart->priceOriginal = $variantItem->price;
+                $cart->setImage($variantImage)->setPriceOriginal($variantItem->price);
             } elseif (isset($objects['products'][$objectId])) {
                 $productItem = $objects['products'][$objectId];
-                $cart->image = $productItem->image;
-                $cart->priceOriginal = $productItem->price;
+                $cart->setImage($cart->image)->setPriceOriginal($productItem->price);
             }
         }
 
@@ -180,7 +181,7 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
-    public function order($request) {
+    public function order($request, $system) {
         DB::beginTransaction(); // Bắt đầu một giao dịch
             $payload = $this->request($request);
             $order = $this->orderRepository->create($payload);
@@ -189,8 +190,9 @@ class CartService extends BaseService implements CartServiceInterface
                 $this->paymentOnline($payload['method']);
                 // Cart::instance('shopping')->destroy();
             }
-
+            
             DB::commit();
+            $this->mail($order->code, $system);
             return [
                 'order' => $order,
                 'flag' => true,
@@ -204,6 +206,42 @@ class CartService extends BaseService implements CartServiceInterface
                 'flag' => false,
             ];
         }
+    }
+
+    public function getOrder($code) {
+        $order =  $this->orderRepository->findByCondition(
+            [
+                ['code', '=', $code],
+            ],
+            true,
+            [
+                [
+                    'table' => 'order_product as op',
+                    'on' => ['op.order_id', 'orders.id'] 
+                ]
+            ],
+            
+            ['id' => 'ASC'],
+            [
+                'orders.*', 
+                'op.name',
+                'op.uuid',
+                'op.qty',
+                'op.price',
+                'op.price_original' 
+            ]
+        );
+
+        return $order;
+    }
+
+    
+    private function mail($code, $system) {
+        $data = [];
+
+        $order = $this->getOrder($code);
+        $to = $order->first()->email;
+        \Mail::to($to)->cc($system['contact_email'])->send(new OrderMail($order));
     }
 
     private function paymentOnline($method = '') {

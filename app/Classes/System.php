@@ -39,8 +39,8 @@ class System {
                 'technical_phone' => ['type' => 'text', 'label' => 'Hotline kỹ thuật'],
                 'sell_phone' => ['type' => 'text', 'label' => 'Hotline kinh doanh'],
                 'phone' => ['type' => 'text', 'label' => 'Số cố định'],
-                'fax' => ['type' => 'text', 'label' => 'Fax'],
-                'email' => ['type' => 'text', 'label' => 'Mã số thuế'],
+                'fax' => ['type' => 'text', 'label' => 'Mã số thuế'],
+                'email' => ['type' => 'text', 'label' => 'Email'],
                 'website' => ['type' => 'text', 'label' => 'Website'],
                 'map' => [
                     'type' => 'textarea', 

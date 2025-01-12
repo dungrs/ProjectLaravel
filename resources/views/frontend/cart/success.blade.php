@@ -23,45 +23,45 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Tên sản phẩm</th>
-                                <th>Số lượng</th>
-                                <th>Giá niêm yết</th>
-                                <th>Giá bán</th>
-                                <th>Thành tiền</th>
+                                <th class="uk-text-left">Tên sản phẩm</th>
+                                <th class="uk-text-center">Số lượng</th>
+                                <th class="uk-text-right">Giá niêm yết</th>
+                                <th class="uk-text-right">Giá bán</th>
+                                <th class="uk-text-right">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($order as $key => $val)
                                 <tr>
-                                    <td>{{ $val->name }}</td>
-                                    <td>{{ $val->qty }}</td>
-                                    <td>{{ convert_price($val->price_original) }}</td>
-                                    <td>{{ convert_price($val->price) }}</td>
-                                    <td>{{ convert_price($val->price * $val->qty) }}</td>
+                                    <td class="uk-text-left">{{ $val->name }}</td>
+                                    <td class="uk-text-center">{{ $val->qty }}</td>
+                                    <td class="uk-text-right">{{ convert_price($val->price_original) }}</td>
+                                    <td class="uk-text-right">{{ convert_price($val->price) }}</td>
+                                    <td class="uk-text-right">{{ convert_price($val->price * $val->qty) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="4">Mã giảm giá</td>
-                                <td> {{ $order->first()->promotion['code'] }}</td>
+                                <td><strong>{{ $order->first()->promotion['code'] }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị sản phẩm</td>
-                                <td>{{ convert_price($order->first()->promotion['discount'] + $order->first()->cart['cartTotal']) }}</td>
+                                <td><strong>{{ convert_price($order->first()->promotion['discount'] + $order->first()->cart['cartTotal']) }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị khuyến mãi</td>
-                                <td>{{ convert_price($order->first()->promotion['discount']) }}</td>
+                                <td><strong>{{ convert_price($order->first()->promotion['discount']) }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Phí giao hàng</td>
-                                <td>0</td>
+                                <td><strong>0</strong></td>
 
                             </tr>
                             <tr>
                                 <td colspan="4"><span class="total_payment">Tổng thanh toán</span></td>
-                                <td>{{ convert_price($order->first()->cart['cartTotal']) }}</td>
+                                <td><strong>{{ convert_price($order->first()->cart['cartTotal']) }}</strong></td>
                             </tr>
                         </tfoot>
                     </table>

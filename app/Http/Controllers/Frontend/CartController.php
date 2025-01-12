@@ -63,7 +63,8 @@ class CartController extends FrontendController
     }
 
     public function store(StoreCartRequest $request) {
-        $order = $this->cartService->order($request);
+        $system = $this->getSystem();
+        $order = $this->cartService->order($request, $system);
         if ($order['flag']) {
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success', 'Đặt hàng thành công');
         }
@@ -71,28 +72,7 @@ class CartController extends FrontendController
     }
 
     public function success($code) {
-        $order = $this->orderRepository->findByCondition(
-            [
-                ['code', '=', $code],
-            ],
-            true,
-            [
-                [
-                    'table' => 'order_product as op',
-                    'on' => ['op.order_id', 'orders.id'] 
-                ]
-            ],
-            
-            ['id' => 'ASC'],
-            [
-                'orders.*', 
-                'op.name',
-                'op.uuid',
-                'op.qty',
-                'op.price',
-                'op.price_original' 
-            ]
-        );
+        $order = $this->cartService->getOrder($code);
         $seo = [
             'meta_title' => 'Thanh toán đơn hàng thành công',
             'meta_keyword' => '',
