@@ -222,6 +222,15 @@
                 'title' => 'Tạo Bản Dịch {language} Cho'
             ],
         ],
+        'order' => [
+            'index' => [
+                'title' => 'Quản lý đơn hàng',
+                'table' => 'Danh sách đơn hàng'
+            ],
+            'create' => [
+                'title' => 'Thêm mới đơn hàng',
+            ],
+        ],
         'menu' => [
             'index' => [
                 'title' => 'Quản lý Menu',

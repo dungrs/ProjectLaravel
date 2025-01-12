@@ -35,6 +35,7 @@ use App\Http\Controllers\Backend\SourceController;
 use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\PromotionController;
+use App\Http\Controllers\Backend\OrderController;
 
 // @@useController@@
 
@@ -266,6 +267,14 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::post('{id}/update', [AttributeController::class, 'update']) -> name('attribute.update') -> where(['id' => '[0-9]+']);
         Route::get('{id}/delete', [AttributeController::class, 'delete']) -> name('attribute.delete') -> where(['id' => '[0-9]+']);
         Route::delete('{id}/destroy', [AttributeController::class, 'destroy']) -> name('attribute.destroy') -> where(['id' => '[0-9]+']);
+    });
+
+    Route::prefix('') -> group(function() {
+        Route::get('/index', [OrderController::class, 'index']) -> name('order.index');
+        // Route::get('/create', [OrderController::class, 'create']) -> name('order.create');
+        // Route::post('/store', [OrderController::class, 'store']) -> name('order.store');
+        // Route::get('{id}/edit', [OrderController::class, 'edit']) -> name('order.edit') -> where(['id' => '[0-9]+']);
+        // Route::post('{id}/update', [OrderController::class, 'update']) -> name('order.update') -> where(['id' => '[0-9]+']);
     });
 
     // @@newModule@@

@@ -48,7 +48,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị sản phẩm</td>
-                                <td><strong>{{ convert_price($order->first()->promotion['discount'] + $order->first()->cart['cartTotal']) }}</strong></td>
+                                <td><strong>{{  convert_price($order->first()->cart['cartTotal']) }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị khuyến mãi</td>
@@ -61,7 +61,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4"><span class="total_payment">Tổng thanh toán</span></td>
-                                <td><strong>{{ convert_price($order->first()->cart['cartTotal']) }}</strong></td>
+                                <td><strong>{{ convert_price($order->first()->cart['cartTotal'] - $order->first()->promotion['discount']) }}</strong></td>
                             </tr>
                         </tfoot>
                     </table>

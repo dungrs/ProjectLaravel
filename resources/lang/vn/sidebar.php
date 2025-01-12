@@ -25,6 +25,17 @@
                 ]
             ],
             [
+                'title' => 'QL Đơn Hàng',
+                'icon' => 'fa fa-shopping-bag',
+                'name' => ['order'],
+                'subModule' => [
+                    [
+                        'title' => 'QL Đơn Hàng',
+                        'route' => 'order.index'
+                    ],
+                ]
+            ],
+            [
                 'title' => 'QL Nhóm Khách Hàng',
                 'icon' => 'fa fa-user',
                 'name' => ['customer'],

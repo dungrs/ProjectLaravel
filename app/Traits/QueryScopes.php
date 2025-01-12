@@ -11,9 +11,15 @@ trait QueryScopes {
     /**
      * Không được sử dụng constructor để tránh xung đột với các với model khi sử dụng
      */
-    public function scopeKeyword($query, $keyword) {
+    public function scopeKeyword($query, $keyword, $fieldSearch = []) {
         if (!empty($keyword)) {
-            $query->where('name', 'LIKE', '%' . $keyword . '%');
+            if (count($fieldSearch) > 0) {
+                foreach($fieldSearch as $key => $val) {
+                    $query->orWhere($val, 'LIKE', '%' . $keyword . '%');
+                }
+            } else {
+                $query->where('name', 'LIKE', '%' . $keyword . '%');
+            }
         }
         return $query;
     }
