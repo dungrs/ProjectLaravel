@@ -227,8 +227,8 @@
                 'title' => 'Quản lý đơn hàng',
                 'table' => 'Danh sách đơn hàng'
             ],
-            'create' => [
-                'title' => 'Thêm mới đơn hàng',
+            'detail' => [
+                'title' => 'Quản lý thông tin chi tiết đơn hàng',
             ],
         ],
         'menu' => [

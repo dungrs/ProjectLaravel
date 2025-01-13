@@ -25,7 +25,7 @@
                         <input type="checkbox" value="{{ $order->id }}" class="input-checkbox checkBoxItem">
                     </td>
                     <td>
-                        <a href="">{{ $order->code }}</a>
+                        <a href="{{ route('order.detail', ['id' => $order->id]) }}">{{ $order->code }}</a>
                     </td>
                     <td>
                         {{ convertDateTime($order->created_at) }}

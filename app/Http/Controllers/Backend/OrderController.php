@@ -62,4 +62,18 @@ class OrderController extends Controller
             'orders',
         ));
     }
+
+    public function detail(Request $request, $id) {
+        $condition = [
+            ['orders.id', '=', $id]
+        ];
+        $order = $this->orderService->getOrder($condition);
+        $config['seo'] = __('messages.order');
+        $template = 'backend.order.detail';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'order'
+        ));
+    }
 }

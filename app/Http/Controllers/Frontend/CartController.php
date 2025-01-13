@@ -11,13 +11,14 @@ use App\Repositories\OrderRepository;
 use App\Http\Request\StoreCartRequest;
 
 use App\Services\CartService;
+use App\Services\OrderService;
 
 use Gloudemans\Shoppingcart\Facades\Cart;
 
 class CartController extends FrontendController
 {   
 
-    protected $slideService;
+    protected $orderService;
     protected $cartService;
     protected $provinceRepository;
     protected $orderRepository;
@@ -27,11 +28,13 @@ class CartController extends FrontendController
         ProvinceRepository $provinceRepository,
         OrderRepository $orderRepository,
         CartService $cartService,
+        OrderService $orderService,
     ) {
         parent::__construct($systemRepository);
         $this->provinceRepository = $provinceRepository;
         $this->orderRepository = $orderRepository;
         $this->cartService = $cartService;
+        $this->orderService = $orderService;
     }
 
     public function checkout() {
@@ -72,7 +75,10 @@ class CartController extends FrontendController
     }
 
     public function success($code) {
-        $order = $this->cartService->getOrder($code);
+        $condition = [
+            ['orders.code', '=', $code]
+        ];
+        $order = $this->orderService->getOrder($condition);
         $seo = [
             'meta_title' => 'Thanh toán đơn hàng thành công',
             'meta_keyword' => '',

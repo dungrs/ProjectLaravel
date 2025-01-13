@@ -269,8 +269,9 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
         Route::delete('{id}/destroy', [AttributeController::class, 'destroy']) -> name('attribute.destroy') -> where(['id' => '[0-9]+']);
     });
 
-    Route::prefix('') -> group(function() {
+    Route::prefix('order') -> group(function() {
         Route::get('/index', [OrderController::class, 'index']) -> name('order.index');
+        Route::get('/{id}/detail', [OrderController::class, 'detail']) -> name('order.detail')->where(['id' => '[0-9]+']);
         // Route::get('/create', [OrderController::class, 'create']) -> name('order.create');
         // Route::post('/store', [OrderController::class, 'store']) -> name('order.store');
         // Route::get('{id}/edit', [OrderController::class, 'edit']) -> name('order.edit') -> where(['id' => '[0-9]+']);

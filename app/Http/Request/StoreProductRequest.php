@@ -21,21 +21,44 @@ class StoreProductRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    // Để lấy các quy tắc xác thực
     public function rules()
     {
         return [
-            'name' => 'required',
-            'canonical' => 'required|unique:routers'
+            'name' => 'required|string|max:255',
+            'canonical' => 'required|string|unique:routers|max:255',
+            'attribute' => 'required|array', // Kiểm tra nếu attribute là mảng
         ];
     }
 
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
     public function messages()
     {
         return [
-            'name.required' => "Bạn chưa nhập vào ô tiêu đề.",
-            'canonical.required' => "Bạn chưa nhập vào đường dẫn.",
-            'canonical.unique' => "Đường dẫn đã tồn tại, Hãy chọn đường dẫn khác.",
+            'name.required' => 'Bạn chưa nhập vào ô tiêu đề.',
+            'canonical.required' => 'Bạn chưa nhập vào đường dẫn.',
+            'canonical.unique' => 'Đường dẫn đã tồn tại, hãy chọn đường dẫn khác.',
+            'attribute.required' => 'Bạn chưa nhập phiên bản cho sản phẩm.',
         ];
+    }
+
+    /**
+     * Customize the validation data to handle null attributes.
+     *
+     * @return array
+     */
+    public function validationData()
+    {
+        $data = $this->all();
+
+        // Kiểm tra nếu attribute null, gán giá trị mặc định
+        if (empty($data['attribute'])) {
+            $data['attribute'] = []; // Gán giá trị mặc định cho attribute
+        }
+
+        return $data;
     }
 }

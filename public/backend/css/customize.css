@@ -1048,3 +1048,109 @@ background: #555;
     font-size: 12px;
     font-weight: 600;
 }
+
+.order-wrapper {
+    padding: 20px 20px 40px;
+    margin: 0 auto;
+    max-width: 1100px;
+}
+
+.ibox-title-left .badge {
+    margin-left: 20px;
+}
+
+.badge__tip {
+    width: 8px;
+    height: 8px;
+    margin: 0 3px 0 0 ;
+    color: #9c6f19;
+    display: inline-block;
+    background: transparent;
+    border-radius: 50%;
+    border: 0.2rem solid currentColor;
+}
+
+.badge-text {
+    display: inline-block;
+}
+
+.ibox-title-left .badge {
+    background: #ffea8a;
+}
+
+.table-order {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order-item:not(:last-child) {
+    border-bottom: 1px solid #eaeaea;
+}
+
+.table-order td {
+    padding: 6px 10px;
+}
+
+.order-item .image {
+    width: 100%;
+    height: 75px;
+}
+
+.order-item-name {
+    color: #2962ff;
+    width: 200px;
+}
+
+.order-item-subtotal,
+.order-item-voucher {
+    font-size: 13px;
+}
+
+.order-item-qty {
+    text-align: left;
+}
+
+.order-wrapper {
+    color: #000;
+}
+
+.table-order strong,
+.order-item-subtotal {
+    font-weight: 600;
+    color: #000;
+    text-align: right;
+}
+
+.payment-confirm {
+    padding: 20px;
+    border-top: 1px solid #eaeaea;
+    background: #fff;
+}
+
+.payment-confirm .icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.order-wrapper button.confirm {
+    background: -webkit-gradient(linear, left top, left bottom, from(#08f), to(#4697fe));
+    background: linear-gradient(to bottom, #4697fe, #08f);
+    border-color: #08f;
+    -webkit-box-shadow: inset 0 1px 0 0 #08f;
+    box-shadow: inset 0 1px 0 0 #549cf9;
+    color: #fff;
+    padding: 10px 20px;
+}
+
+.payment-title {
+    margin-left: 20px;
+}
+
+.payemnt-title .text_2 {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.custom-line:not(:last-child) {
+    margin-bottom: 10px;
+}

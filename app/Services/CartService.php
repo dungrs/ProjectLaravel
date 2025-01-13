@@ -6,6 +6,7 @@ use App\Services\Interfaces\CartServiceInterface;
 use App\Services\BaseService;
 use App\Services\PromotionService;
 use App\Services\ProductVariantService;
+use App\Services\OrderService;
 
 use App\Repositories\ProductRepository;
 use App\Repositories\OrderRepository;
@@ -30,6 +31,7 @@ class CartService extends BaseService implements CartServiceInterface
     protected $productVariantRepository;
     protected $productVariantService;
     protected $promotionService;
+    protected $orderService;
     protected $priceOriginal;
     protected $image;
 
@@ -40,6 +42,7 @@ class CartService extends BaseService implements CartServiceInterface
         ProductVariantRepository $productVariantRepository,
         ProductVariantService $productVariantService,
         PromotionService $promotionService,
+        OrderService $orderService,
         ) {
         $this->productRepository = $productRepository;
         $this->promotionRepository = $promotionRepository;
@@ -47,6 +50,7 @@ class CartService extends BaseService implements CartServiceInterface
         $this->productVariantRepository = $productVariantRepository;
         $this->productVariantService = $productVariantService;
         $this->promotionService = $promotionService;
+        $this->orderService = $orderService;
     }
 
     public function create($request, $languageId = 1) {
@@ -208,38 +212,12 @@ class CartService extends BaseService implements CartServiceInterface
         }
     }
 
-    public function getOrder($code) {
-        $order =  $this->orderRepository->findByCondition(
-            [
-                ['code', '=', $code],
-            ],
-            true,
-            [
-                [
-                    'table' => 'order_product as op',
-                    'on' => ['op.order_id', 'orders.id'] 
-                ]
-            ],
-            
-            ['id' => 'ASC'],
-            [
-                'orders.*', 
-                'op.name',
-                'op.uuid',
-                'op.qty',
-                'op.price',
-                'op.price_original' 
-            ]
-        );
-
-        return $order;
-    }
-
     
     private function mail($code, $system) {
-        $data = [];
-
-        $order = $this->getOrder($code);
+        $condition = [
+            ['orders.code', '=', $code],
+        ];
+        $order = $this->orderService->getOrder($condition);
         $to = $order->first()->email;
         \Mail::to($to)->cc($system['contact_email'])->send(new OrderMail($order));
     }
