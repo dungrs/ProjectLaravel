@@ -299,9 +299,9 @@ if (!function_exists('getDiscount')) {
 }
 
 if (!function_exists('convertDateTime')) {
-    function convertDateTime($dateTime)
+    function convertDateTime($dateTime, $stringFormatDate = 'd/m/Y H:i:s')
     {
-        return \Carbon\Carbon::parse($dateTime)->format('d/m/Y H:i');
+        return \Carbon\Carbon::parse($dateTime)->format($stringFormatDate);
     }
 }
 

@@ -8,13 +8,13 @@
         <th>Mã</th>
         <th>Ngày tạo</th>
         <th>Khách hàng</th>
-        <th>Thanh toán</th>
-        <th>Hình thức</th>
         <th>Giảm giá</th>
         <th>Phí ship</th>
         <th>Tổng cuối</th>
         <th>Giao hàng</th>
         <th>Trạng thái</th>
+        <th>Thanh toán</th>
+        <th>Hình thức</th>
     </tr>
     </thead>
     <tbody>
@@ -35,19 +35,13 @@
                         <div><b>P: </b>{{ $order->phone }}</div>
                         <div><b>A: </b>{{ $order->address }}</div>
                     </td>
-                    <td>
-                        {{ __('cart.payment')[$order->payment] }}
-                    </td>
-                    <td>
-                        {{ array_column(__('payment.method'), 'title', 'name')[$order->method] }}
-                    </td>
-                    <td>
+                    <td class="text-danger font-bold">
                         {{ convert_price($order->promotion['discount']) }}
                     </td>
-                    <td>
+                    <td class="text-success font-bold">
                         {{ convert_price($order->shipping) }}
                     </td>
-                    <td>
+                    <td class="text-success font-bold">
                         {{ convert_price($order->cart['cartTotal']) }}
                     </td>
                     <td>
@@ -55,6 +49,12 @@
                     </td>
                     <td>
                         {{ __('cart.confirm')[$order->confirm] }}
+                    </td>
+                    <td>
+                        {{ __('cart.payment')[$order->payment] }}
+                    </td>
+                    <td>
+                        {{ array_column(__('payment.method'), 'title', 'name')[$order->method] }}
                     </td>
                 </tr>
             @endforeach

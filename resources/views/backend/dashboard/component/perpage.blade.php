@@ -1,4 +1,4 @@
-<div class="perpage">
+<div class="perpage mr10">
     <div class="uk-flex uk-flex-space-between uk-flex-middle">
         @php
             $perpage = request('perpage') ?: old("perpage");

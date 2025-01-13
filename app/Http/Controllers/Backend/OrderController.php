@@ -43,11 +43,14 @@ class OrderController extends Controller
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js',
+                'backend/js/plugins/daterangepicker/daterangepicker.js',
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
             ], 
             'css' => [
                 'backend/css/plugins/switchery/switchery.css',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+                'backend/css/plugins/daterangepicker/daterangepicker-bs3.css',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
             ],
             'model' => 'Order',
         ];

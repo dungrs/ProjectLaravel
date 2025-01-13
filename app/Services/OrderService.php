@@ -24,13 +24,17 @@ class OrderService extends BaseService implements OrderServiceInterface
     public function paginate($request) {
         $condition['keyword'] = addslashes($request->input('keyword'));
         $perpage = $request->integer('perpage');
+        foreach(__('cart') as $key => $val) {
+            $condition['dropdown'][$key] = $request->string($key);
+        }
+        $condition['created_at'] = $request->string('created_at');
 
         $order = $this->orderRepository->pagination(
             $this->paginateSelect(), 
             $condition, 
             $perpage, 
             ['path' => 'order/index'],
-            ['id', 'DESC'],
+            ['orders.id', 'DESC'],
         );
     
         return $order;
@@ -56,7 +60,7 @@ class OrderService extends BaseService implements OrderServiceInterface
             'confirm',
             'delivery',
             'shipping',
-            'created_at'
+            'created_at',
         ];
     }
 }

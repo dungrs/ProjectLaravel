@@ -198,6 +198,17 @@
         });
     };
 
+    HT.setupdaDateRangePicker = () => {
+        if ($('.rangepicker').length > 0) {
+            $('.rangepicker').daterangepicker({
+                timePicker: true,
+                locale: {
+                    format: 'DD-MM-YYYY' 
+                }
+            })
+        }
+    }
+
     $(document).ready(function() {
         HT.switchery();
         HT.select2();
@@ -209,5 +220,6 @@
         HT.sortui();
         HT.formatInputNumberVariant();
         HT.setupDatepicker();
+        HT.setupdaDateRangePicker();
     })
 })(jQuery)

@@ -32,8 +32,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         $query = $this->model->select($column);
     
         return $query
-            ->keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'address', 'code'])
+            ->keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'address', 'code'], ['field' => 'name', 'relation' => 'products'])
             ->publish($condition['publish'] ?? null)
+            ->customDropdownFilter($condition['dropdown'] ?? null)
+            ->customCreatedAt($condition['created_at'] ?? null)
             ->customWhere($condition['where'] ?? null)
             ->customWhereRaw($rawQuery['whereRaw'] ?? null)
             ->relation($relations ?? null)
