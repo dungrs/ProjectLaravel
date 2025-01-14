@@ -9,6 +9,7 @@ use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\CartController as AjaxCartController;
+use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
@@ -272,10 +273,6 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
     Route::prefix('order') -> group(function() {
         Route::get('/index', [OrderController::class, 'index']) -> name('order.index');
         Route::get('/{id}/detail', [OrderController::class, 'detail']) -> name('order.detail')->where(['id' => '[0-9]+']);
-        // Route::get('/create', [OrderController::class, 'create']) -> name('order.create');
-        // Route::post('/store', [OrderController::class, 'store']) -> name('order.store');
-        // Route::get('{id}/edit', [OrderController::class, 'edit']) -> name('order.edit') -> where(['id' => '[0-9]+']);
-        // Route::post('{id}/update', [OrderController::class, 'update']) -> name('order.update') -> where(['id' => '[0-9]+']);
     });
 
     // @@newModule@@
@@ -294,6 +291,7 @@ Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], fun
     Route::post('ajax/menu/drag', [AjaxMenuController::class, 'drag']) -> name('ajax.menu.drag');
     Route::get('ajax/product/loadProductAnimation', [AjaxProductController::class, 'loadProductAnimation']) -> name('ajax.product.loadProductAnimation');
     Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource']) -> name('ajax.source.getAllSource');
+    Route::post('ajax/order/update', [AjaxOrderController::class, 'update']) -> name('ajax.order.update');
 });
 
 Route::get('admin', [AuthController::class, 'index']) -> name('auth.admin') -> middleware('login');

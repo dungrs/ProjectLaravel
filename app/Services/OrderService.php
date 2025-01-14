@@ -56,15 +56,18 @@ class OrderService extends BaseService implements OrderServiceInterface
                 ],
                 [
                     'table' => 'provinces as p',
-                    'on' => ['p.code', 'orders.province_id']
+                    'on' => ['p.code', 'orders.province_id'],
+                    'type' => 'left'
                 ],
                 [
                     'table' => 'districts as d',
-                    'on' => ['d.code', 'orders.district_id']
+                    'on' => ['d.code', 'orders.district_id'],
+                    'type' => 'left'
                 ],
                 [
                     'table' => 'wards as w',
-                    'on' => ['w.code', 'orders.ward_id']
+                    'on' => ['w.code', 'orders.ward_id'],
+                    'type' => 'left'
                 ],
             ],
             
@@ -84,6 +87,25 @@ class OrderService extends BaseService implements OrderServiceInterface
         );
 
         return $order;
+    }
+
+    public function update($request) {
+        DB::beginTransaction(); // Bắt đầu một giao dịch
+    
+        try {
+            $orderId = $request->input('id');
+            $payload = $request->input('payload');
+
+            $this->orderRepository->update($orderId, $payload);
+    
+            DB::commit(); // Nếu không có lỗi, commit giao dịch
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
+            echo $e->getMessage();
+            die();
+        }
     }
 
 

@@ -5,11 +5,15 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <div class="ibox-title-left">
-                        <span>Chi tiết đơn hàng</span>
-                        <spac class="badge">
+                        <span>Chi tiết đơn hàng #{{ $order->first()->code }}</span>
+                        <span class="badge">
                             <div class="badge__tip"></div>
-                            <div class="badge-text">Chưa giao</div>
-                        </spac>
+                            <div class="badge-text">{{ __('cart.delivery')[$order->first()->delivery] }}</div>
+                        </span>
+                        <span class="badge">
+                            <div class="badge__tip"></div>
+                            <div class="badge-text">{{ __('cart.payment')[$order->first()->payment] }}</div>
+                        </span>
                     </div>
                     <div class="ibox-title-right">
                         Nguồn: Website
@@ -64,22 +68,22 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="payment-confirm">
+                <div class="payment-confirm confirm-box">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-flex uk-flex-middle">
-                            <span class="icon"><img src="{{ asset('backend/img/warning.png') }}" alt=""></span>
+                            <span class="icon"><img src="{{ __('order.confirm') == 'pending' ? asset('backend/img/warning.png') : asset('backend/img/correct.png') }}" alt=""></span>
                             <div class="payment-title">
                                 <div class="text_1">
-                                    <span class="isConfirm">ĐANG CHỜ XÁC NHẬN ĐƠN HÀNG</span>
-                                    20.000.000 đ
+                                    <span class="isConfirm">{{ __('order.confirm')[$order->first()->confirm] }}</span>
+                                    {{ convert_price($order->first()->cart['cartTotal'] - $order->first()->promotion['discount']) }}
                                 </div>
                                 <div class="text_2">
-                                    Thanh toán khi nhận được hàng (COD)
-                                </div>
+                                    {{ array_column(__('payment.method'), 'title', 'name')[$order->first()->method] }}
+                            </div>
                             </div>
                         </div>
                         <div class="cancle-block">
-                            {{-- <button class="button">Hủy đơn</button> --}}
+                            {!! $order->first()->confirm === 'cancel' ? '<span class="nofiCancel">Đơn hàng đã bị hủy</span>' : '' !!}
                         </div>
                     </div>
                 </div>
@@ -93,54 +97,78 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="cancle-block">
-                            <button class="button confirm">Xác nhận</button>
+                        <div class="confirm-block">
+                            @if ( $order->first()->confirm === 'pending')
+                                <button class="button confirm updateField" data-field="confirm" data-confirm="confirm" data-title="ĐÃ XÁC NHẬN ĐƠN HÀNG TRỊ GIÁ">Xác nhận</button>
+                            @else
+                                <span class="nofiConfirm">Đã xác nhận</span>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 order-aside">
-            <div class="ibox">
+            <div class="ibox" data-type="orderTarget">
                 <div class="ibox-title">
                     <span>Ghi chú</span>
-                    <div class="edit span">Sửa</div>
+                    <div class="edit span edit-order" data-target="description">Sửa</div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content order-description">
                     <div class="description">
                         {{ $order->first()->description }}
                     </div>
                 </div>
             </div>
-            <div class="ibox">
+            <div class="ibox" data-type="orderTarget">
                 <div class="ibox-title">
                     <h5>Thông tin khách hàng</h5>
-                    <div class="edit span">Sửa</div>
+                    <div class="edit span edit-order" data-target="customerInfo">Sửa</div>
                 </div>
-                <div class="ibox-content">
+                <div class="ibox-content order-customer-info">
                     <div class="custom-line">
-                        <strong>N:</strong> {{ $order->first()->fullname }}
+                        <strong>N: </strong>
+                        <span class="fullname">{{ $order->first()->fullname }}</span>
                     </div>
                     <div class="custom-line">
-                        <strong>E:</strong> {{ $order->first()->email }}
+                        <strong>E: </strong>
+                        <span class="email">{{ $order->first()->email }}</span>
                     </div>
                     <div class="custom-line">
-                        <strong>P:</strong> {{ $order->first()->phone }}
+                        <strong>P: </strong>
+                        <span class="phone">{{ $order->first()->phone }}</span>
                     </div>
                     <div class="custom-line">
-                        <strong>A:</strong> {{ $order->first()->address }}
+                        <strong>A: </strong>
+                        <span class="address">{{ $order->first()->address }}</span>
                     </div>
                     <div class="custom-line">
-                        <strong>P:</strong> {{ $order->first()->ward_name }}
+                        <strong>P: </strong>
+                        <span class="ward_name">{{ $order->first()->ward_name }}</span>
                     </div>
                     <div class="custom-line">
-                        <strong>Q:</strong> {{ $order->first()->district_name }}
+                        <strong>Q: </strong>
+                        <span class="district_name">{{ $order->first()->district_name }}</span>
                     </div>
                     <div class="custom-line">
-                        <strong>T:</strong> {{ $order->first()->province_name }}
+                        <strong>T: </strong>
+                        <span class="province_name">{{ $order->first()->province_name }}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<input type="hidden" name="order_id" value="{{ $order->first()->id }}">
+<input type="hidden" name="province_id" value="{{ $order->first()->province_id }}">
+<input type="hidden" name="district_id" value="{{ $order->first()->district_id }}">
+<input type="hidden" name="ward_id" value="{{ $order->first()->ward_id }}">
+
+<script>
+    var provinces = @json($provinces->map(function($item) {
+        return [
+            'id' => $item->code,
+            'name' => $item->name
+        ];
+    })->values());
+</script>

@@ -1154,3 +1154,27 @@ background: #555;
 .custom-line:not(:last-child) {
     margin-bottom: 10px;
 }
+
+div.edit {
+    cursor: pointer;
+}
+
+.img-method {
+    display: inline !important;
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.text_1 {
+    font-weight: 600;
+}
+
+
+.cancel-badge {
+    padding: 3px 7px;
+    background: #000;
+    color: #fff;
+    border-radius: 50px !important;
+    font-weight: 500;
+    font-size: 12px;
+}

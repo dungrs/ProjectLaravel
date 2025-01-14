@@ -11,6 +11,7 @@
 <link href="{{ asset('backend/css/style.css') }}" rel="stylesheet">
 <link href="{{ asset('backend/css/customize.css') }}" rel="stylesheet">
 <link href="{{ asset('backend/plugin/jquery-ui.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 <script src="{{ asset('backend/js/jquery-3.1.1.min.js') }}"></script>
 

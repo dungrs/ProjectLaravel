@@ -22,6 +22,7 @@
 <script src="{{ asset('backend/js/plugins/easypiechart/jquery.easypiechart.js') }}"></script>
 <script src="{{ asset('backend/js/plugins/sparkline/jquery.sparkline.min.js') }}"></script>
 <script src="{{ asset('backend/js/demo/sparkline-demo.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 @if (isset($config['js']) && is_array($config['js']))
     @foreach ($config['js'] as $key => $val)

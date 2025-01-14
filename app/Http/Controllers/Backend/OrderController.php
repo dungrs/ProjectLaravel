@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Services\OrderService as OrderService;
+
 use App\Repositories\OrderRepository as OrderRepository;
+use App\Repositories\ProvinceRepository as ProvinceRepository;
 
 use App\Models\Language;
 
@@ -15,12 +17,13 @@ class OrderController extends Controller
 {   
     protected $orderService;
     protected $orderRepository;
+    protected $provinceRepository;
     protected $language;
-    
     
     public function __construct(
         OrderService $orderService, 
         OrderRepository $orderRepository,
+        ProvinceRepository $provinceRepository
     ) { 
         // Thay vì khai báo ở route để xác 
         $this->middleware(function($request, $next) {
@@ -35,6 +38,7 @@ class OrderController extends Controller
 
         $this->orderService = $orderService;
         $this->orderRepository = $orderRepository;
+        $this->provinceRepository = $provinceRepository;
     }
 
     public function index(Request $request) {
@@ -42,6 +46,7 @@ class OrderController extends Controller
         $orders = $this->orderService->paginate($request);
         $config = [
             'js' => [
+                'backend/library/order.js',
                 'backend/js/plugins/switchery/switchery.js',
                 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js',
                 'backend/js/plugins/daterangepicker/daterangepicker.js',
@@ -68,12 +73,23 @@ class OrderController extends Controller
             ['orders.id', '=', $id]
         ];
         $order = $this->orderService->getOrder($condition);
+        $provinces = $this->provinceRepository->all();
+        $config = [
+            'js' => [
+                'backend/library/order.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+            ], 
+            'css' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+            ],
+        ];
         $config['seo'] = __('messages.order');
         $template = 'backend.order.detail';
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'order'
+            'order',
+            'provinces'
         ));
     }
 }

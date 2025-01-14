@@ -11,10 +11,10 @@
         <th>Giảm giá</th>
         <th>Phí ship</th>
         <th>Tổng cuối</th>
-        <th>Giao hàng</th>
-        <th>Trạng thái</th>
+        <th class="text-center">Trạng thái</th>
         <th>Thanh toán</th>
-        <th>Hình thức</th>
+        <th>Giao hàng</th>
+        <th class="text-center">Hình thức</th>
     </tr>
     </thead>
     <tbody>
@@ -44,17 +44,32 @@
                     <td class="text-success font-bold">
                         {{ convert_price($order->cart['cartTotal']) }}
                     </td>
-                    <td>
-                        {{ __('cart.delivery')[$order->delivery] }}
+                    <td class="text-center">
+                        {!! $order->confirm != 'cancel' ? __('cart.confirm')[$order->confirm] : '<span class="cancel-badge">'.__('cart.confirm')[$order->confirm] .'</span>' !!}
                     </td>
-                    <td>
-                        {{ __('cart.confirm')[$order->confirm] }}
-                    </td>
-                    <td>
-                        {{ __('cart.payment')[$order->payment] }}
-                    </td>
-                    <td>
-                        {{ array_column(__('payment.method'), 'title', 'name')[$order->method] }}
+                    @foreach (__('cart') as $key => $item)
+                        @if ($key === 'confirm') @continue @endif
+                        <td class="text-center">
+                            @if ($order->confirm != 'cancel')
+                                <select data-field="{{ $key }}" name="{{ $key }}" class="setupSelect2 updateBadge" id="">
+                                    @foreach ($item as $keyOption => $valOption)
+                                        @if ($keyOption === 'none') @continue @endif
+                                        <option {{ $order->{$key} == $keyOption ? 'selected' : '' }} value="{{ $keyOption }}">{{ $valOption }}</option>
+                                    @endforeach
+                                </select>
+                            @else
+                            -                                
+                            @endif
+                            <input 
+                            type="hidden" 
+                            class="changeOrderStatus" 
+                            value="{{ $order->{$key} }}" 
+                            data-title="{{ $item[$order->{$key}] ?? '' }}">
+                        </td>
+                    @endforeach
+                    <td class="text-center">
+                        <img class="image img-method" src="{{ array_column(__('payment.method'), 'image', 'name')[$order->method] }}" alt="">
+                        <input type="hidden" class="confirm" value="{{ $order->confirm }}">
                     </td>
                 </tr>
             @endforeach
