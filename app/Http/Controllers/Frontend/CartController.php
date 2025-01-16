@@ -14,6 +14,7 @@ use App\Services\CartService;
 use App\Services\OrderService;
 
 use App\Classes\Vnpay;
+use App\Classes\Momo;
 
 use Gloudemans\Shoppingcart\Facades\Cart;
 
@@ -25,6 +26,7 @@ class CartController extends FrontendController
     protected $provinceRepository;
     protected $orderRepository;
     protected $vnpay;
+    protected $momo;
 
     public function __construct(
         SystemRepository $systemRepository,
@@ -33,6 +35,7 @@ class CartController extends FrontendController
         CartService $cartService,
         OrderService $orderService,
         Vnpay $vnpay,
+        Momo $momo,
     ) {
         parent::__construct($systemRepository);
         $this->provinceRepository = $provinceRepository;
@@ -40,6 +43,7 @@ class CartController extends FrontendController
         $this->cartService = $cartService;
         $this->orderService = $orderService;
         $this->vnpay = $vnpay;
+        $this->momo = $momo;
     }
 
     public function checkout() {
@@ -74,8 +78,8 @@ class CartController extends FrontendController
         $system = $this->getSystem();
         $order = $this->cartService->order($request, $system);
         if ($order['flag']) {
-            $response = $this->vnpay->payment($order['order']);
-            if ($response['code'] == 00) {
+            $response = $this->paymentOnline($order);
+            if ($response['resultCode'] == 0) {
                 return redirect()->away($response['url']);
             }
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success', 'Đặt hàng thành công');
@@ -104,6 +108,15 @@ class CartController extends FrontendController
             'config',
             'order',
         ));
+    }
+
+    public function paymentOnline($order = null) {
+        switch ($order['order']->method) {
+            case 'vnpay':
+                return $this->vnpay->payment($order['order']);
+            case 'momo':
+                return $this->momo->payment($order['order']);
+        }
     }
 
     public function config() {

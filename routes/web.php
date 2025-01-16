@@ -15,6 +15,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\RouterController;
 use App\Http\Controllers\Frontend\VnpayController;
+use App\Http\Controllers\Frontend\MomoController;
 
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -68,7 +69,10 @@ Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete']) -> name('
 
 // VNPAY
 Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return']) -> name('vnpay.vnpay_return');
-// Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn']) -> name('vnpay.vnpay_ipn');
+Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn']) -> name('vnpay.vnpay_ipn');
+
+Route::get('return/momo' . config('apps.general.suffix'), [MomoController::class, 'momo_return']) -> name('momo.momo_return');
+Route::get('return/momo_ipn' . config('apps.general.suffix'), [MomoController::class, 'momo_ipn']) -> name('momo.momo_ipn');
 
 // BACKEND ROUTES
 Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], function() {
