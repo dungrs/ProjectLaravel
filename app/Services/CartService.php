@@ -15,7 +15,6 @@ use App\Repositories\ProductVariantRepository;
 
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use App\Mail\OrderMail;
 
@@ -196,15 +195,15 @@ class CartService extends BaseService implements CartServiceInterface
             }
             
             DB::commit();
-            $this->mail($order->code, $system);
+            // $this->mail($order->code, $system);
             return [
                 'order' => $order,
                 'flag' => true,
             ];
         try {
         } catch (Exception $e) {
-            echo $e->getMessage();
             DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            echo $e->getMessage();
             return [
                 'order' => null,
                 'flag' => false,
@@ -213,14 +212,14 @@ class CartService extends BaseService implements CartServiceInterface
     }
 
     
-    private function mail($code, $system) {
-        $condition = [
-            ['orders.code', '=', $code],
-        ];
-        $order = $this->orderService->getOrder($condition);
-        $to = $order->first()->email;
-        \Mail::to($to)->cc($system['contact_email'])->send(new OrderMail($order));
-    }
+    // private function mail($code, $system) {
+    //     $condition = [
+    //         ['orders.code', '=', $code],
+    //     ];
+    //     $order = $this->orderService->getOrder($condition);
+    //     $to = $order->first()->email;
+    //     \Mail::to($to)->cc($system['contact_email'])->send(new OrderMail($order));
+    // }
 
     private function paymentOnline($method = '') {
         // switch ($method) {

@@ -12,10 +12,10 @@
                     <div class="uk-grid uk-grid-medium uk-flex uk-flex-middle">
                         <div class="uk-width-large-1-3"></div>
                         <div class="uk-width-large-1-3">
-                            <div class="order-title uk-text-center">ĐƠN HÀNG #{{ $order->first()->code }}</div>
+                            <div class="order-title uk-text-center">ĐƠN HÀNG #{{ $data['order']->first()->code }}</div>
                         </div>
                         <div class="uk-width-large-1-3">
-                            <div class="order-date">{{ convertDateTime($order->first()->created_at) }}</div>
+                            <div class="order-date">{{ convertDateTime($data['order']->first()->created_at) }}</div>
                         </div>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($order as $key => $val)
+                            @foreach ($data['order'] as $key => $val)
                                 <tr>
                                     <td class="uk-text-left">{{ $val->name }}</td>
                                     <td class="uk-text-center">{{ $val->qty }}</td>
@@ -44,15 +44,15 @@
                         <tfoot>
                             <tr>
                                 <td colspan="4">Mã giảm giá</td>
-                                <td><strong>{{ $order->first()->promotion['code'] }}</strong></td>
+                                <td><strong>{{ $data['order']->first()->promotion['code'] }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị sản phẩm</td>
-                                <td><strong>{{  convert_price($order->first()->cart['cartTotal']) }}</strong></td>
+                                <td><strong>{{  convert_price($data['order']->first()->cart['cartTotal']) }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị khuyến mãi</td>
-                                <td><strong>{{ convert_price($order->first()->promotion['discount']) }}</strong></td>
+                                <td><strong>{{ convert_price($data['order']->first()->promotion['discount']) }}</strong></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Phí giao hàng</td>
@@ -61,7 +61,7 @@
                             </tr>
                             <tr>
                                 <td colspan="4"><span class="total_payment">Tổng thanh toán</span></td>
-                                <td><strong>{{ convert_price($order->first()->cart['cartTotal'] - $order->first()->promotion['discount']) }}</strong></td>
+                                <td><strong>{{ convert_price($data['order']->first()->cart['cartTotal'] - $data['order']->first()->promotion['discount']) }}</strong></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -71,11 +71,13 @@
         <div class="panel-foot">
             <h2 class="cart-heading"><span>Thông tin nhận hàng</span></h2>
             <div class="checkout-box">
-                <div class="uk-flex uk-flex-space-between">Tên người nhận: <span>{{ $order->first()->fullname }}</span></div>
-                <div class="uk-flex uk-flex-space-between">Email: <span>{{ $order->first()->email }}</span></div>
-                <div class="uk-flex uk-flex-space-between">Địa chỉ: <span> {{ $order->first()->address }}</span></div>
-                <div class="uk-flex uk-flex-space-between">Số điện thoại: <span>{{ $order->first()->phone }}</span></div>
-                <div class="uk-flex uk-flex-space-between">Hình thức thanh toán: <span>{{ array_column(__('payment.method'), 'title', 'name')[$order->first()->method] }}</span></div>
+                <div class="uk-flex uk-flex-space-between">Tên người nhận: <span>{{ $data['order']->first()->fullname }}</span></div>
+                <div class="uk-flex uk-flex-space-between">Email: <span>{{ $data['order']->first()->email }}</span></div>
+                <div class="uk-flex uk-flex-space-between">Địa chỉ: <span> {{ $data['order']->first()->address }}</span></div>
+                <div class="uk-flex uk-flex-space-between">Số điện thoại: <span>{{ $data['order']->first()->phone }}</span></div>
+                <div class="uk-flex uk-flex-space-between">Hình thức thanh toán: <span>{{ array_column(__('payment.method'), 'title', 'name')[$data['order']->first()->method] }}</span></div>
+
+                @include($data['template'] ?? '')
             </div>
         </div>
     </div>

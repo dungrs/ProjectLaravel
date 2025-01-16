@@ -108,6 +108,23 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
     }
 
+    public function updateVnpay($payload, $order) {
+        DB::beginTransaction(); // Bắt đầu một giao dịch
+    
+        try {
+            $orderId = $order->id;
+            $this->orderRepository->update($orderId, $payload);
+    
+            DB::commit(); // Nếu không có lỗi, commit giao dịch
+            return true;
+        } catch (Exception $e) {
+            DB::rollBack(); // Nếu có lỗi, rollback giao dịch
+            // In ra lỗi và dừng thực thi (thường chỉ dùng trong quá trình phát triển)
+            echo $e->getMessage();
+            die();
+        }
+    }
+
 
     private function paginateSelect() {
         return [

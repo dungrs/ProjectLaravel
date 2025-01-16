@@ -136,6 +136,19 @@ if (!function_exists('loadClass')) {
     }
 }
 
+if (!function_exists('loadService')) {
+    function loadService(string $model = '', string $folder = 'Services',  $interface = 'Service') {
+        $serviceInterfaceNamespace = '\App\\' . $folder . '\\' . ucfirst($model) . $interface;
+        if (!class_exists($serviceInterfaceNamespace)) {
+            return response()->json(['error' => 'Repository not found.'], 404);
+        }
+        
+        $serviceInterface = app($serviceInterfaceNamespace);
+
+        return $serviceInterface;
+    }
+}
+
 if (!function_exists('writeUrl')) {
     function writeUrl(string $canonical, bool $fullDomain = true, $suffix = false): string {
         // If the canonical already contains a protocol (http/https), return it as is.
@@ -450,4 +463,19 @@ if (!function_exists('sortAttributeId')) {
         return $attributeString;
     }
 }
+
+if (!function_exists('vnpayConfig')) {
+    function vnpayConfig()
+    {
+        return [
+            'vnp_Url' => "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
+            'vnp_Returnurl' => writeUrl('return/vnpay', true, true),
+            'vnp_TmnCode' => "ZGB5NI5Y",
+            'vnp_HashSecret' => "PFEMWXC0KTH7LZE6W7OQ6CXG9D31SE0M",
+            'vnp_apiUrl' => "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html",
+            'apiUrl' => "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction",
+        ];
+    }
+}
+
 

@@ -13,6 +13,8 @@ use App\Http\Request\StoreCartRequest;
 use App\Services\CartService;
 use App\Services\OrderService;
 
+use App\Classes\Vnpay;
+
 use Gloudemans\Shoppingcart\Facades\Cart;
 
 class CartController extends FrontendController
@@ -22,6 +24,7 @@ class CartController extends FrontendController
     protected $cartService;
     protected $provinceRepository;
     protected $orderRepository;
+    protected $vnpay;
 
     public function __construct(
         SystemRepository $systemRepository,
@@ -29,12 +32,14 @@ class CartController extends FrontendController
         OrderRepository $orderRepository,
         CartService $cartService,
         OrderService $orderService,
+        Vnpay $vnpay,
     ) {
         parent::__construct($systemRepository);
         $this->provinceRepository = $provinceRepository;
         $this->orderRepository = $orderRepository;
         $this->cartService = $cartService;
         $this->orderService = $orderService;
+        $this->vnpay = $vnpay;
     }
 
     public function checkout() {
@@ -69,6 +74,10 @@ class CartController extends FrontendController
         $system = $this->getSystem();
         $order = $this->cartService->order($request, $system);
         if ($order['flag']) {
+            $response = $this->vnpay->payment($order['order']);
+            if ($response['code'] == 00) {
+                return redirect()->away($response['url']);
+            }
             return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success', 'Đặt hàng thành công');
         }
         return redirect()->route('cart.checkout')->with('error', 'Đặt hàng không thành công. Hãy thử lại');

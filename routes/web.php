@@ -14,6 +14,7 @@ use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\RouterController;
+use App\Http\Controllers\Frontend\VnpayController;
 
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -64,6 +65,10 @@ Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVaria
 Route::post('ajax/cart/create', [AjaxCartController::class, 'create']) -> name('ajax.cart.create');
 Route::post('ajax/cart/update', [AjaxCartController::class, 'update']) -> name('ajax.cart.update');
 Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete']) -> name('ajax.cart.delete');
+
+// VNPAY
+Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return']) -> name('vnpay.vnpay_return');
+// Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn']) -> name('vnpay.vnpay_ipn');
 
 // BACKEND ROUTES
 Route::group(['middleware'=> ['admin', 'locale', 'backend_default_locale']], function() {

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Repositories\SystemRepository;
 use App\Models\Language;
 
+
+use App\Mail\OrderMail;
+
 class FrontendController extends Controller
 {   
     protected $language;
@@ -32,4 +35,15 @@ class FrontendController extends Controller
 
         return $systems;
     }
+
+    public function mail($code, $dataResponse) {
+        $system = $this->getSystem();
+        $condition = [
+            ['orders.code', '=', $code],
+        ];
+        $order = loadService('Order')->getOrder($condition);
+        $to = $order->first()->email;
+        \Mail::to($to)->cc($system['contact_email'])->send(new OrderMail($dataResponse));
+    }
+
 }

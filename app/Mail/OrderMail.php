@@ -18,7 +18,7 @@ class OrderMail extends Mailable
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param array $data
      */
     public function __construct($data)
     {
@@ -45,7 +45,7 @@ class OrderMail extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mail.order',
+            view: 'mail.order', // Sử dụng template động
         );
     }
 
