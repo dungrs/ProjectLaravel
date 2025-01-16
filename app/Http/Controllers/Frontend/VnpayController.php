@@ -163,7 +163,7 @@ class VnpayController extends FrontendController
                                 $payload['payment'] = 'failed';
                                 $payload['confirm'] = 'confirm';
                             }
-                            $this->orderService->updateVnpay($payload, $order);
+                            $this->orderService->updatePaymentOnline($payload, $order);
                             $returnData['RspCode'] = '00';
                             $returnData['Message'] = 'Confirm Success';
                         } else {

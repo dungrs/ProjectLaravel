@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.7",
         "mindscms/laravelshoppingcart": "^2.1",
         "ramsey/uuid": "^4.7",
+        "srmklive/paypal": "^3.0",
         "yoeunes/toastr": "^2.3"
     },
     "require-dev": {

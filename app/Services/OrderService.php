@@ -108,7 +108,7 @@ class OrderService extends BaseService implements OrderServiceInterface
         }
     }
 
-    public function updateVnpay($payload, $order) {
+    public function updatePaymentOnline($payload, $order) {
         DB::beginTransaction(); // Bắt đầu một giao dịch
     
         try {

@@ -72,7 +72,7 @@ class MomoController extends FrontendController
                     $payload['payment'] = 'failed';
                     $payload['confirm'] = 'confirm';
                 }
-                $this->orderService->updateVnpay($payload, $order->first());
+                $this->orderService->updatePaymentOnline($payload, $order->first());
             } 
 
             $template = 'frontend.cart.component.momo';

@@ -15,6 +15,7 @@ use App\Services\OrderService;
 
 use App\Classes\Vnpay;
 use App\Classes\Momo;
+use App\Classes\Paypal;
 
 use Gloudemans\Shoppingcart\Facades\Cart;
 
@@ -27,6 +28,7 @@ class CartController extends FrontendController
     protected $orderRepository;
     protected $vnpay;
     protected $momo;
+    protected $paypal;
 
     public function __construct(
         SystemRepository $systemRepository,
@@ -36,6 +38,7 @@ class CartController extends FrontendController
         OrderService $orderService,
         Vnpay $vnpay,
         Momo $momo,
+        Paypal $paypal,
     ) {
         parent::__construct($systemRepository);
         $this->provinceRepository = $provinceRepository;
@@ -44,6 +47,7 @@ class CartController extends FrontendController
         $this->orderService = $orderService;
         $this->vnpay = $vnpay;
         $this->momo = $momo;
+        $this->paypal = $paypal;
     }
 
     public function checkout() {
@@ -111,12 +115,8 @@ class CartController extends FrontendController
     }
 
     public function paymentOnline($order = null) {
-        switch ($order['order']->method) {
-            case 'vnpay':
-                return $this->vnpay->payment($order['order']);
-            case 'momo':
-                return $this->momo->payment($order['order']);
-        }
+        $class = $order['order']->method;
+        return $this->{$class}->payment($order['order']);
     }
 
     public function config() {
