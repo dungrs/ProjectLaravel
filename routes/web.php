@@ -10,6 +10,7 @@ use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
 use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
 use App\Http\Controllers\Ajax\CartController as AjaxCartController;
 use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
+use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
@@ -63,6 +64,7 @@ Route::post('cart/store', [CartController::class, 'store']) -> name('cart.store'
 Route::get('cart/{code}/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success')->where('code', '[0-9]+');
 
 // FRONEND AJAX
+Route::post('ajax/review/create', [AjaxReviewController::class, 'create']) -> name('ajax.review.create');
 Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant']) -> name('ajax.product.loadVariant');
 Route::post('ajax/cart/create', [AjaxCartController::class, 'create']) -> name('ajax.cart.create');
 Route::post('ajax/cart/update', [AjaxCartController::class, 'update']) -> name('ajax.cart.update');

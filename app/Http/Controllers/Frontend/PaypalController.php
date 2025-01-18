@@ -68,6 +68,6 @@ class PaypalController extends FrontendController
     }
 
     public function cancel(Request $request) {
-
+        echo 'Hủy thanh toán thành công'; die(); // Xây dựng view sau 
     }
 }

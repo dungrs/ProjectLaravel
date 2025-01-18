@@ -25,7 +25,12 @@ class ProductCatalogue extends Model
         'publish',
         'order',
         'user_id',
-        'follow'
+        'follow',
+        'attribute'
+    ];
+
+    protected $casts = [
+        'attribute' => 'json'
     ];
 
     protected $table = 'product_catalogues';

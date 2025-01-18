@@ -230,4 +230,54 @@ class BaseRepository implements BaseRepositoryInterface
     
         return $ids;
     }
+
+    public function recursveCategoryGetParentAChild(string $parameter = '', $table = '') {
+        $table = $table . '_catalogues';
+    
+        // Truy vấn đệ quy
+        $query = "
+            WITH RECURSIVE category_tree AS (
+                -- Lấy chính các danh mục được truyền vào
+                SELECT id, parent_id, deleted_at
+                FROM $table
+                WHERE id IN (?)
+                UNION ALL
+                -- Đệ quy để lấy các danh mục con
+                SELECT c.id, c.parent_id, c.deleted_at
+                FROM $table as c
+                JOIN category_tree as ct ON ct.id = c.parent_id
+                WHERE c.parent_id != 0
+            ),
+            parent_tree AS (
+                -- Lấy danh mục cha đệ quy
+                SELECT id, parent_id, deleted_at
+                FROM $table
+                WHERE id IN (?)
+                UNION ALL
+                SELECT c.id, c.parent_id, c.deleted_at
+                FROM $table as c
+                JOIN parent_tree as pt ON pt.parent_id = c.id
+                WHERE c.parent_id != 0
+            )
+            -- Kết hợp cả cây con và cây cha
+            SELECT DISTINCT id
+            FROM (
+                SELECT * FROM category_tree
+                UNION
+                SELECT * FROM parent_tree
+            ) AS combined_tree
+            WHERE deleted_at IS NULL
+        ";
+    
+        // Thực thi truy vấn
+        $result = DB::select($query, [$parameter, $parameter]);
+    
+        // Chuyển kết quả thành mảng đơn giản
+        $ids = array_map(function ($row) {
+            return $row->id;
+        }, $result);
+    
+        return $ids;
+    }
+    
 }

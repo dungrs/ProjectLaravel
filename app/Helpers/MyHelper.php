@@ -509,3 +509,45 @@ if (!function_exists('execPostRequest')) {
         return $result;
     }
 }
+
+if (!function_exists('getReviewName')) {
+    function getReviewName(string $name = '')
+    {
+        // Nếu chuỗi trống, trả về chuỗi rỗng
+        if (empty($name)) {
+            return '';
+        }
+
+        // Tách các từ trong chuỗi
+        $words = explode(' ', trim($name));
+
+        // Nếu chỉ có một từ, lấy ký tự đầu tiên
+        if (count($words) === 1) {
+            return strtoupper(substr($words[0], 0, 1));
+        }
+
+        // Lấy ký tự đầu của họ cuối và tên cuối
+        $last_name_initial = strtoupper(substr($words[count($words) - 2], 0, 1)); // Họ cuối
+        $first_name_initial = strtoupper(substr($words[count($words) - 1], 0, 1)); // Tên cuối
+
+        return $last_name_initial . $first_name_initial;
+    }
+}
+
+if (!function_exists('generateStar')) {
+    function generateStar($rating)
+    {
+        $rating = max(1, min(5, (int)$rating));
+
+        $output = '<div class="review-star">';
+        for ($i = 1; $i <= $rating; $i++) {
+            $output .= '<i class="fa fa-star"></i>';
+        }
+        for ($i = $rating + 1; $i <= 5; $i++) {
+            $output .= '<i class="fa fa-star-o"></i>';
+        }
+        $output .= '</div>';
+
+        return $output;
+    }
+}

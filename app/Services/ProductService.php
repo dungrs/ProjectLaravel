@@ -2,13 +2,17 @@
 
 namespace App\Services;
 use App\Services\Interfaces\ProductServiceInterface;
+
 use App\Repositories\RouterRepository;
 use App\Repositories\ProductVariantLanguageRepository;
-use App\Services\BaseService;
 use App\Repositories\ProductRepository;
 use App\Repositories\AttributeCatalogueRepository;
 use App\Repositories\AttributeRepository;
 use App\Repositories\ProductVariantAttributeRepository;
+
+use App\Services\BaseService;
+use App\Services\ProductCatalogueService;
+
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +31,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     protected $attributeCatalogueRepository;
     protected $productVariantLanguageRepository;
     protected $productVariantAttributeRepository;
+    protected $productCatalogueService;
 
     public function __construct(
         ProductRepository $productRepository, 
@@ -35,6 +40,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         ProductVariantAttributeRepository $productVariantAttributeRepository,
         AttributeCatalogueRepository $attributeCatalogueRepository,
         AttributeRepository $attributeRepository,
+        ProductCatalogueService $productCatalogueService
     ) {
         $this->productRepository = $productRepository;
         $this->routerRepository = $routerRepository;
@@ -42,6 +48,7 @@ class ProductService extends BaseService implements ProductServiceInterface
         $this->attributeRepository = $attributeRepository;
         $this->productVariantLanguageRepository = $productVariantLanguageRepository;
         $this->productVariantAttributeRepository = $productVariantAttributeRepository;
+        $this->productCatalogueService = $productCatalogueService;
         $this->controllerName = 'ProductController';
     }
 
@@ -104,6 +111,9 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $product->product_variants()->delete();
                 $this->createVariant($product, $request, $languageId);
             }
+
+            $this->productCatalogueService->setAttribute($product, $languageId);
+
             DB::commit();
             return true;
         } catch (Exception $e) {
@@ -119,8 +129,8 @@ class ProductService extends BaseService implements ProductServiceInterface
     
         try {
             // Lấy tất cả dữ liệu từ request
-            $product = $this->productRepository->findById($id);
-            if ($this->uploadProduct($id, $request)) {
+            $product = $this->uploadProduct($id, $request);
+            if ($product) {
                 $this->updateLanguageForProduct($product, $request, $languageId);
                 $this->uploadCatalogueForProduct($product, $request);
                 $this->updateRouter($request, $product, $this->controllerName, $languageId);
@@ -133,6 +143,7 @@ class ProductService extends BaseService implements ProductServiceInterface
                 $variant->delete();
             });
             $this->createVariant($product, $request, $languageId);
+            $this->productCatalogueService->setAttribute($product, $languageId);
 
             DB::commit(); // Nếu không có lỗi, commit giao dịch
             return true;
@@ -271,7 +282,7 @@ class ProductService extends BaseService implements ProductServiceInterface
     private function uploadProduct($id, $request) {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
-        return $this->productRepository->update($id, $payload);
+        return $this->productRepository->updateAndGetData($id, $payload);
     }
 
     private function updateLanguageForProduct($product, $request, $languageId) {

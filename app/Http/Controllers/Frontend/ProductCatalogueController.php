@@ -51,7 +51,12 @@ class ProductCatalogueController extends FrontendController
         if ($products->isEmpty()) {
             abort(404, 'No products found');
         }
-    
+
+        $filters = null;
+        if (!is_null($productCatalogue->attribute)) {
+            $filters = $this->productCatalogueService->getFilterList($productCatalogue->attribute, $this->language);
+        }
+
         $productIds = $products->pluck('id')->toArray();
         $bestPromotions = $this->promotionService->getBestPromotion("product", $productIds);
     
@@ -69,7 +74,8 @@ class ProductCatalogueController extends FrontendController
             'seo',
             'productCatalogue',
             'breadcrumb',
-            'products'
+            'products',
+            'filters'
         ));
     }
 

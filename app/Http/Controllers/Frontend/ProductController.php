@@ -6,6 +6,7 @@ use App\Http\Controllers\FrontendController;
 
 use App\Repositories\SystemRepository;
 use App\Repositories\RouterRepository;
+use App\Repositories\ReviewRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\ProductCatalogueRepository;
 
@@ -20,6 +21,7 @@ class ProductController extends FrontendController
     protected $routerRepository;
     protected $productCatalogueRepository;
     protected $productRepository;
+    protected $reviewRepository;
     protected $productService;
     protected $productCatalogueService;
     protected $promotionService;
@@ -29,12 +31,14 @@ class ProductController extends FrontendController
         SystemRepository $systemRepository,
         ProductRepository $productRepository,
         ProductService $productService,
+        ReviewRepository $reviewRepository,
         ProductCatalogueRepository $productCatalogueRepository,
         ProductCatalogueService $productCatalogueService,
         PromotionService $promotionService,
     ) {
         parent::__construct($systemRepository);
         $this->routerRepository = $routerRepository;
+        $this->reviewRepository = $reviewRepository;
         $this->productRepository = $productRepository;
         $this->productService = $productService;
         $this->productCatalogueRepository = $productCatalogueRepository;
@@ -44,6 +48,7 @@ class ProductController extends FrontendController
 
     public function index($request, $canonical, $id) {
         $config = $this->config();
+        $system = $this->getSystem();
         $languageId = $this->language;
 
         $product = $this->productRepository->getProductById($id, $languageId);
@@ -84,7 +89,7 @@ class ProductController extends FrontendController
                 ")
             ]
         ));
-   
+
         $seo = seo($product);
 
         return view('frontend.product.product.index', compact(
@@ -94,7 +99,8 @@ class ProductController extends FrontendController
             'breadcrumb',
             'product',
             'objectCategory',
-            'languageId'
+            'languageId',
+            'system',
         ));
     }
 
@@ -103,6 +109,7 @@ class ProductController extends FrontendController
             'language' => $this->language,
             'js' => [
                 'frontend/core/library/cart.js',
+                'frontend/core/library/review.js',
                 'frontend/core/library/product.js',
             ]
         ];

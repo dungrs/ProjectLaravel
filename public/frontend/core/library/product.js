@@ -122,10 +122,19 @@
 		})
 	}
 
+	HT.chooseReviewStar = () => {
+		$(document).on('click', '.popup-rating label', function() {
+			let _this = $(this);
+			let title = _this.attr('title')
+			$('.rate-text').removeClass('uk-hidden').html(title);
+		})
+	}
+
 	$(document).ready(function(){
 		HT.selectVariantProduct()
 		HT.loadProductVariant()
 		HT.changeProductQuantity();		
+		HT.chooseReviewStar();
 	});
 
 })(jQuery);

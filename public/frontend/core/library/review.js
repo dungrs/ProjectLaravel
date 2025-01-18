@@ -13,14 +13,16 @@
                 score: $('.rate:checked').val(),
                 description : $('.review-textarea').val(),
                 gender: $('.gender:checked').val(),
-                fullname: $('.product-preview input[name=fullname]').val(),
-                email: $('.product-preview input[name=email]').val(),
-                phone: $('.product-preview input[name=phone]').val(),
+                fullname: $('.product-review input[name=fullname]').val(),
+                email: $('.product-review input[name=email]').val(),
+                phone: $('.product-review input[name=phone]').val(),
                 reviewable_type: $('.reviewable_type').val(),
                 reviewable_id: $('.reviewable_id').val(),
                 _token: _token,
                 parent_id: $('.review_parent_id').val()
             }
+
+            console.log(option);
 
             $.ajax({
 				url: 'ajax/review/create', 
@@ -35,10 +37,9 @@
                         toastr.success(res.messages, 'Thông báo từ hệ thống!')
                         modal.hide()
                         location.reload()
-
-                     }else{
+                    }else{
                         toastr.error(res.messages, 'Thông báo từ hệ thống!')
-                     }
+                    }
 				},
 			});
         })

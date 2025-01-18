@@ -28,6 +28,7 @@ class HomeController extends FrontendController
 
     public function index() {
         $config = $this->config();
+        $system = $this->getSystem();
 
         $keywords = [
             'category' => ['keyword' => 'category', 'options' => ['object' => true, 'promotion' => true, 'children' => true, ]],
@@ -53,6 +54,7 @@ class HomeController extends FrontendController
             'slides',
             'widget',
             'seo',
+            'system'
         ));
     }
 

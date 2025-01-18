@@ -89,7 +89,7 @@
                 </div>
             </div>
         </div>
-        <div class="uk-width-large-1-4">
+        <div class="uk-width-large-1-3">
             <div class="aside">
                 @if (isset($objectCategory))
                     @foreach ($objectCategory as $key => $val)
@@ -129,6 +129,11 @@
                     @endforeach
                 @endif
             </div>
+        </div>
+    </div>
+    <div class="uk-grid uk-grid-medium">
+        <div class="uk-width-large-2-3">
+            @include('frontend.product.product.component.review', ['product' => $product, 'reviewable' => 'App\Models\Product'])
         </div>
     </div>
 </div>

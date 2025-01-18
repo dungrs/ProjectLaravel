@@ -46,7 +46,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                         $query->where('language_id', '=', $language_id);
                     }]);
                 }]);
-            }
+            },
+            'reviews'
         ])
         ->where('tb2.language_id', '=', $language_id)
         ->find($id);

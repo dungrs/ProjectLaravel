@@ -29,7 +29,7 @@
                                     <div class="swiper-slide">
                                         <div class="category-item bg-<?php echo rand(1,7) ?>">
                                             <a href="" class="image img-scaledown img-zoomin"><img src="{{ asset($category->image) }}" alt=""></a>
-                                            <div class="title"><a href="{{ writeUrl($category->canonical) }}" title="">{{ $category->name }}</a></div>
+                                            <div class="title"><a href="{{ writeUrl($category->canonical, true, true) }}" title="">{{ $category->name }}</a></div>
                                             <div class="total-product">{{ $category->product_count }} sản phẩm</div>
                                         </div>
                                     </div>
